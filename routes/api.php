@@ -2,18 +2,38 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\LevelController;
+use App\Http\Controllers\KriteriaController;
+use App\Http\Controllers\DetailKriteriaController;
 
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route publik
+Route::post('/login', [AuthController::class, 'login']);
+
+// Route yang memerlukan autentikasi
+Route::middleware('auth:sanctum')->group(function () {
+    // Auth
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/profile', [AuthController::class, 'profile']);
+    
+    // Users - hanya admin yang dapat akses
+    Route::middleware('authorize:admin')->group(function () {
+        Route::apiResource('users', UserController::class);
+        Route::apiResource('levels', LevelController::class);
+    });
+    
+    // Kriteria - admin dan koordinator
+    Route::middleware('authorize:admin,koordinator')->group(function () {
+        Route::apiResource('kriteria', KriteriaController::class);
+    });
+    
+    // Detail Kriteria - semua pengguna bisa akses
+    Route::apiResource('detail-kriteria', DetailKriteriaController::class);
 });

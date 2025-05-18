@@ -14,6 +14,6 @@ class WelcomeController extends Controller
     
         $activeMenu = 'dashboard';
 
-        return view('welcome', ['breadcrumb' => $breadcrumb, 'activeMenu' => $activeMenu]);
+        return view('Anggota.dashboard', ['breadcrumb' => $breadcrumb, 'activeMenu' => $activeMenu]);
     }
 }
