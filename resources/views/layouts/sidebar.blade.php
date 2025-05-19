@@ -70,6 +70,14 @@
     @endfor
 </ul>   
 
+<li class="nav-item">
+    <a class="nav-link {{ request()->routeIs('dokumen-final*') ? 'active' : '' }}" 
+       href="{{ route('dokumen-final.index') }}">
+        <i class="fas fa-file-alt"></i>
+        <span class="nav-link-text">Dokumen Final</span>
+    </a>
+</li>
+
                 </div>
             </li>
         </ul>

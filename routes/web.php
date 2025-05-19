@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\Anggota\AnggotaController;
+use App\Http\Controllers\DokumenFinalController;
+use App\Http\Controllers\DokumenController;
 
 /*
 |---------------------------------------------------------------------------
@@ -104,9 +106,23 @@ Route::prefix('kriteria')->group(function() {
 
 
 
+Route::get('/dokumen-final', [DokumenFinalController::class, 'index'])->name('dokumen-final.index');
 
+// Tambahkan di routes/web.php
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
 
+Route::get('/profile', function () {
+    return view('profile');
+})->name('profile');
 
+Route::get('/settings', function () {
+    return view('settings');
+})->name('settings');
+
+Route::get('/dokumen-final', [DokumenController::class, 'show'])->name('dokumen-final');
+Route::resource('dokumen-final', DokumenFinalController::class);
 
 Route::post('/logout', function () {
     Auth::logout(); // Melakukan proses logout
