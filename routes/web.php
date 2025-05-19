@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\Anggota\AnggotaController;
+use App\Http\Controllers\Auth\DashboardController;
 
 /*
 |---------------------------------------------------------------------------
@@ -19,9 +20,16 @@ use App\Http\Controllers\Anggota\AnggotaController;
 */
 Route::pattern('id', '[0-9]+'); //artinya ketika parameter {id}, maka harus berupa angka
  
-Route::get('login', [AuthController::class, 'login'])->name('login');
-Route::post('login', [AuthController::class, 'postLogin']);
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login'])->name('login.post');
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
+
+Route::get('/login1', function () {
+    return view('layouts.login1');
+})->name('login');
+
+Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login.post');
+
 
 Route::get('/', function () {
     return view('index');
@@ -31,9 +39,11 @@ Route::get('/welcome', function () {
     return view('welcome');
 });
 
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
  
 Route::middleware(['auth'])->group(function() { //artinya semua route di dalam group ini harus login dulu
  });
+
 
 
  Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function (){
@@ -109,7 +119,6 @@ Route::prefix('kriteria')->group(function() {
 
 
 Route::post('/logout', function () {
-    Auth::logout(); // Melakukan proses logout
     return redirect('/login'); // Arahkan ke halaman login setelah logout
 })->name('logout');
 

@@ -63,8 +63,9 @@
         </a>
       </li>
       <li>
-  <a href="{{ route('login') }}" class="bt n btn-primary" style="margin-top:8px; margin-right:-110px; background-color:rgb(74, 127, 205); color: white;">
+        <a href="{{ url('login') }}" class="btn btn-primary" style="margin-top:8px; margin-right:-110px; background-color:rgb(74, 127, 205); color: white;">
     <i class="fa fa-sign-in"></i> Login
+
   </a>
 </li>
 

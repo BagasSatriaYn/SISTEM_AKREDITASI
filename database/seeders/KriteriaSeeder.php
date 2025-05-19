@@ -14,15 +14,15 @@ class KriteriaSeeder extends Seeder
     public function run(): void
     {
         Kriteria::create([
-            'nama_kriteria' => 'Kriteria 1',
+            'nama' => 'Kriteria 1',
         ]);
         
         Kriteria::create([
-            'nama_kriteria' => 'Kriteria 2',
+            'nama' => 'Kriteria 2',
         ]);
         
         Kriteria::create([
-            'nama_kriteria' => 'Kriteria 3',
+            'nama' => 'Kriteria 3',
         ]);
     }
 }
