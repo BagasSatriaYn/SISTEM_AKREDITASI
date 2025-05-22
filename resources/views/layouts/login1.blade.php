@@ -107,11 +107,13 @@
             transform: translateX(-50%);
         }
 
-        .navbar-btn:hover::after {
+        .navbar-btn:hover::after,
+        .navbar-btn.active::after {
             width: 100%;
         }
 
-        .navbar-btn:hover {
+        .navbar-btn:hover,
+        .navbar-btn.active {
             color: #35B1F6;
         }
 
@@ -229,16 +231,15 @@
         <!-- Navbar with logo -->
         <div class="navbar">
             <div class="navbar-brand-container">
-                <!-- Tambahkan logo di sini -->
                 <img src="img/logo.png" alt="Logo AKSIB" class="navbar-logo">
-                <a href="#" class="navbar-brand">Akreditasi D4 Sistem Informasi Bisnis</a>
+                <a href="{{ url('/') }}" class="navbar-brand">Akreditasi D4 Sistem Informasi Bisnis</a>
             </div>
             <div class="navbar-right">
-                <a href="#" class="navbar-btn">
+                <a href="{{ url('/') }}" class="navbar-btn">
                     <i class="fas fa-home"></i>
                     Beranda
                 </a>
-                <a href="#" class="navbar-btn">
+                <a href="{{ route('login') }}" class="navbar-btn active">
                     <i class="fas fa-sign-in-alt"></i>
                     Login
                 </a>
@@ -291,7 +292,6 @@
             </form>
         </div>
     
-        <!-- (Opsional) jika mau AJAX, tambahkan script di bawah ini -->
         <script>
         document.querySelector('#login-form').addEventListener('submit', function(e){
             e.preventDefault();

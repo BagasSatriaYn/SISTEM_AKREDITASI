@@ -7,6 +7,8 @@ use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\Anggota\AnggotaController;
 use App\Http\Controllers\Auth\DashboardController;
+use App\Http\Controllers\Auth\Dashboard1Controller;
+
 
 /*
 |---------------------------------------------------------------------------
@@ -20,8 +22,8 @@ use App\Http\Controllers\Auth\DashboardController;
 */
 Route::pattern('id', '[0-9]+'); //artinya ketika parameter {id}, maka harus berupa angka
  
-Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('login', [AuthController::class, 'login'])->name('login.post');
+Route::get('login', [AuthController::class, 'login'])->name('login');
+Route::post('login', [AuthController::class, 'postLogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
 Route::get('/login1', function () {
@@ -39,15 +41,16 @@ Route::get('/welcome', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/Direktur/dashboard', [DashboardController::class, 'index'])->name('dashboarddirektur');
+Route::get('/Kajur/dashboard', [Dashboard1Controller::class, 'index'])->name('dashboardkajur');
  
 Route::middleware(['auth'])->group(function() { //artinya semua route di dalam group ini harus login dulu
  });
 
 
 
- Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function (){
-    Route::get('/index/anggota', [WelcomeController::class, 'index']); // menampilkan halaman awal user
+
+    Route::get('/kriteria1/index/anggota', [WelcomeController::class, 'index']); // menampilkan halaman awal user
     Route::get('/index', [KriteriaController::class, 'index'])->name('kriteria1.index'); // Menampilkan semua kriteria
     Route::get('/input', [KriteriaController::class, 'input'])->name('kriteria1.input');
     Route::post('store', [KriteriaController::class, 'store'])->name('kriteria1.store'); // Menyimpan data kriteria baru;
@@ -55,7 +58,7 @@ Route::middleware(['auth'])->group(function() { //artinya semua route di dalam g
     Route::put('/{id}', [KriteriaController::class, 'update']); // Update kriteria
     Route::delete('/{id}', [KriteriaController::class, 'destroy']); // Menghapus kriteria
     
-}); 
+
 Route::prefix('kriteria')->group(function() {
     Route::get('A1', [KriteriaController::class, 'show']);
     Route::get('A2', [KriteriaController::class, 'show']);

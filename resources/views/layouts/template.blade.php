@@ -132,7 +132,6 @@
     <!-- End Navbar -->
     <div class="container-fluid py-4">
       @yield('content')
-     @include('layouts.footer')
     </div>
   </main>
   <div class="fixed-plugin">
