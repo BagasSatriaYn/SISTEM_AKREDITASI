@@ -424,9 +424,9 @@
             <nav aria-label="breadcrumb" class="header-breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Status Pengajuan</li>
+                    <li class="breadcrumb-item active" aria-current="page">Dashboard Admin</li>
                 </ol>
-                <h5 class="mb-0" style="font-size: 1.1rem; color: white;">Status Pengajuan</h5>
+                <h5 class="mb-0" style="font-size: 1.1rem; color: white;">Dashboard Admin</h5>
             </nav>
 
             <div class="user-profile">
