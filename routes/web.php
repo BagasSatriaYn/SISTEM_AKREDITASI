@@ -50,7 +50,7 @@ Route::middleware(['auth'])->group(function() { //artinya semua route di dalam g
 
 
 
-    Route::get('/kriteria1/index/anggota', [WelcomeController::class, 'index']); // menampilkan halaman awal user
+    Route::get('Anggota/dashboard', [WelcomeController::class, 'index']); // menampilkan halaman awal user
     Route::get('/index', [KriteriaController::class, 'index'])->name('kriteria1.index'); // Menampilkan semua kriteria
     Route::get('/input', [KriteriaController::class, 'input'])->name('kriteria1.input');
     Route::post('store', [KriteriaController::class, 'store'])->name('kriteria1.store'); // Menyimpan data kriteria baru;

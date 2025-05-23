@@ -1,320 +1,473 @@
-<!--
-=========================================================
-* Argon Dashboard 3 - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('Argon/assets/img/apple-icon.png')}}">
-  <link rel="icon" type="image/png" href="{{ asset('Argon/assets/img/favicon.png')}}">
-  <title>
-    Argon Dashboard 3 by Creative Tim
-  </title>
-  <!-- Extra details for Live View on GitHub Pages -->
-  <!-- Canonical SEO -->
-  <link rel="canonical" href="https://www.creative-tim.com/product/argon-dashboard" />
-  <!--  Social tags      -->
-  <meta name="keywords" content="creative tim, html dashboard, html css dashboard, web dashboard, bootstrap 5 dashboard, bootstrap 5, css3 dashboard, bootstrap 5 admin, Argon Dashboard 2 bootstrap 5 dashboard, frontend, responsive bootstrap 5 dashboard, free dashboard, free admin dashboard, free bootstrap 5 admin dashboard">
-  <meta name="description" content="Argon Dashboard 3 is a beautiful Bootstrap 5 admin dashboard with a large number of components, designed to look beautiful and organized. If you are looking for a tool to manage and visualize data about your business, this dashboard is the thing for you.">
-  <!-- Twitter Card data -->
-  <meta name="twitter:card" content="product">
-  <meta name="twitter:site" content="@creativetim">
-  <meta name="twitter:title" content="Argon Dashboard 3 by Creative Tim">
-  <meta name="twitter:description" content="Argon Dashboard 3 is a beautiful Bootstrap 5 admin dashboard with a large number of components, designed to look beautiful and organized. If you are looking for a tool to manage and visualize data about your business, this dashboard is the thing for you.">
-  <meta name="twitter:creator" content="@creativetim">
-  <meta name="twitter:image" content="https://s3.amazonaws.com/creativetim_bucket/products/450/original/opt_sd_free_thumbnail.png">
-  <!-- Open Graph data -->
-  <meta property="fb:app_id" content="655968634437471">
-  <meta property="og:title" content="Argon Dashboard 3 by Creative Tim" />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="http://demos.creative-tim.com/argon-dashboard/examples/dashboard.html" />
-  <meta property="og:image" content="https://s3.amazonaws.com/creativetim_bucket/products/450/original/opt_sd_free_thumbnail.png" />
-  <meta property="og:description" content="Argon Dashboard 3 is a beautiful Bootstrap 5 admin dashboard with a large number of components, designed to look beautiful and organized. If you are looking for a tool to manage and visualize data about your business, this dashboard is the thing for you." />
-  <meta property="og:site_name" content="Creative Tim" />
-  <!--     Fonts and icons     -->
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Fonts and icons -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-  <!-- Nucleo Icons -->
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ asset('Argon/assets/css/argon-dashboard.min.css?v=2.1.0')}}" rel="stylesheet" />
-  <!-- Anti-flicker snippet (recommended)  -->
-  <style>
-    .async-hide {
-      opacity: 0 !important
-    }
-  </style>
-  <script>
-    (function(a, s, y, n, c, h, i, d, e) {
-      s.className += ' ' + y;
-      h.start = 1 * new Date;
-      h.end = i = function() {
-        s.className = s.className.replace(RegExp(' ?' + y), '')
-      };
-      (a[n] = a[n] || []).hide = h;
-      setTimeout(function() {
-        i();
-        h.end = null
-      }, c);
-      h.timeout = c;
-    })(window, document.documentElement, 'async-hide', 'dataLayer', 4000, {
-      'GTM-K9BGS8K': true
-    });
-  </script>
-  <!-- Analytics-Optimize Snippet -->
-  <script>
-    (function(i, s, o, g, r, a, m) {
-      i['GoogleAnalyticsObject'] = r;
-      i[r] = i[r] || function() {
-        (i[r].q = i[r].q || []).push(arguments)
-      }, i[r].l = 1 * new Date();
-      a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0];
-      a.async = 1;
-      a.src = g;
-      m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-    ga('create', 'UA-46172202-22', 'auto', {
-      allowLinker: true
-    });
-    ga('set', 'anonymizeIp', true);
-    ga('require', 'GTM-K9BGS8K');
-    ga('require', 'displayfeatures');
-    ga('require', 'linker');
-    ga('linker:autoLink', ["2checkout.com", "avangate.com"]);
-  </script>
-  <!-- end Analytics-Optimize Snippet -->
-  <!-- Google Tag Manager -->
-  <script>
-    (function(w, d, s, l, i) {
-      w[l] = w[l] || [];
-      w[l].push({
-        'gtm.start': new Date().getTime(),
-        event: 'gtm.js'
-      });
-      var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s),
-        dl = l != 'dataLayer' ? '&l=' + l : '';
-      j.async = true;
-      j.src =
-        'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-      f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-NKDMSK6');
-  </script>
-  <!-- End Google Tag Manager -->
+  <title> Dashboard Admin</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800;900&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+        
+        /* Updated Welcome Alert */
+        .login-alert {
+            background-color: #e7f3eb;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .login-alert strong {
+            color: #03476A;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        
+        .login-alert .close-btn {
+            background: transparent;
+            border: none;
+            color: #03476A;
+            cursor: pointer;
+            font-size: 1.25rem;
+            line-height: 1;
+            padding: 0;
+        }
+        
+        /* Full Width Header */
+        .full-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: auto;
+            z-index: 1000;
+            background-color: #354868;
+            color: white;
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-left: 300px;
+        }
+
+        .header-breadcrumb {
+            margin-left: 20px;
+        }
+
+        .main-content {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .header .breadcrumb {
+            margin-bottom: 0;
+            background: transparent;
+            color: white;
+            font-size: 0.85rem;
+            padding: 0;
+        }
+
+        .header .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        .header .breadcrumb-item.active {
+            color: white;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-profile img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+
+        .notification-bell {
+            position: relative;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: bold;
+        }
+
+        /*sidebar*/
+        .aksib-brand {
+            font-family: 'League Spartan', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        /* Hover effects for sidebar items */
+      .navbar-nav .nav-item .nav-link:hover {
+            background-color: #f0f2f5;
+            color: #2c4a72;
+        }
+       /* Hover effects for kriteria items */
+        .navbar-nav.ms-3 .nav-item {
+            margin: 2px 0;
+        }
+        
+        .navbar-nav.ms-3 .nav-link {
+            transition: all 0.2s ease;
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+        
+        .navbar-nav.ms-3 .nav-link:not(.disabled):hover {
+            background-color: rgba(53, 72, 104, 0.08);
+            transform: translateX(4px);
+        }
+        
+        .navbar-nav.ms-3 .nav-link:not(.disabled):hover .icon {
+            background-color: rgba(53, 72, 104, 0.15);
+        }
+        
+        .navbar-nav.ms-3 .nav-link:not(.disabled):hover .nav-link-text {
+            color: #354868;
+            font-weight: 500;
+        }
+        
+        .navbar-nav.ms-3 .nav-link:not(.disabled):hover .fa-file-alt {
+            color: #354868 !important;
+            transform: scale(1.1);
+        }
+        
+        /* Active kriteria item */
+        .navbar-nav.ms-3 .nav-link:not(.disabled) {
+            background-color: rgba(53, 72, 104, 0.05);
+        }
+
+        /* Status Pengajuan Section - Modified */
+        .status-section {
+            margin-bottom: 15px;
+        }
+
+        /* Table Container - Updated to match menu style */
+        .table-container {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .table-container:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .status-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .status-table th {
+            font-weight: 600;
+            color: #333;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+        }
+        
+        .status-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+        }
+        
+        .status-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .badge-active {
+            background-color: #e6f7f2;
+            color: #28a745;
+        }
+        
+        .badge-inactive {
+            background-color: #fbe7e6;
+            color: #dc3545;
+        }
+        
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            font-size: 0.875rem;
+            color: #6c757d;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .pagination-info {
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        .pagination-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .page-nav-btn {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+        
+        .page-nav-btn:hover:not(.disabled) {
+            background-color: #f8f9fa;
+            color: #0d6efd;
+        }
+        
+        .page-nav-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Menu Cards Section */
+        .menu-section {
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            background-color: rgba(250, 210, 1, 0.3);
+            padding: 12px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .menu-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .menu-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: calc(50% - 10px);
+            max-width: 380px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            border: none;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .menu-card-image {
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Kriteria Card */
+        .kriteria-card .menu-card-image {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        }
+
+        /* Dokumen Final Card */
+        .dokumen-card .menu-card-image {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .menu-card-image i {
+            font-size: 60px;
+            color: white;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .menu-card:hover .menu-card-image i {
+            transform: scale(1.1);
+        }
+
+        .menu-card-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .menu-card:hover .menu-card-image::after {
+            opacity: 1;
+        }
+
+        .menu-card-title {
+            padding: 20px;
+            text-align: center;
+            border-top: none;
+            position: relative;
+        }
+
+        .menu-card-title h5 {
+            margin: 0;
+            color: #333;
+            font-size: 1.1rem;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+        }
+
+        .menu-card-title h5::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: #2c4a72;
+            transition: width 0.3s ease;
+        }
+
+        .menu-card:hover .menu-card-title h5::after {
+            width: 60px;
+        }
+
+        .menu-card-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #2c4a72;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-toggle::after {
+            display: none;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: #354868;
+        }
+
+        .section-title h5 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #354868;
+        }
+    </style>
 </head>
 
-<body class="g-sidenav-show   bg-gray-100">
-  <!-- Extra details for Live View on GitHub Pages -->
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NKDMSK6" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <div class="min-height-300 bg-dark position-absolute w-100"></div>
+
+
+
   @include('layouts.sidebar')
-  <main class="main-content position-relative border-radius-lg ">
+  
+  <main class="main-content position-relative border-radius-lg">
     <!-- Navbar -->
     @include('layouts.header')
     <!-- End Navbar -->
-    <div class="container-fluid py-4">
+    
+   
       @yield('content')
-    </div>
+
   </main>
-  <div class="fixed-plugin">
-    <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
-      <i class="fa fa-cog py-2"> </i>
-    </a>
-    <div class="card shadow-lg">
-      <div class="card-header pb-0 pt-3 ">
-        <div class="float-start">
-          <h5 class="mt-3 mb-0">Argon Configurator</h5>
-          <p>See our dashboard options.</p>
-        </div>
-        <div class="float-end mt-4">
-          <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
-            <i class="fa fa-close"></i>
-          </button>
-        </div>
-        <!-- End Toggle Button -->
-      </div>
-      <hr class="horizontal dark my-1">
-      <div class="card-body pt-sm-3 pt-0 overflow-auto">
-        <!-- Sidebar Backgrounds -->
-        <div>
-          <h6 class="mb-0">Sidebar Colors</h6>
-        </div>
-        <a href="javascript:void(0)" class="switch-trigger background-color">
-          <div class="badge-colors my-2 text-start">
-            <span class="badge filter bg-gradient-primary active" data-color="primary" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-dark" data-color="dark" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-info" data-color="info" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-success" data-color="success" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-warning" data-color="warning" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-danger" data-color="danger" onclick="sidebarColor(this)"></span>
-          </div>
-        </a>
-        <!-- Sidenav Type -->
-        <div class="mt-3">
-          <h6 class="mb-0">Sidenav Type</h6>
-          <p class="text-sm">Choose between 2 different sidenav types.</p>
-        </div>
-        <div class="d-flex">
-          <button class="btn bg-gradient-primary w-100 px-3 mb-2 active me-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
-          <button class="btn bg-gradient-primary w-100 px-3 mb-2" data-class="bg-default" onclick="sidebarType(this)">Dark</button>
-        </div>
-        <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
-        <!-- Navbar Fixed -->
-        <div class="d-flex my-3">
-          <h6 class="mb-0">Navbar Fixed</h6>
-          <div class="form-check form-switch ps-0 ms-auto my-auto">
-            <input class="form-check-input mt-1 ms-auto" type="checkbox" id="navbarFixed" onclick="navbarFixed(this)">
-          </div>
-        </div>
-        <hr class="horizontal dark my-sm-4">
-        <div class="mt-2 mb-5 d-flex">
-          <h6 class="mb-0">Light / Dark</h6>
-          <div class="form-check form-switch ps-0 ms-auto my-auto">
-            <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version" onclick="darkMode(this)">
-          </div>
-        </div>
-        <a class="btn bg-gradient-dark w-100" href="https://www.creative-tim.com/product/argon-dashboard">Free Download</a>
-        <a class="btn btn-outline-dark w-100" href="https://www.creative-tim.com/learning-lab/bootstrap/license/argon-dashboard">View documentation</a>
-        <div class="w-100 text-center">
-          <a class="github-button" href="https://github.com/creativetimofficial/argon-dashboard" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star creativetimofficial/argon-dashboard on GitHub">Star</a>
-          <h6 class="mt-3">Thank you for sharing!</h6>
-          <a href="https://twitter.com/intent/tweet?text=Check%20Argon%20Dashboard%20made%20by%20%40CreativeTim%20%23webdesign%20%23dashboard%20%23bootstrap5&amp;url=https%3A%2F%2Fwww.creative-tim.com%2Fproduct%2Fargon-dashboard" class="btn btn-dark mb-0 me-2" target="_blank">
-            <i class="fab fa-twitter me-1" aria-hidden="true"></i> Tweet
-          </a>
-          <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/argon-dashboard" class="btn btn-dark mb-0 me-2" target="_blank">
-            <i class="fab fa-facebook-square me-1" aria-hidden="true"></i> Share
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--   Core JS Files   -->
-  <script src="{{ asset('Argon/assets/js/core/popper.min.js')}}"></script>
-  <script src="{{ asset('Argon/assets/js/core/bootstrap.min.js')}}"></script>
-  <script src="{{ asset('Argon/assets/js/plugins/perfect-scrollbar.min.js')}}"></script>
-  <script src="{{ asset('Argon/assets/js/plugins/smooth-scrollbar.min.js')}}"></script>
-  <script src="{{ asset('Argon/assets/js/plugins/chartjs.min.js')}}"></script>
-  <script>
-   const canvas = document.getElementById("myCanvas");
-  if (canvas) {
-  const ctx = canvas.getContext("2d");
-  // lanjut kode lain
-  }
 
-
-    var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
-
-    gradientStroke1.addColorStop(1, 'rgba(94, 114, 228, 0.2)');
-    gradientStroke1.addColorStop(0.2, 'rgba(94, 114, 228, 0.0)');
-    gradientStroke1.addColorStop(0, 'rgba(94, 114, 228, 0)');
-    new Chart(ctx1, {
-      type: "line",
-      data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [{
-          label: "Mobile apps",
-          tension: 0.4,
-          borderWidth: 0,
-          pointRadius: 0,
-          borderColor: "#5e72e4",
-          backgroundColor: gradientStroke1,
-          borderWidth: 3,
-          fill: true,
-          data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-          maxBarThickness: 6
-
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              padding: 10,
-              color: '#fbfbfb',
-              font: {
-                size: 11,
-                family: "Open Sans",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: false,
-              drawOnChartArea: false,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              color: '#ccc',
-              padding: 20,
-              font: {
-                size: 11,
-                family: "Open Sans",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
-  </script>
+  
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
       var options = {
         damping: '0.5'
       }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
   </script>
-  <!-- Github buttons -->
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  
+  <!-- Control Center for Soft Dashboard -->
   <script src="{{ asset('Argon/assets/js/argon-dashboard.min.js?v=2.1.0')}}"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"932a88d18d9c894a","serverTiming":{"name":{"cfExtPri":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"version":"2025.4.0-1-g37f21b1","token":"1b7cbb72744b40c580f8633c6b62637e"}' crossorigin="anonymous"></script>
-@stack('js')
+  
+  @stack('js')
 </body>
 
 </html>
