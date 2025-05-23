@@ -469,10 +469,9 @@
                 <table class="status-table">
                     <thead>
                         <tr>
-                            <th style="width: 10%">ID</th>
-                            <th style="width: 50%">Data Kriteria</th>
+                            <th style="width: 15%">ID</th>
+                            <th style="width: 65%">Data Kriteria</th>
                             <th style="width: 20%">Status</th>
-                            <th style="width: 20%">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -484,16 +483,6 @@
                                     <i class="fas fa-check-circle me-1"></i> Active
                                 </span>
                             </td>
-                            <td>
-                                <div class="d-flex gap-2 justify-content-center">
-                                    <button class="action-btn" title="Edit">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button class="action-btn" title="View">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
-                            </td>
                         </tr>
                         <tr>
                             <td>2</td>
@@ -502,16 +491,6 @@
                                 <span class="status-badge badge-inactive">
                                     <i class="fas fa-times-circle me-1"></i> Inactive
                                 </span>
-                            </td>
-                            <td>
-                                <div class="d-flex gap-2 justify-content-center">
-                                    <button class="action-btn" title="Edit">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button class="action-btn" title="View">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
                             </td>
                         </tr>
                     </tbody>
