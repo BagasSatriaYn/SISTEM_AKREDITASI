@@ -192,10 +192,10 @@
 @endpush
 
 @push('js')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.6.1/tinymce.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.6.1/icons/default/icons.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>    
 
     <script type='text/javascript'>
         document.addEventListener('DOMContentLoaded', function() {
@@ -230,20 +230,19 @@
             }
         });
 
-        function submitForm(status) {
-            const form = document.getElementById('formPPEPP');
-            const formData = new FormData(form);
-            formData.set('status', status);
-
-            // pastikan semua TinyMCE disimpan
-            if (typeof tinymce !== 'undefined') {
-                ['penetapan', 'pelaksanaan', 'evaluasi', 'pengendalian', 'peningkatan'].forEach(sec => {
-                    const ed = tinymce.get(`editor-${sec}`);
-                    if (ed) ed.save();
-                });
-            }
-
-            document.getElementById('statusInput').value = status;
+function submitForm(action) {
+    // Map the action to the correct enum value
+    const statusMap = {
+        'save': 'save',
+        'submit': 'submitted' // Note the double 'm' if that's what your enum expects
+    };
+    
+    const statusValue = statusMap[action] || action;
+    document.getElementById('statusInput').value = statusValue;
+    
+    const form = document.getElementById('formPPEPP');
+    const formData = new FormData(form);
+    formData.set('status', statusValue);
 
             fetch("{{ url('kriteria1/store') }}", {
                     method: "POST",
@@ -278,7 +277,7 @@
                             icon: 'success',
                             confirmButtonText: 'OK'
                         }).then(() => {
-                            window.location.href = "{{ url('kriteria1') }}";
+                            window.location.href = "{{ url('kriteria1/index') }}";
                         });
                     } else {
                         Swal.fire('Gagal', data.message, 'error');
