@@ -15,16 +15,6 @@
 
     <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
-            
-            <!-- Profile Pengguna -->
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-user-circle text-dark text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Profil Pengguna</span>
-                </a>
-            </li>
 
             <!-- Dashboard -->
             <li class="nav-item">
@@ -87,6 +77,14 @@
                     </ul>   
                 </div>
             </li>
+            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-check-circle text-dark text-sm opacity-10"></i>
+                                    </div>
+                                    <span class="nav-link-text ms-1">Validasi</span>
+                                </a>
+                            </li>
         </ul>
     </div>
     <div style="height:180px !important">&nbsp;</div>   

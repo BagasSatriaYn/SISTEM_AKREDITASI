@@ -1,7 +1,5 @@
-@extends('layout.app')
-
-@section('title', 'Dashboard-KJM, Direktur')
-
+@extends('layouts.template')
+    
 @section('content')
     <div class="alert-welcome">
         <div>

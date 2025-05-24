@@ -1,16 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
-
+namespace App\Http\Controllers;
+    
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class DashboardController extends Controller
+class DirekturController extends Controller
 {
-    public function index()
+    public function dashboard()
     {
-        return view('Direktur/dashboard');
+    $page = (object)[
+        'title' => 'Dashboard Direktur/KJM',
+    ];
+    return view('Direktur.dashboard', compact('page'));
     }
+
 
     public function showKriteria($id)
     {

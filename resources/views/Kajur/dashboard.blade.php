@@ -1,6 +1,4 @@
-@extends('layout.app1')
-
-@section('title', 'Dashboard-KPS, Kajur')
+@extends('layouts.template')
 
 @section('content')
     <div class="alert-welcome">

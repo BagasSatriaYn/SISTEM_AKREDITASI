@@ -1,16 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class Dashboard1Controller extends Controller
+class KajurController extends Controller
 {
-    public function index()
+    public function dashboard()
     {
-        return view('Kajur/dashboard');
+    $page = (object)[
+        'title' => 'Dashboard Kajur',
+    ];
+    return view('Kajur.dashboard', compact('page'));
     }
+
 
     public function showKriteria($id)
     {
