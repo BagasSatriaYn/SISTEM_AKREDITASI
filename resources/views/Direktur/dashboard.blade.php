@@ -1,6 +1,10 @@
 @extends('layouts.template')
     
+@section('title', 'Dashboard-KJM, Direktur')
+
 @section('content')
+
+    
     <div class="alert-welcome">
         <div>
             <strong style="color: #03476A; font-size: 0.95rem;">Selamat datang DIREKTUR! Anda bisa mengoperasikan
@@ -10,7 +14,7 @@
     </div>
 
     <!-- Judul Pilih Menu -->
-    <div class="menu-section">
+    <div class="menu-sectionn">
         <div class="d-flex align-items-center mb-2">
             <i class="fas fa-bars me-2"></i>
             <h5 class="mb-0" style="font-size: 1rem;">Pilih Menu</h5>

@@ -4,20 +4,23 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@yield('title')</title>
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('argon/assets/img/apple-icon.png') }}">
     <link rel="icon" type="image/png" href="{{ asset('argon/assets/img/favicon.png') }}">
+    @vite('resources/css/app.css')
+
     <title>
         Argon Dashboard 3 by Creative Tim
     </title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <!--Fonts and icons-->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    <!-- Nucleo Icons -->
-    <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
-    <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Font Awesome Icons -->
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- League Spartan Font -->
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Argon CSS -->
+    <link id="pagestyle" href="{{ asset('Argon/assets/css/argon-dashboard.css') }}" rel="stylesheet" />
     <!-- Add SweetAlert CDN before your custom scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- CSS Files -->
@@ -74,7 +77,7 @@
 </head>
 
 <body class="g-sidenav-show   bg-gray-100">
-    <div class="min-height-300 bg-dark position-absolute w-100"></div>
+    
     @include('layouts.sidebar')
     <main class="main-content d-flex flex-column min-vh-100">
         <!-- Navbar -->

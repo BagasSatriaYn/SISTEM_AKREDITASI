@@ -74,7 +74,8 @@ Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function 
 });
 
     Route::middleware(['auth', 'authorize:DKT'])->group(function () {
-    Route::get('/dashboard/direktur', [DirekturController::class, 'dashboard'])->name('direktur.dashboard');
+Route::get('/dashboard/direktur', [DirekturController::class, 'dashboard'])->name('direktur.dashboard');
+
 
     Route::prefix('kriteria')->group(function () {
         Route::get('/', [DirekturController::class, 'index'])->name('direktur.kriteria.index');

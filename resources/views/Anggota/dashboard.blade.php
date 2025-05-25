@@ -1,5 +1,7 @@
 @extends('layouts.template')
 
+@section('title', 'Dashboard-Admin')
+
 @section('content')
 
     <!-- Font Awesome -->
