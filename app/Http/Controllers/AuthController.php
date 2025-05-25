@@ -15,7 +15,7 @@ class AuthController extends Controller
         }
 
         // view di resources/views/layouts/login.blade.php
-        return view('layouts.login');
+        return view('layouts.login1');
     }
 
     /** Proses login, support AJAX & non‑AJAX */
@@ -75,6 +75,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('layouts.login');
+        return redirect()->route('layouts.login1');
     }
 }

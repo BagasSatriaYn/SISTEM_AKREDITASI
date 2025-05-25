@@ -7,6 +7,7 @@ use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\Anggota\AnggotaController;
 use App\Http\Controllers\Auth\DashboardController;
+use App\Http\Controllers\Validasi1Controller;
 
 /*
 |---------------------------------------------------------------------------
@@ -26,7 +27,7 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
 Route::get('/login1', function () {
     return view('layouts.login1');
-})->name('login');
+})->name('login1');
 
 Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login.post');
 
@@ -44,6 +45,37 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::middleware(['auth'])->group(function() { //artinya semua route di dalam group ini harus login dulu
  });
 
+
+Route::get('/dashboard/kajur', function () {
+    return view('dashboard.kajur');
+});
+
+Route::get('/dashboard/spi', function () {
+    return view('dashboard.spi');
+});
+
+Route::get('/dashboard/direktur', function () {
+    return view('dashboard.direktur');
+});
+
+Route::get('/validasi/validasi1', function () {
+    return view('validasi.validasi1');
+});
+
+Route::get('/validasi/validasi2', function () {
+    return view('validasi.validasi2');
+});
+
+Route::view('/validasi1', 'validasi.validasi1')->name('validasi1');
+Route::view('/validasi2', 'validasi.validasi2')->name('validasi2');
+
+//validator
+// Route::group(['prefix' => 'validator', 'middleware' => ['auth', 'authorize:validator']], function () {
+//     Route::get('/index/anggota', [WelcomeController::class, 'index']); // menampilkan halaman awal user
+//     Route::get('/index', [Validasi1Controller::class, 'index'])->name('validasi.validasi'); // Menampilkan semua kriteria
+//     Route::get('/{id}', [Validasi1Controller::class, 'show']); // Menampilkan detail kriteria
+//     Route::put('/{id}', [Validasi1Controller::class, 'update']); // Update kriteria
+// });
 
 
  Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function (){
