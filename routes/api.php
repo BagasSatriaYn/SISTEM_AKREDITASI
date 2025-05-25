@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LevelController;
-use App\Http\Controllers\KriteriaController;
+use App\Http\Controllers\KriteriaSatuController;
 use App\Http\Controllers\DetailKriteriaController;
 
 /*
@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Kriteria - admin dan koordinator
     Route::middleware('authorize:admin,koordinator')->group(function () {
-        Route::apiResource('kriteria', KriteriaController::class);
+        Route::apiResource('kriteria', KriteriaSatuController::class);
     });
     
     // Detail Kriteria - semua pengguna bisa akses
