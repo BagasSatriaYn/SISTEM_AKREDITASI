@@ -25,4 +25,14 @@ class DirekturController extends Controller
     {
         return view('dokumen.final');
     }
+    public function simpanValidasiTahap2(Request $request)
+{
+    $data = DetailKriteria::findOrFail($request->id_kriteria);
+
+    $data->status = $request->status_validasi === 'diterima' ? 'acc2' : 'revisi';
+    $data->save();
+
+    return response()->json(['success' => true, 'message' => 'Validasi Tahap 2 berhasil']);
+}
+
 }
