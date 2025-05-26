@@ -1,4 +1,4 @@
-{{-- <div class="modal-header">
+<div class="modal-header">
     <h5 class="modal-title">Detail Validasi Kriteria</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
@@ -38,4 +38,4 @@
             </td>
         </tr>
     </table>
-</div> --}}
+</div> 

@@ -34,13 +34,13 @@
 </head>
 
 <body>
-<nav class="navbar navbar-fixed-top" role="navigation" style="background-color: #354868;">
+<nav class="navbar navbar-fixed-top" role="navigation" style="background-color: #1d3557;">
   <div class="container">
     <div class="navbar-header">
       <!-- Logo -->
       <a class="navbar-brand" href="#">
-      <img src="{{ asset('Argon/assets/img/aksib.png') }}" alt="Logo" style="height: 40px; display: inline-block; margin-top: -5px; margin-left: -170px">
-        <span style="color: white; font-weight: bold; margin-left: 8px;">Akreditasi Sistem Informasi Bisnis</span>
+      <img src="{{ asset('Argon/assets/img/aksib.png') }}" alt="Logo" style="height: 28px; display: inline-block; margin-top: -5px; margin-left: -170px">
+        <span style="color: white; font-weight: bold; margin-left: 5px;">Akreditasi Sistem Informasi Bisnis</span>
       </a>
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
         <span class="sr-only">Toggle navigation</span>
@@ -58,15 +58,12 @@
           </a>
         </li>
         <li>
-        <a href="{{ url('/') }}" class="btn btn-primary" style="margin-top:8px; color: white; border: none;">
-            <i class="fa fa-list"></i> Kriteria
-        </a>
+
       </li>
       <li>
        <a href="{{ url('/login1') }}" class="btn btn-primary" style="margin-top:8px; margin-right:-110px; background-color:rgb(74, 127, 205); color: white;">
   <i class="fa fa-sign-in"></i> Login
 </a>
-
 
 </li>
 
@@ -98,7 +95,7 @@
     <div style="height:100px !important">&nbsp;</div>
   <!-- Konten di atas video -->
   <div class="container-fluid d-flex flex-column justify-content-center align-items-center text-center" style="position: relative; height: 100vh; z-index: 3;">
-  <div style="position: absolute; top: 30%; transform: translateY(-50%); margin-left:700px;">
+  <div style="position: absolute; top: 20%; transform: translateY(-50%); margin: 0 auto; width: 100%; text-align: center;">
     <img src="{{ asset('Argon/assets/img/logopolinema.png') }}" alt="Logo Politeknik Negeri Malang" class="mb-3" style="width: 130px; height: 130px;">
   </div>
   <div style="height:290px !important">&nbsp;</div>

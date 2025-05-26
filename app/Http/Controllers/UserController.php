@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Models\DetailKriteria;
 
 class UserController extends Controller
 {
@@ -135,4 +136,16 @@ class UserController extends Controller
             'message' => 'User berhasil dihapus'
         ]);
     }
+
+    public function preview($id)
+    {
+        $detail = DetailKriteria::with('komentar')->findOrFail($id);
+        return response()->json([
+            'pdfUrl' => asset('storage/dokumen/' . $detail->file_pdf),
+            'validator' => $detail->komentar->validator->name ?? '-',
+            'status' => $detail->status,
+            'notes' => $detail->komentar->catatan ?? '-',
+        ]);
+    }
+
 }

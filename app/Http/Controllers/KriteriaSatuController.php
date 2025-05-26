@@ -276,7 +276,7 @@ public function preview($id)
     ])->findOrFail($id);
 
     try {
-        return \PDF::loadView('kriteria1.export', ['details' => $detail])
+        return PDF::loadView('kriteria1.export', ['details' => $detail])
                    ->stream('dokumen_ppepp.pdf');
     } catch (\Exception $e) {
         Log::error("❌ Gagal generate PDF: " . $e->getMessage());

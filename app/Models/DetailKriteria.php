@@ -10,7 +10,7 @@ class DetailKriteria extends Model
 {
     use HasFactory;
 
-    protected $table = "t_detail_kriteria";
+    protected $table = "detail_kriteria";
     protected $primaryKey = "id_detail_kriteria";
     protected $fillable = [
         'id_penetapan',
@@ -64,8 +64,9 @@ class DetailKriteria extends Model
         return $this->belongsTo(Kriteria::class, 'id_kriteria', 'id_kriteria');
     }
 
-    public function komentar(): BelongsTo
+    public function komentar()
     {
-        return $this->belongsTo(Komentar::class, 'id_komentar', 'id_komentar');
+        return $this->belongsTo(Komentar::class, 'id_komentar');
     }
+
 }
