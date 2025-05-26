@@ -1,9 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\DetailKriteria; // ← ini benar
+use App\Models\Kriteria;
 
 class KajurController extends Controller
 {
@@ -25,4 +25,35 @@ class KajurController extends Controller
     {
         return view('dokumen.final');
     }
+
+    public function simpanValidasiTahap1(Request $request)
+{
+    $data = DetailKriteria::findOrFail($request->id_kriteria);
+
+    $data->status = $request->status_validasi === 'diterima' ? 'acc1' : 'revisi';
+    $data->save();
+
+    return response()->json(['success' => true, 'message' => 'Validasi Tahap 1 berhasil']);
 }
+    // KajurController.php
+    public function listValidasiTahap1(Request $request)
+{
+    $data = DetailKriteria::with(['kriteria', 'user']) // sesuaikan relasi
+        ->where('status', 'submit')
+        ->get();
+
+    return response()->json($data);
+}   
+
+public function getDataValidasiTahap1()
+{
+    $data = DetailKriteria::with('kriteria')
+        ->where('status', 'submitted')
+        ->get();
+    return response()->json($data);
+}
+
+
+
+}
+    

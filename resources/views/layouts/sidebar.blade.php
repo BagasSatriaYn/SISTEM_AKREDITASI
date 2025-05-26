@@ -85,6 +85,13 @@
                                     <span class="nav-link-text ms-1">Validasi</span>
                                 </a>
                             </li>
+                    <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('dokumen-final*') ? 'active' : '' }}" 
+            href="{{ route('dokumen-final.index') }}">
+                <i class="fas fa-file-alt"></i>
+                <span class="nav-link-text">Dokumen Final</span>
+            </a>
+        </li>
         </ul>
     </div>
     <div style="height:180px !important">&nbsp;</div>   

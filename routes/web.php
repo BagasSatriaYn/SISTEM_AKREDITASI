@@ -8,6 +8,8 @@ use App\Http\Controllers\KriteriaSatuController;
 use App\Http\Controllers\Anggota\AnggotaController;
 use App\Http\Controllers\KajurController;
 use App\Http\Controllers\DirekturController;
+use App\Http\Controllers\DokumenFinalController;
+use App\Http\Controllers\DokumenController;
 
 
 
@@ -65,25 +67,60 @@ Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function 
 
     Route::middleware(['auth', 'authorize:KJR'])->group(function () {
     Route::get('/dashboard/kajur', [KajurController::class, 'dashboard'])->name('kajur.dashboard');
+
     Route::prefix('kriteria')->group(function () {
         Route::get('/', [KajurController::class, 'index'])->name('kajur.kriteria.index');
         Route::get('/{id}/detail', [KajurController::class, 'show'])->name('kajur.kriteria.show');
         Route::post('/{id}/komentar', [KajurController::class, 'komentar'])->name('kajur.kriteria.komentar');
         Route::post('/{id}/validasi', [KajurController::class, 'validasi'])->name('kajur.kriteria.validasi');
+
+        Route::view('/validasi1', 'validasi.validasi1')->name('validasi1');
+        Route::get('/validasi1/list', [KajurController::class, 'listValidasiTahap1'])->name('validasi1.list');
+        Route::post('/validasi1/simpan', [KajurController::class, 'simpanValidasiTahap1'])->name('validasi1.simpan');
+        Route::get('/validasi1/data', [KajurController::class, 'getDataValidasiTahap1'])->name('validasi1.data');
     });
 });
 
     Route::middleware(['auth', 'authorize:DKT'])->group(function () {
-Route::get('/dashboard/direktur', [DirekturController::class, 'dashboard'])->name('direktur.dashboard');
-
-
+    Route::get('/dashboard/direktur', [DirekturController::class, 'dashboard'])->name('direktur.dashboard');
     Route::prefix('kriteria')->group(function () {
         Route::get('/', [DirekturController::class, 'index'])->name('direktur.kriteria.index');
         Route::get('/{id}/detail', [DirekturController::class, 'show'])->name('direktur.kriteria.show');
         Route::post('/{id}/komentar', [DirekturController::class, 'komentar'])->name('direktur.kriteria.komentar');
         Route::post('/{id}/validasi', [DirekturController::class, 'validasi'])->name('direktur.kriteria.validasi');
+        Route::view('/validasi2', 'validasi.validasi2')->name('validasi2'); 
+        Route::post('/validasi2/simpan', [DirekturController::class, 'simpanValidasiTahap2'])->name('validasi2.simpan');
     });
 });
+
+Route::get('/dokumen-final', [DokumenFinalController::class, 'index'])->name('dokumen-final.index');
+
+// Tambahkan di routes/web.php
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
+
+Route::get('/profile', function () {
+    return view('profile');
+})->name('profile');
+
+Route::get('/settings', function () {
+    return view('settings');
+})->name('settings');
+
+Route::get('/dokumen-final', [DokumenController::class, 'show'])->name('dokumen-final');
+Route::resource('dokumen-final', DokumenFinalController::class);
+
+
+Route::get('/validasi/validasi1', function () {
+    return view('validasi.validasi1');
+});
+
+Route::get('/validasi/validasi2', function () {
+    return view('validasi.validasi2');
+});
+
+
 
 
 

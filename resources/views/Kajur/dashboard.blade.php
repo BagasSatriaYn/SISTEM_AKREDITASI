@@ -21,7 +21,7 @@
 
     <!-- Kartu-kartu menu dipisah -->
     <div class="menu-cards">
-        <a href="#" class="menu-card kriteria-card">
+       <a href="{{ route('validasi1') }}" class="menu-card kriteria-card">
             <span class="menu-card-badge">New</span>
             <div class="menu-card-image">
                 <i class="fas fa-list-check"></i>
@@ -33,7 +33,8 @@
             </div>
         </a>
 
-        <a href="#" class="menu-card dokumen-card">
+       <a href="{{ route('dokumen-final.index') }}" class="menu-card dokumen-card">
+
             <div class="menu-card-image">
                 <i class="fas fa-file-pdf"></i>
             </div>

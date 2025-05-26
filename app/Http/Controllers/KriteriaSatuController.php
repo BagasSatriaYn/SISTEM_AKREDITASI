@@ -126,58 +126,49 @@ public function store(Request $request)
     DB::beginTransaction();
     try {
         // Fungsi untuk upload file dan return path
-        $uploadFile = function ($file, $prefix = 'file') {
-            if ($file) {
-                $extension = $file->getClientOriginalExtension();
-                $filename = $prefix.'_'.time().'.'.$extension;
-                $path = $file->storeAs('public/kriteria', $filename);
-                return Storage::url($path);
-            }
-            return null;
-        };
+     // Fungsi upload file ke storage/public/kriteria dan return URL-nya
+$uploadImageAsHTML = function ($file, $prefix = 'file') {
+    if ($file) {
+        $filename = $prefix.'_'.time().'.'.$file->getClientOriginalExtension();
+        $path = $file->storeAs('public/kriteria', $filename);
+        $url = Storage::url($path); // hasil: /storage/kriteria/nama_file.jpg
+        return '<p><img src="' . $url . '" style="max-width: 100%;"></p>';
+    }
+    return '';
+};
+$kriteria = Kriteria::findOrFail($request->id_kriteria);
 
-        // Dapatkan kriteria
-        $kriteria = Kriteria::findOrFail($request->id_kriteria);
-
-        // Simpan data Penetapan
+// Simpan data Penetapan
 $penetapan = $kriteria->penetapan()->create([
     'id_kriteria' => $kriteria->id_kriteria,
-    'deskripsi' => $request->desk_penetapan,
-    'pendukung' => $request->hasFile('penetapan_file') ? 
-                  $uploadFile($request->file('penetapan_file'), 'penetapan') : null,
+    'deskripsi' => $request->desk_penetapan . $uploadImageAsHTML($request->file('penetapan_file'), 'penetapan'),
+    'pendukung' => $uploadImageAsHTML($request->file('penetapan_file'), 'penetapan'),
 ]);
 
-// Simpan data Pelaksanaan
 $pelaksanaan = $kriteria->pelaksanaan()->create([
     'id_kriteria' => $kriteria->id_kriteria,
-    'deskripsi' => $request->desk_pelaksanaan,
-    'pendukung' => $request->hasFile('pelaksanaan_file') ? 
-                  $uploadFile($request->file('pelaksanaan_file'), 'pelaksanaan') : null,
+    'deskripsi' => $request->desk_pelaksanaan . $uploadImageAsHTML($request->file('pelaksanaan_file'), 'pelaksanaan'),
+    'pendukung' => $uploadImageAsHTML($request->file('pelaksanaan_file'), 'pelaksanaan'),
 ]);
 
-// Simpan data Evaluasi
 $evaluasi = $kriteria->evaluasi()->create([
     'id_kriteria' => $kriteria->id_kriteria,
-    'deskripsi' => $request->desk_evaluasi,
-    'pendukung' => $request->hasFile('evaluasi_file') ? 
-                  $uploadFile($request->file('evaluasi_file'), 'evaluasi') : null,
+    'deskripsi' => $request->desk_evaluasi . $uploadImageAsHTML($request->file('evaluasi_file'), 'evaluasi'),
+    'pendukung' => $uploadImageAsHTML($request->file('evaluasi_file'), 'evaluasi'),
 ]);
 
-// Simpan data Pengendalian
 $pengendalian = $kriteria->pengendalian()->create([
     'id_kriteria' => $kriteria->id_kriteria,
-    'deskripsi' => $request->desk_pengendalian,
-    'pendukung' => $request->hasFile('pengendalian_file') ? 
-                  $uploadFile($request->file('pengendalian_file'), 'pengendalian') : null,
+    'deskripsi' => $request->desk_pengendalian . $uploadImageAsHTML($request->file('pengendalian_file'), 'pengendalian'),
+    'pendukung' => $uploadImageAsHTML($request->file('pengendalian_file'), 'pengendalian'),
 ]);
 
-// Simpan data Peningkatan
 $peningkatan = $kriteria->peningkatan()->create([
     'id_kriteria' => $kriteria->id_kriteria,
-    'deskripsi' => $request->desk_peningkatan,
-    'pendukung' => $request->hasFile('peningkatan_file') ? 
-                  $uploadFile($request->file('peningkatan_file'), 'peningkatan') : null,
+    'deskripsi' => $request->desk_peningkatan . $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
+    'pendukung' => $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
 ]);
+
 
         $detailKriteria = DetailKriteria::create([
             'id_penetapan' => $penetapan->id_penetapan,
