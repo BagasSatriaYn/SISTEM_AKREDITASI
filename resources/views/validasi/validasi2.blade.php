@@ -268,106 +268,127 @@
 </div>
 
       <script>
-        const data = [
-          {id:1, nama:"Visi, Misi, Tujuan, dan Strategi", pj:"Admin 1", status:"SAVE", tanggal:"2023/03/26"},
-          {id:2, nama:"Tata Pamong, Tata Kelola, dan Kerjasama", pj:"Admin 2", status:"REVISI", tanggal:"2023/03/26"},
-          {id:3, nama:"Mahasiswa", pj:"Admin 3", status:"REVISI", tanggal:"2023/03/26"},
-          {id:4, nama:"Sumber Daya Manusia", pj:"Admin 4", status:"REVISI", tanggal:"2023/03/26"},
-          {id:5, nama:"Keuangan, Sarana dan Prasarana", pj:"Admin 5", status:"ACC TAHAP 1", tanggal:"2023/03/26"},
-          {id:6, nama:"Pendidikan", pj:"Admin 6", status:"SAVE", tanggal:"2023/03/26"},
-          {id:7, nama:"Penelitian", pj:"Admin 7", status:"ACC TAHAP 2", tanggal:"2023/03/26"},
-          {id:8, nama:"Pengabdian kepada Masyarakat", pj:"Admin 8", status:"SAVE", tanggal:"2023/03/26"},
-          {id:9, nama:"Luaran dan Capaian Tridharma", pj:"Admin 9", status:"ACC TAHAP 1", tanggal:"2023/03/26"},
-        ];
+  // Fungsi untuk memuat data validasi tahap 2
+  function loadData() {
+  $.ajax({
+    url: "{{ route('validasi2.data') }}",
+    method: "GET",
+    success: function (response) {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
 
-        function statusBadge(status) {
-          switch(status) {
-            case 'SAVE': return '<span class="badge bg-primary">SAVE</span>';
-            case 'REVISI': return '<span class="badge bg-danger">REVISI</span>';
-            case 'ACC TAHAP 1': return '<span class="badge bg-success">ACC TAHAP 1</span>';
-            case 'ACC TAHAP 2': return '<span class="badge bg-success">ACC TAHAP 2</span>';
-            default: return '<span class="badge bg-secondary">' + status + '</span>';
-          }
-        }
+      response.forEach(item => {
+        const kriteria = item.kriteria ?? {};
+        const namaKriteria = kriteria.nama ?? '-';
+        const penanggungJawab = kriteria.penanggung_jawab ?? '-';
+        const status = item.status ?? '-';
+        const updatedAt = new Date(item.updated_at).toLocaleDateString();
 
-        const tbody = document.getElementById('tableBody');
-        data.forEach(row => {
-          tbody.innerHTML += `
-            <tr>
-              <td>${row.id}</td>
-              <td>Kriteria ${row.id} - ${row.nama}</td>
-              <td><a href="#">${row.pj}</a></td>
-              <td>${statusBadge(row.status)}</td>
-              <td>${row.tanggal}</td>
-              <td><button class="btn btn-warning btn-sm btn-validasi" data-id="${row.id}">Validasi</button></td>
-            </tr>
-          `;
-        });
-
-        // Event listener tombol validasi
-        document.getElementById('tableKriteria').addEventListener('click', function(e) {
-          if (e.target && e.target.classList.contains('btn-validasi')) {
-            const id = e.target.dataset.id;
-            const item = data.find(d => d.id == id);
-            if (!item) return;
-
-            // Isi modal
-            document.getElementById('validasiPelaksana').textContent = item.pj;
-            document.getElementById('validasiJudul').textContent = `Kriteria ${item.id} - ${item.nama}`;
-            document.getElementById('validasiTanggal').textContent = item.tanggal;
-            document.getElementById('id_kriteria').value = item.id;
-
-            // Reset form
-            document.getElementById('formValidasiTahap1').reset();
-
-            // Tampilkan modal Bootstrap
-            $('#modalValidasi').modal('show');
-          }
-        });
-
-
-      //Batal validasi 
-      document.getElementById('btnBatalValidasi').addEventListener('click', function () {
-          $('#modalValidasi').modal('hide');
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.id_detail_kriteria}</td>
+            <td>Kriteria ${kriteria.id_kriteria ?? '-'} - ${namaKriteria}</td>
+            <td>${penanggungJawab}</td>
+            <td>${statusBadge(status)}</td>
+            <td>${updatedAt}</td>
+            <td>
+              <button class="btn btn-warning btn-sm btn-validasi"
+                      data-id="${item.id_detail_kriteria}"
+                      data-nama="${namaKriteria}"
+                      data-pj="${penanggungJawab}"
+                      data-tanggal="${item.updated_at}">
+                Validasi
+              </button>
+            </td>
+          </tr>`;
       });
+    },
+    error: function () {
+      alert('Gagal memuat data validasi tahap 2 dari server.');
+    }
+  });
+}
 
-      // Simpan validasi
-        document.getElementById('btnSimpanValidasi').addEventListener('click', () => {
-          const form = document.getElementById('formValidasiTahap1');
-          const formData = new FormData(form);
+function statusBadge(status) {
+  switch (status.toLowerCase()) {
+    case 'save': return '<span class="badge bg-primary">SAVE</span>';
+    case 'revisi': return '<span class="badge bg-danger">REVISI</span>';
+    case 'acc1': return '<span class="badge bg-success">ACC1</span>';
+    case 'acc2': return '<span class="badge bg-success">ACC2</span>';
+    default: return `<span class="badge bg-secondary">${status}</span>`;
+  }
+}
 
-          const idKriteria = formData.get('id_kriteria');
-          const statusValidasi = formData.get('status_validasi');
-          const catatan = formData.get('catatan');
+  // Load data saat halaman siap
+  document.addEventListener('DOMContentLoaded', function () {
+    loadData();
 
-          if (!statusValidasi) {
-            Swal.fire({
-              icon: 'warning',
-              title: 'Oops!',
-              text: 'Pilih status validasi terlebih dahulu!',
-              confirmButtonColor: '#3085d6',
-              confirmButtonText: 'OK'
-            });
-            return;
-          }
+    // Klik tombol validasi → buka modal
+    $('#tableKriteria').on('click', '.btn-validasi', function () {
+      const btn = $(this);
+      $('#validasiPelaksana').text(btn.data('pj'));
+      $('#validasiJudul').text(`Kriteria - ${btn.data('nama')}`);
+      $('#validasiTanggal').text(new Date(btn.data('tanggal')).toLocaleDateString());
+      $('#id_kriteria').val(btn.data('id'));
+      $('#formValidasiTahap1')[0].reset();
+      $('#modalValidasi').modal('show');
+    });
 
+    // Batal validasi
+    $('#btnBatalValidasi').on('click', function () {
+      $('#modalValidasi').modal('hide');
+    });
 
-          // Contoh: kirim data via AJAX ke server atau langsung proses
-          console.log('Simpan validasi:', {idKriteria, statusValidasi, catatan});
+    // Simpan validasi
+    $('#btnSimpanValidasi').on('click', function () {
+      const status = $('input[name="status_validasi"]:checked').val();
+      const catatan = $('#catatan').val().trim();
+      const form = $('#formValidasiTahap1');
 
-          // Setelah simpan, tutup modal dan beri notifikasi (bisa pakai toast)
-          $('#modalValidasi').modal('hide');
+      if (!status) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Oops!',
+          text: 'Pilih status validasi terlebih dahulu!'
+        });
+        return;
+      }
+
+      if (status === 'ditolak' && catatan === '') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Catatan wajib diisi!',
+          text: 'Silakan isi catatan jika menolak pengajuan.'
+        });
+        return;
+      }
+
+      $.ajax({
+        url: "{{ route('validasi2.simpan') }}",
+        method: 'POST',
+        data: form.serialize(),
+        success: function () {
           Swal.fire({
             icon: 'success',
-            title: 'Berhasil!',
-            text: 'Validasi berhasil disimpan!',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#3085d6'
+            title: 'Berhasil',
+            text: 'Validasi berhasil disimpan!'
+          }).then(() => {
+            $('#modalValidasi').modal('hide');
+            loadData(); // refresh data
           });
+        },
+        error: function () {
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: 'Gagal menyimpan validasi.'
+          });
+        }
+      });
+    });
+  });
+</script>
 
-
-        });
-      </script>
       <script>
         $(document).ready(function () {
           $('#btnSimpanValidasi').on('click', function () {

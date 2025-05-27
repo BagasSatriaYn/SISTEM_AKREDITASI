@@ -1,6 +1,7 @@
 @extends('layouts.template')
 
 @section('content') 
+
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
@@ -52,17 +53,42 @@
     </div>
     </div>
     <!-- Modal Preview PDF -->
-<!-- Modal Preview PDF - versi kecil -->
-<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document"> 
+<!-- Modal Preview PDF - dengan komentar validator di samping kiri -->
+<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Preview Dokumen PPEPP</h5>
+                <h5 class="modal-title">Preview Dokumen dan Komentar</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-0" style="height: 60vh;"> 
-                <iframe id="modal-pdf-frame" src="" style="width:100%; height:100%;" frameborder="0"></iframe>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Informasi komentar validator -->
+                    <div class="col-md-4 border-end pe-3">
+                        <div class="mb-2">
+                            <label for="validatorName" class="form-label fw-bold">Validator:</label>
+                            <input type="text" class="form-control" id="validatorName" readonly>
+                        </div>
+                        <div class="mb-2">
+                            <label for="validationStatus" class="form-label fw-bold">Status Validasi:</label>
+                            <input type="text" class="form-control" id="validationStatus" readonly>
+                        </div>
+                        <div class="mb-2">
+                            <label for="validatorNotes" class="form-label fw-bold">Catatan:</label>
+                            <textarea class="form-control" id="validatorNotes" rows="8" readonly></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Iframe PDF viewer -->
+                    <div class="col-md-8">
+                        <div style="height: 60vh;">
+                            <iframe id="modal-pdf-frame" src="" style="width:100%; height:100%;" frameborder="0"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
@@ -76,11 +102,23 @@
 
 @push('js')
     <script>
-    function showPreviewModal(id) {
-    const url = "{{ route('preview.ppepp', ':id') }}".replace(':id', id);
-    $('#modal-pdf-frame').attr('src', url);
-    $('#previewModal').modal('show');
+    ffunction showPreviewModal(id) {
+    const url = `/kriteria/${id}/preview`;
+
+    $.get(url, function(data) {
+        // Isi form komentar
+        $('#validatorName').val(data.validator ?? '-');
+        $('#validationStatus').val(data.status ?? '-');
+        $('#validatorNotes').val(data.catatan ?? '-');
+
+        // Tampilkan PDF
+        $('#modal-pdf-frame').attr('src', data.pdf_url);
+
+        // Buka modal
+        $('#previewModal').modal('show');
+    });
 }
+
 
 </script>
 

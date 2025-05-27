@@ -46,6 +46,8 @@ Route::get('/welcome', function () {
         
 Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function () {
     Route::get('/preview/{id}', [KriteriaSatuController::class, 'preview'])->name('preview.ppepp');
+    Route::get('/kriteria/{id}/preview', [KriteriaSatuController::class, 'preview']);
+
 
     Route::get('/index/anggota', [WelcomeController::class, 'index']);
     Route::get('/index', [KriteriaSatuController::class, 'index'])->name('kriteria1.index'); 
@@ -90,10 +92,15 @@ Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function 
         Route::post('/{id}/validasi', [DirekturController::class, 'validasi'])->name('direktur.kriteria.validasi');
         Route::view('/validasi2', 'validasi.validasi2')->name('validasi2'); 
         Route::post('/validasi2/simpan', [DirekturController::class, 'simpanValidasiTahap2'])->name('validasi2.simpan');
+        Route::get('/validasi2/data', [DirekturController::class, 'getDataValidasiTahap2'])->name('validasi2.data');
     });
 });
 
-Route::get('/dokumen-final', [DokumenFinalController::class, 'index'])->name('dokumen-final.index');
+Route::get('/dokumen-final', [DokumenFinalController::class, 'index'])->name('dokumen-final');
+Route::get('/dokumen-final/generate/{id}', [DokumenFinalController::class, 'generatePdf'])->name('dokumen.generate');
+Route::get('/generate-pdf/{id}', [\App\Http\Controllers\DokumenFinalController::class, 'generatePdf']);
+
+
 
 // Tambahkan di routes/web.php
 Route::get('/dashboard', function () {
