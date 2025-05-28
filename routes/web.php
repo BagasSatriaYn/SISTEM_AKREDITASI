@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\KriteriaSatuController;
+use App\Http\Controllers\KriteriaDuaController;
 use App\Http\Controllers\Anggota\AnggotaController;
 use App\Http\Controllers\KajurController;
 use App\Http\Controllers\DirekturController;
@@ -67,6 +68,29 @@ Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function 
     Route::delete('/{id}/delete', [KriteriaSatuController::class, 'delete'])->name('kriteria1.delete');
     });
 
+Route::middleware(['auth','authorize:A2'])->prefix('kriteria2')->group(function () {
+    Route::get('/preview/{id}', [KriteriaDuaController::class, 'preview'])->name('preview.ppepp');
+    Route::get('/kriteria/{id}/preview', [KriteriaDuaController::class, 'preview']);
+
+
+    Route::get('/index/anggota', [WelcomeController::class, 'index']);
+    Route::get('/index', [KriteriaDuaController::class, 'index'])->name('kriteria2.index'); 
+    Route::post('/list', [KriteriaDuaController::class, 'list'])->name('kriteria2.list');
+
+    Route::get('/input', [KriteriaDuaController::class, 'create']);    
+    Route::post('/store', [KriteriaDuaController::class, 'store']);
+    Route::post('/upload', [KriteriaDuaController::class, 'uploadImage'])->name('image.upload');
+
+    // ⬇️ PUT harus di atas ini!
+    Route::put('/{id}/update', [KriteriaDuaController::class, 'update'])->name('kriteria2.update');
+
+    // route wildcard diletakkan terakhir
+    Route::get('/{id}/show', [KriteriaDuaController::class, 'show']);
+    Route::get('/{id}/edit', [KriteriaDuaController::class, 'edit'])->name('kriteria2.edit');
+    Route::get('/{id}/delete', [KriteriaDuaController::class, 'confirm']);
+    Route::delete('/{id}/delete', [KriteriaDuaController::class, 'delete'])->name('kriteria2.delete');
+
+});
     Route::middleware(['auth', 'authorize:KJR'])->group(function () {
     Route::get('/dashboard/kajur', [KajurController::class, 'dashboard'])->name('kajur.dashboard');
 
