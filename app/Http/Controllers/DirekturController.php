@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\DetailKriteria; // ← ini benar
 use App\Models\Kriteria;
 use App\Models\Komentar;
+use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf; // Pastikan ini sudah di-install
+use Illuminate\Support\Facades\Storage; // Untuk menyimpan PDF
 
 
 class DirekturController extends Controller
@@ -74,8 +77,31 @@ public function getDataValidasiTahap2()
         ->get();
     return response()->json($data);
 }
-    
+    public function previewPdf($id)
+    {
+        Log::info("🔍 Masuk previewPdf() dengan ID: $id");
 
+        // Ambil langsung detail berdasarkan ID (angka)
+        $detail = DetailKriteria::with([
+            'kriteria',
+            'penetapan',
+            'pelaksanaan',
+            'evaluasi',
+            'pengendalian',
+            'peningkatan'
+        ])->findOrFail($id);
+
+        // Tentukan nama view berdasarkan id_kriteria secara dinamis
+        $viewName = 'kriteria' . $detail->kriteria->id_kriteria . '.export';
+
+        try {
+            return PDF::loadView($viewName, ['details' => $detail])
+                    ->stream('dokumen_ppepp.pdf');
+        } catch (\Exception $e) {
+            Log::error("❌ Gagal generate PDF: " . $e->getMessage());
+            abort(500, 'PDF error');
+        }
+    }
 
 
 }

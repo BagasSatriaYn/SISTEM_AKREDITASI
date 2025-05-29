@@ -51,8 +51,6 @@ Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function 
     Route::get('/kriteria/{id}/preview', [KriteriaSatuController::class, 'preview']);
     Route::get('/{id}/preview/json', [KriteriaSatuController::class, 'getPreviewData'])->name('kriteria1.preview.data');
 
-
-
     Route::get('/index/anggota', [WelcomeController::class, 'index']);
     Route::get('/index', [KriteriaSatuController::class, 'index'])->name('kriteria1.index'); 
     Route::post('/list', [KriteriaSatuController::class, 'list'])->name('kriteria1.list');
@@ -141,6 +139,9 @@ Route::middleware(['auth','authorize:A3'])->prefix('kriteria3')->group(function 
         Route::get('/validasi1/data', [KajurController::class, 'getDataValidasiTahap1'])->name('validasi1.data');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
+        Route::get('/validasi1/get-preview-data/{id}', [KajurController::class, 'getPreviewData']);
+        Route::get('/preview/{id_detail_kriteria}', [KajurController::class, 'previewPdf'])->name('preview.pdf');
+        Route::get('/kajur/preview/{id}', [KajurController::class, 'previewPdf'])->name('kajur.preview.pdf');
     });
 });
 
@@ -155,7 +156,8 @@ Route::middleware(['auth','authorize:A3'])->prefix('kriteria3')->group(function 
         Route::post('/validasi2/simpan', [DirekturController::class, 'simpanValidasiTahap2'])->name('validasi2.simpan');
         Route::get('/validasi2/data', [DirekturController::class, 'getDataValidasiTahap2'])->name('validasi2.data');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-        Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
+        Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');  
+        Route::get('/direktur/preview/{id}', [DirekturController::class, 'previewPdf'])->name('direktur.preview.pdf');
     });
 });
 

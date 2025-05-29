@@ -224,7 +224,7 @@
         <h5 class="modal-title">Validasi Tahap 2</h5>
       </div>
       <div class="modal-body">
-        <form id="formValidasiTahap1">
+        <form id="formValidasiTahap2">
           <div class="row">
             <div class="col-md-6">
               <!-- FORM VALIDASI -->
@@ -320,19 +320,26 @@ function statusBadge(status) {
 }
 
   // Load data saat halaman siap
-  document.addEventListener('DOMContentLoaded', function () {
-    loadData();
+  $(document).ready(function () {
+  loadData(); // Fungsi loadData diasumsikan sudah ada
 
-    // Klik tombol validasi → buka modal
-    $('#tableKriteria').on('click', '.btn-validasi', function () {
-      const btn = $(this);
-      $('#validasiPelaksana').text(btn.data('pj'));
-      $('#validasiJudul').text(`Kriteria - ${btn.data('nama')}`);
-      $('#validasiTanggal').text(new Date(btn.data('tanggal')).toLocaleDateString());
-      $('#id_kriteria').val(btn.data('id'));
-      $('#formValidasiTahap1')[0].reset();
-      $('#modalValidasi').modal('show');
-    });
+  $('#tableKriteria').on('click', '.btn-validasi', function () {
+    const btn = $(this);
+    const id = btn.data('id');
+
+    // Isi data modal
+    $('#validasiPelaksana').text(btn.data('pj'));
+    $('#validasiJudul').text(`Kriteria - ${btn.data('nama')}`);
+    $('#validasiTanggal').text(new Date(btn.data('tanggal')).toLocaleDateString());
+    $('#id_kriteria').val(id);
+    $('#formValidasiTahap2')[0].reset();
+
+    // Set src iframe untuk preview PDF
+   $('#pdfViewer').attr('src', "{{ route('direktur.preview.pdf', '') }}/" + id);
+
+    // Tampilkan modal
+    $('#modalValidasi').modal('show');
+  });
 
     // Batal validasi
     $('#btnBatalValidasi').on('click', function () {
@@ -343,7 +350,7 @@ function statusBadge(status) {
     $('#btnSimpanValidasi').on('click', function () {
       const status = $('input[name="status_validasi"]:checked').val();
       const catatan = $('#catatan').val().trim();
-      const form = $('#formValidasiTahap1');
+      const form = $('#formValidasiTahap2');
 
       if (!status) {
         Swal.fire({
@@ -419,7 +426,7 @@ function statusBadge(status) {
               url: "{{ route('validasi2.simpan') }}",
 
               method: 'POST',
-              data: $('#formValidasiTahap1').serialize(),
+              data: $('#formValidasiTahap2').serialize(),
               success: function (response) {
                 Swal.fire({
                   icon: 'success',

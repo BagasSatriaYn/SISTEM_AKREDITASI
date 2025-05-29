@@ -250,7 +250,7 @@
               </div>
               <input type="hidden" name="id_kriteria" id="id_kriteria">
             </div>
-
+   
             <div class="col-md-6">
               <p><strong>Preview</strong></p>
               <iframe id="pdfViewer" src="" width="100%" height="400px" style="border:1px solid #ccc;"></iframe>
@@ -316,18 +316,26 @@
   });
 }
 
-  $(document).ready(function () {
-    loadData();
+$(document).ready(function () {
+  loadData(); // Fungsi loadData diasumsikan sudah ada
 
-    $('#tableKriteria').on('click', '.btn-validasi', function () {
-      const btn = $(this);
-      $('#validasiPelaksana').text(btn.data('pj'));
-      $('#validasiJudul').text(`Kriteria - ${btn.data('nama')}`);
-      $('#validasiTanggal').text(new Date(btn.data('tanggal')).toLocaleDateString());
-      $('#id_kriteria').val(btn.data('id'));
-      $('#formValidasiTahap1')[0].reset();
-      $('#modalValidasi').modal('show');
-    });
+  $('#tableKriteria').on('click', '.btn-validasi', function () {
+    const btn = $(this);
+    const id = btn.data('id');
+
+    // Isi data modal
+    $('#validasiPelaksana').text(btn.data('pj'));
+    $('#validasiJudul').text(`Kriteria - ${btn.data('nama')}`);
+    $('#validasiTanggal').text(new Date(btn.data('tanggal')).toLocaleDateString());
+    $('#id_kriteria').val(id);
+    $('#formValidasiTahap1')[0].reset();
+
+    // Set src iframe untuk preview PDF
+    $('#pdfViewer').attr('src', "{{ route('preview.pdf', '') }}/" + id);
+
+    // Tampilkan modal
+    $('#modalValidasi').modal('show');
+  });
 
     $('#btnBatalValidasi').on('click', function () {
       $('#modalValidasi').modal('hide');
