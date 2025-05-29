@@ -1,11 +1,12 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\DetailKriteria;
 use App\Models\Kriteria;
-use App\Models\Komentar; // tambahkan model Komentar
-use Illuminate\Support\Facades\Auth;
+use App\Models\Komentar;
+
 class KajurController extends Controller
 {
     public function dashboard()
@@ -26,45 +27,37 @@ class KajurController extends Controller
         return view('dokumen.final');
     }
 
+    /**
+     * Simpan validasi tahap 1 oleh Kajur.
+     * - Jika diterima → status = 'acc1'
+     * - Jika ditolak → status = 'revisi'
+     */
     public function simpanValidasiTahap1(Request $request)
     {
-        $request->validate([
-            'id_kriteria' => 'required|integer',
-            'status_validasi' => 'required|in:diterima,ditolak',
-            'catatan' => 'nullable|string',
-        ]);
-
-        $data = DetailKriteria::where('id_kriteria', $request->id_kriteria)->firstOrFail();
-
-        // Simpan komentar
-        $komentar = Komentar::create([
-            'validator_id' => Auth::id(),
-            'catatan' => $request->catatan,
-        ]);
+        $data = DetailKriteria::findOrFail($request->id_kriteria);
 
         $data->status = $request->status_validasi === 'diterima' ? 'acc1' : 'revisi';
-        $data->id_komentar = $komentar->id;
         $data->save();
 
         return response()->json(['success' => true, 'message' => 'Validasi Tahap 1 berhasil']);
     }
 
-    public function listValidasiTahap1(Request $request)
-    {
-        $data = DetailKriteria::with(['kriteria', 'user']) // sesuaikan relasi
-            ->where('status', 'submit')
-            ->get();
-
-        return response()->json($data);
-    }   
-
+    /**
+     * Daftar data untuk divalidasi Kajur.
+     * Hanya tampilkan data dengan status 'submitted' atau 'revisi'
+     */
     public function getDataValidasiTahap1()
     {
         $data = DetailKriteria::with('kriteria')
-            ->where('status', 'submitted')
+            ->whereIn('status', ['submitted', 'revisi'])
             ->get();
+
         return response()->json($data);
     }
+
+    /**
+     * Detail data validasi, termasuk info validator dan komentar
+     */
     public function getDetailValidasi($id)
     {
         $detail = DetailKriteria::with(['kriteria', 'komentar'])->findOrFail($id);
@@ -79,7 +72,7 @@ class KajurController extends Controller
         }
 
         if ($detail->komentar) {
-            $catatan = $detail->komentar->komen; // kolom `komen` di tabel komentar
+            $catatan = $detail->komentar->komen;
         }
 
         return response()->json([
@@ -88,7 +81,5 @@ class KajurController extends Controller
             'catatan' => $catatan,
             'pdf_url' => asset("storage/final/dokumen_kriteria_{$id}.pdf")
         ]);
-
     }
-    }
-
+}

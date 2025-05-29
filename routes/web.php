@@ -47,7 +47,7 @@ Route::get('/welcome', function () {
 });
         
 Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function () {
-    Route::get('/preview/{id}', [KriteriaSatuController::class, 'preview'])->name('preview.ppepp');
+    Route::get('/preview/{id}', [KriteriaSatuController::class, 'preview'])->name('kriteria1.preview');
     Route::get('/kriteria/{id}/preview', [KriteriaSatuController::class, 'preview']);
 
 
@@ -73,7 +73,7 @@ Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function 
 });
 
 Route::middleware(['auth','authorize:A2'])->prefix('kriteria2')->group(function () {
-    Route::get('/preview/{id}', [KriteriaDuaController::class, 'preview'])->name('preview.ppepp');
+    Route::get('/preview/{id}', [KriteriaDuaController::class, 'preview'])->name('kriteria2.preview');
     Route::get('/kriteria/{id}/preview', [KriteriaDuaController::class, 'preview']);
 
 
@@ -99,7 +99,7 @@ Route::middleware(['auth','authorize:A2'])->prefix('kriteria2')->group(function 
 });
 
 Route::middleware(['auth','authorize:A3'])->prefix('kriteria3')->group(function () {
-    Route::get('/preview/{id}', [KriteriaTigaController::class, 'preview'])->name('preview.ppepp');
+    Route::get('/preview/{id}', [KriteriaTigaController::class, 'preview'])->name('kriteria3.preview');
     Route::get('/kriteria/{id}/preview', [KriteriaTigaController::class, 'preview']);
 
 
