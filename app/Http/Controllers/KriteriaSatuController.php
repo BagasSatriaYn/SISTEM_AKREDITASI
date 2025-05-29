@@ -10,6 +10,7 @@
     use App\Models\Peningkatan;
     use App\Models\Pengendalian;
     use App\Models\DetailKriteria;
+    use App\Models\Finalisasi;
     use Illuminate\Support\Facades\DB;  
     use Illuminate\Support\Facades\Storage;
     use Yajra\DataTables\Facades\DataTables;
@@ -125,61 +126,81 @@ public function store(Request $request)
 
     DB::beginTransaction();
     try {
-        // Fungsi untuk upload file dan return path
-     // Fungsi upload file ke storage/public/kriteria dan return URL-nya
-$uploadImageAsHTML = function ($file, $prefix = 'file') {
-    if ($file) {
-        $filename = $prefix.'_'.time().'.'.$file->getClientOriginalExtension();
-        $path = $file->storeAs('public/kriteria', $filename);
-        $url = Storage::url($path); // hasil: /storage/kriteria/nama_file.jpg
-        return '<p><img src="' . $url . '" style="max-width: 100%;"></p>';
-    }
-    return '';
-};
-$kriteria = Kriteria::findOrFail($request->id_kriteria);
+        // Fungsi upload file
+        $uploadImageAsHTML = function ($file, $prefix = 'file') {
+            if ($file) {
+                $filename = $prefix.'_'.time().'.'.$file->getClientOriginalExtension();
+                $path = $file->storeAs('public/kriteria', $filename);
+                $url = Storage::url($path);
+                return '<p><img src="' . $url . '" style="max-width: 100%;"></p>';
+            }
+            return '';
+        };
 
-// Simpan data Penetapan
-$penetapan = $kriteria->penetapan()->create([
-    'id_kriteria' => $kriteria->id_kriteria,
-    'deskripsi' => $request->desk_penetapan . $uploadImageAsHTML($request->file('penetapan_file'), 'penetapan'),
-    'pendukung' => $uploadImageAsHTML($request->file('penetapan_file'), 'penetapan'),
-]);
+        $kriteria = Kriteria::findOrFail($request->id_kriteria);
 
-$pelaksanaan = $kriteria->pelaksanaan()->create([
-    'id_kriteria' => $kriteria->id_kriteria,
-    'deskripsi' => $request->desk_pelaksanaan . $uploadImageAsHTML($request->file('pelaksanaan_file'), 'pelaksanaan'),
-    'pendukung' => $uploadImageAsHTML($request->file('pelaksanaan_file'), 'pelaksanaan'),
-]);
-
-$evaluasi = $kriteria->evaluasi()->create([
-    'id_kriteria' => $kriteria->id_kriteria,
-    'deskripsi' => $request->desk_evaluasi . $uploadImageAsHTML($request->file('evaluasi_file'), 'evaluasi'),
-    'pendukung' => $uploadImageAsHTML($request->file('evaluasi_file'), 'evaluasi'),
-]);
-
-$pengendalian = $kriteria->pengendalian()->create([
-    'id_kriteria' => $kriteria->id_kriteria,
-    'deskripsi' => $request->desk_pengendalian . $uploadImageAsHTML($request->file('pengendalian_file'), 'pengendalian'),
-    'pendukung' => $uploadImageAsHTML($request->file('pengendalian_file'), 'pengendalian'),
-]);
-
-$peningkatan = $kriteria->peningkatan()->create([
-    'id_kriteria' => $kriteria->id_kriteria,
-    'deskripsi' => $request->desk_peningkatan . $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
-    'pendukung' => $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
-]);
-
-
-        $detailKriteria = DetailKriteria::create([
-            'id_penetapan' => $penetapan->id_penetapan,
-            'id_pelaksanaan' => $pelaksanaan->id_pelaksanaan,
-            'id_evaluasi' => $evaluasi->id_evaluasi,
-            'id_pengendalian' => $pengendalian->id_pengendalian,
-            'id_peningkatan' => $peningkatan->id_peningkatan,
+        // Simpan data PPEPP
+        $penetapan = $kriteria->penetapan()->create([
             'id_kriteria' => $kriteria->id_kriteria,
-            'id_komentar' => null, // atau bisa diisi sesuai kebutuhan
-            'status' => $request->status
+            'deskripsi' => $request->desk_penetapan . $uploadImageAsHTML($request->file('penetapan_file'), 'penetapan'),
+            'pendukung' => $uploadImageAsHTML($request->file('penetapan_file'), 'penetapan'),
         ]);
+
+        $pelaksanaan = $kriteria->pelaksanaan()->create([
+            'id_kriteria' => $kriteria->id_kriteria,
+            'deskripsi' => $request->desk_pelaksanaan . $uploadImageAsHTML($request->file('pelaksanaan_file'), 'pelaksanaan'),
+            'pendukung' => $uploadImageAsHTML($request->file('pelaksanaan_file'), 'pelaksanaan'),
+        ]);
+
+        $evaluasi = $kriteria->evaluasi()->create([
+            'id_kriteria' => $kriteria->id_kriteria,
+            'deskripsi' => $request->desk_evaluasi . $uploadImageAsHTML($request->file('evaluasi_file'), 'evaluasi'),
+            'pendukung' => $uploadImageAsHTML($request->file('evaluasi_file'), 'evaluasi'),
+        ]);
+
+        $pengendalian = $kriteria->pengendalian()->create([
+            'id_kriteria' => $kriteria->id_kriteria,
+            'deskripsi' => $request->desk_pengendalian . $uploadImageAsHTML($request->file('pengendalian_file'), 'pengendalian'),
+            'pendukung' => $uploadImageAsHTML($request->file('pengendalian_file'), 'pengendalian'),
+        ]);
+
+        $peningkatan = $kriteria->peningkatan()->create([
+            'id_kriteria' => $kriteria->id_kriteria,
+            'deskripsi' => $request->desk_peningkatan . $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
+            'pendukung' => $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
+        ]);
+
+// Cari semua id_finalisasi yang sudah digunakan untuk kriteria ini
+$usedFinalisasiIds = DetailKriteria::where('id_kriteria', $kriteria->id_kriteria)
+    ->pluck('id_finalisasi')
+    ->toArray();
+
+// Cari finalisasi yang belum dipakai oleh kriteria ini
+$availableFinalisasi = Finalisasi::whereNotIn('id_finalisasi', $usedFinalisasiIds)->first();
+
+if ($availableFinalisasi) {
+    $idFinalisasi = $availableFinalisasi->id_finalisasi;
+} else {
+    // Jika tidak ada finalisasi yang belum dipakai kriteria ini, buat yang baru
+    $newFinalisasi = Finalisasi::create([
+        'name' => 'Dokumen Final - ' . now()->format('Ymd-His')
+    ]);
+    $idFinalisasi = $newFinalisasi->id_finalisasi;
+}
+
+
+       $detailKriteria = DetailKriteria::create([
+    'id_penetapan' => $penetapan->id_penetapan,
+    'id_pelaksanaan' => $pelaksanaan->id_pelaksanaan,
+    'id_evaluasi' => $evaluasi->id_evaluasi,
+    'id_pengendalian' => $pengendalian->id_pengendalian,
+    'id_peningkatan' => $peningkatan->id_peningkatan,
+    'id_kriteria' => $kriteria->id_kriteria,
+    'id_komentar' => null,
+    'id_finalisasi' => $idFinalisasi,
+    'status' => $request->status
+]);
+
 
         DB::commit();
 
@@ -190,11 +211,11 @@ $peningkatan = $kriteria->peningkatan()->create([
         ]);
 
     } catch (\Exception $e) {
-        DB::rollBack(); 
-        return response()->json([   
+        DB::rollBack();
+        return response()->json([
             'success' => false,
             'message' => 'Gagal menyimpan data: ' . $e->getMessage(),
-            'error' => $e->getTraceAsString() // Hanya untuk development
+            'error' => $e->getTraceAsString()
         ], 500);
     }
 }
