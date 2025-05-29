@@ -1,6 +1,7 @@
 @extends('layouts.template')
 
 @section('content') 
+
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
@@ -114,11 +115,23 @@
 
 @push('js')
     <script>
-    function showPreviewModal(id) {
-    const url = "{{ route('preview.ppepp', ':id') }}".replace(':id', id);
-    $('#modal-pdf-frame').attr('src', url);
-    $('#previewModal').modal('show');
+    ffunction showPreviewModal(id) {
+    const url = `/kriteria/${id}/preview`;
+
+    $.get(url, function(data) {
+        // Isi form komentar
+        $('#validatorName').val(data.validator ?? '-');
+        $('#validationStatus').val(data.status ?? '-');
+        $('#validatorNotes').val(data.catatan ?? '-');
+
+        // Tampilkan PDF
+        $('#modal-pdf-frame').attr('src', data.pdf_url);
+
+        // Buka modal
+        $('#previewModal').modal('show');
+    });
 }
+
 
 </script>
 

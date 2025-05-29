@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
     
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\DetailKriteria; // ← ini benar
+use App\Models\Kriteria;
+use App\Models\Komentar;
+
 
 class DirekturController extends Controller
 {
@@ -25,14 +29,53 @@ class DirekturController extends Controller
     {
         return view('dokumen.final');
     }
-    public function simpanValidasiTahap2(Request $request)
+   public function simpanValidasiTahap2(Request $request)
 {
-    $data = DetailKriteria::findOrFail($request->id_kriteria);
+    $request->validate([
+        'id_kriteria' => 'required|exists:t_detail_kriteria,id_detail_kriteria',
+        'status_validasi' => 'required|in:diterima,ditolak',
+        'catatan' => 'nullable|string'
+    ]);
 
-    $data->status = $request->status_validasi === 'diterima' ? 'acc2' : 'revisi';
-    $data->save();
+    $detail = DetailKriteria::findOrFail($request->id_kriteria);
 
-    return response()->json(['success' => true, 'message' => 'Validasi Tahap 2 berhasil']);
+    // Simpan komentar dulu (jika ada)
+    $komentar = null;
+    if (!empty($request->catatan)) {
+        $komentar = Komentar::create([
+            'komen' => $request->catatan
+        ]);
+    }
+
+    // Update status dan simpan id komentar jika ada
+    $detail->status = $request->status_validasi === 'diterima' ? 'acc2' : 'revisi';
+    if ($komentar) {
+        $detail->id_komentar = $komentar->id_komentar;
+    }
+    $detail->save();
+
+    return response()->json(['success' => true, 'message' => 'Validasi tahap 2 berhasil disimpan']);
 }
+
+
+ public function listValidasiTahap2(Request $request)
+{
+    $data = DetailKriteria::with(['kriteria', 'user']) // sesuaikan relasi
+        ->where('status', 'submit')
+        ->get();
+
+    return response()->json($data);
+}   
+
+public function getDataValidasiTahap2()
+{
+    $data = DetailKriteria::with('kriteria')
+        ->where('status', 'acc1') // atau 'acc tahap 1' jika enummu pakai spasi
+        ->get();
+    return response()->json($data);
+}
+    
+
+
 
 }

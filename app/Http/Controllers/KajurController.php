@@ -6,7 +6,6 @@ use App\Models\DetailKriteria;
 use App\Models\Kriteria;
 use App\Models\Komentar; // tambahkan model Komentar
 use Illuminate\Support\Facades\Auth;
-
 class KajurController extends Controller
 {
     public function dashboard()
@@ -66,4 +65,30 @@ class KajurController extends Controller
             ->get();
         return response()->json($data);
     }
-}
+    public function getDetailValidasi($id)
+    {
+        $detail = DetailKriteria::with(['kriteria', 'komentar'])->findOrFail($id);
+
+        $validator = '-';
+        $catatan = '-';
+
+        if ($detail->status === 'acc1') {
+            $validator = 'Kajur';
+        } elseif ($detail->status === 'acc2') {
+            $validator = 'Direktur';
+        }
+
+        if ($detail->komentar) {
+            $catatan = $detail->komentar->komen; // kolom `komen` di tabel komentar
+        }
+
+        return response()->json([
+            'validator' => $validator,
+            'status' => strtoupper($detail->status),
+            'catatan' => $catatan,
+            'pdf_url' => asset("storage/final/dokumen_kriteria_{$id}.pdf")
+        ]);
+
+    }
+    }
+

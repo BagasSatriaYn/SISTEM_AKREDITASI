@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('detail_kriteria', function (Blueprint $table) {
+        Schema::create('t_detail_kriteria', function (Blueprint $table) {
             $table->id('id_detail_kriteria');
             $table->unsignedBigInteger('id_kriteria')->index();
             $table->unsignedBigInteger('id_penetapan')->index();
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('detail_kriteria');
+        Schema::dropIfExists('t_detail_kriteria');
     }
 };

@@ -3,37 +3,50 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\DetailKriteria;
 
 class DokumenFinalController extends Controller
 {
     public function index()
     {
-        $data = [
-            'title' => 'Dokumen Final',
-            'menu' => 'Dokumen Final',
-            'data' => [
-                'profit_programs' => 'Profit Programs',
-                'disclaimer' => [
-                    'refresh' => [
-                        'Written 1', 'Written 2', 'Written 3', 'Written 4',
-                        'Written 5', 'Written 6', 'Written 7', 'Written 8', 'Written 9'
-                    ]
-                ]
-            ],
-            'laporan' => [
-                'judul' => 'PENERAPAN PYTHON DALAM SAMPLING DAN DISTRIBUSI SAMPLING',
-                'deskripsi' => 'Disusun untuk memenuhi nilai tugas',
-                'mata_kuliah' => 'Mata Kuliah : Statistika',
-                'penulis' => [
-                    'nama' => 'Aqueena Reglia Hapsari',
-                    'nim' => '2341760096',
-                    'kelas' => 'SIB 2B',
-                    'tanggal' => '03'
-                ],
-                'institusi' => 'PROGRAM STUDI D-IV SISTEM INFORMASI BISNIS POLITEKNIK NEGERI MALANG TAHUN AJARAN 2024/2025'
-            ]
-        ];
+        $data = DetailKriteria::with('kriteria')
+            ->where('status', 'acc2')
+            ->get();
 
-        return view('DokumenFinal.index', $data);
+             foreach ($data as $detail) {
+        $filename = 'dokumen_kriteria_' . $detail->id_detail_kriteria . '.pdf';
+        $path = 'public/final/' . $filename;
+
+        if (!Storage::exists($path)) {
+            $pdf = Pdf::loadView('dokumen.template', compact('detail'));
+            Storage::put($path, $pdf->output());
+        }
+    
+        return view('DokumenFinal.final', [
+            'title' => 'Dokumen Final',
+            'data' => $data
+        ]);
     }
+}
+   public function generatePdf($id)
+{
+    $detail = DetailKriteria::with([
+        'penetapan', 'pelaksanaan', 'evaluasi', 'pengendalian', 'peningkatan', 'kriteria'
+    ])
+    ->where('id_detail_kriteria', $id)
+    ->where('status', 'acc2')
+    ->firstOrFail();
+
+    $pdf = Pdf::loadView('dokumen.template', compact('detail'));
+
+    $filename = 'dokumen_kriteria_' . $id . '.pdf';
+
+    // Simpan ke storage/app/public/final
+    Storage::disk('public')->put('final/' . $filename, $pdf->output());
+
+    return response()->json(['message' => 'PDF berhasil dibuat dan disimpan.']);
+}
+
 }
