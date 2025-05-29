@@ -49,6 +49,8 @@ Route::get('/welcome', function () {
 Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function () {
     Route::get('/preview/{id}', [KriteriaSatuController::class, 'preview'])->name('kriteria1.preview');
     Route::get('/kriteria/{id}/preview', [KriteriaSatuController::class, 'preview']);
+    Route::get('/{id}/preview/json', [KriteriaSatuController::class, 'getPreviewData'])->name('kriteria1.preview.data');
+
 
 
     Route::get('/index/anggota', [WelcomeController::class, 'index']);

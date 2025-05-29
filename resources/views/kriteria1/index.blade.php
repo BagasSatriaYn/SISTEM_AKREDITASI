@@ -229,10 +229,20 @@
     });
 
     function showPreviewModal(id) {
-        const url = "{{ route('kriteria1.preview', ':id') }}".replace(':id', id);
-        $('#modal-pdf-frame').attr('src', url);
+    const infoUrl = `/kriteria1/${id}/preview/json`; // JSON detail (komentar, status)
+    
+    $.get(infoUrl, function(data) {
+        $('#validatorName').val(data.validator ?? '-');
+        $('#validationStatus').val(data.status ?? '-');
+        $('#validatorNotes').val(data.catatan ?? '-');
+
+        // tampilkan PDF setelah info didapat
+        $('#modal-pdf-frame').attr('src', data.pdf_url);
         $('#previewModal').modal('show');
-    }
+    });
+}
+
+
 
     function modalActionDelete(id) {
         Swal.fire({
