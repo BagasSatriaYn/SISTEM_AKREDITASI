@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\DetailKriteria;
 use App\Models\Kriteria;
 use App\Models\Komentar;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class KajurController extends Controller
 {
@@ -81,5 +83,30 @@ class KajurController extends Controller
             'catatan' => $catatan,
             'pdf_url' => asset("storage/final/dokumen_kriteria_{$id}.pdf")
         ]);
+    }
+     public function previewPdf($id)
+    {
+        Log::info("🔍 Masuk previewPdf() dengan ID: $id");
+
+        // Ambil langsung detail berdasarkan ID (angka)
+        $detail = DetailKriteria::with([
+            'kriteria',
+            'penetapan',
+            'pelaksanaan',
+            'evaluasi',
+            'pengendalian',
+            'peningkatan'
+        ])->findOrFail($id);
+
+        // Tentukan nama view berdasarkan id_kriteria secara dinamis
+        $viewName = 'kriteria' . $detail->kriteria->id_kriteria . '.export';
+
+        try {
+            return PDF::loadView($viewName, ['details' => $detail])
+                    ->stream('dokumen_ppepp.pdf');
+        } catch (\Exception $e) {
+            Log::error("❌ Gagal generate PDF: " . $e->getMessage());
+            abort(500, 'PDF error');
+        }
     }
 }

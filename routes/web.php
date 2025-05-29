@@ -141,6 +141,7 @@ Route::middleware(['auth','authorize:A3'])->prefix('kriteria3')->group(function 
         Route::get('/validasi1/data', [KajurController::class, 'getDataValidasiTahap1'])->name('validasi1.data');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
+        Route::get('/kajur/preview/{id}', [KajurController::class, 'previewPdf'])->name('kajur.preview.pdf');
     });
 });
 
@@ -156,6 +157,7 @@ Route::middleware(['auth','authorize:A3'])->prefix('kriteria3')->group(function 
         Route::get('/validasi2/data', [DirekturController::class, 'getDataValidasiTahap2'])->name('validasi2.data');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
+        Route::get('/direktur/preview/{id}', [DirekturController::class, 'previewPdf'])->name('direktur.preview.pdf');
     });
 });
 
