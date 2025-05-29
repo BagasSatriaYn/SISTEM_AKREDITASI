@@ -61,7 +61,7 @@
                             @php
                                 $isActive = ($aktifKriteria == $i);
                                 $url = $isActive
-                                    ? url("/kriteria$i/index/") . ($i != 1 ? 'anggota' : '')
+                                    ? url("/kriteria$i/index/") 
                                     : '#';
                             @endphp
 

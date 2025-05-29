@@ -40,6 +40,13 @@ class AuthController extends Controller
                     'KJR' => url('/dashboard/kajur'),
                     'A1'  => url('/kriteria1/index/anggota'),
                     'A2'  => url('/kriteria2/index/anggota'),
+                    'A3'  => url('/kriteria3/index/anggota'),
+                    'A4'  => url('/kriteria4/index/anggota'),
+                    'A5'  => url('/kriteria5/index/anggota'),
+                    'A6'  => url('/kriteria6/index/anggota'),
+                    'A7'  => url('/kriteria7/index/anggota'),
+                    'A8'  => url('/kriteria8/index/anggota'),
+                    'A9'  => url('/kriteria9/index/anggota'),
                     default => url('/'),
                 };
 
@@ -75,6 +82,8 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('layouts.login1');
+        return redirect()->route('layouts.login1')
+            ->with('status', 'Anda telah berhasil logout'); 
+            
     }
 }

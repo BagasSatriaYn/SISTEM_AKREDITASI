@@ -5,6 +5,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\KriteriaSatuController;
+use App\Http\Controllers\KriteriaDuaController;
+use App\Http\Controllers\KriteriaTigaController;
 use App\Http\Controllers\Anggota\AnggotaController;
 use App\Http\Controllers\KajurController;
 use App\Http\Controllers\DirekturController;
@@ -65,7 +67,62 @@ Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function 
     Route::get('/{id}/edit', [KriteriaSatuController::class, 'edit'])->name('kriteria1.edit');
     Route::get('/{id}/delete', [KriteriaSatuController::class, 'confirm']);
     Route::delete('/{id}/delete', [KriteriaSatuController::class, 'delete'])->name('kriteria1.delete');
-    });
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
+
+});
+
+Route::middleware(['auth','authorize:A2'])->prefix('kriteria2')->group(function () {
+    Route::get('/preview/{id}', [KriteriaDuaController::class, 'preview'])->name('preview.ppepp');
+    Route::get('/kriteria/{id}/preview', [KriteriaDuaController::class, 'preview']);
+
+
+    Route::get('/index/anggota', [WelcomeController::class, 'index']);
+    Route::get('/index', [KriteriaDuaController::class, 'index'])->name('kriteria2.index'); 
+    Route::post('/list', [KriteriaDuaController::class, 'list'])->name('kriteria2.list');
+
+    Route::get('/input', [KriteriaDuaController::class, 'create']);    
+    Route::post('/store', [KriteriaDuaController::class, 'store']);
+    Route::post('/upload', [KriteriaDuaController::class, 'uploadImage'])->name('image.upload');
+
+    // ⬇️ PUT harus di atas ini!
+    Route::put('/{id}/update', [KriteriaDuaController::class, 'update'])->name('kriteria2.update');
+
+    // route wildcard diletakkan terakhir
+    Route::get('/{id}/show', [KriteriaDuaController::class, 'show']);
+    Route::get('/{id}/edit', [KriteriaDuaController::class, 'edit'])->name('kriteria2.edit');
+    Route::get('/{id}/delete', [KriteriaDuaController::class, 'confirm']);
+    Route::delete('/{id}/delete', [KriteriaDuaController::class, 'delete'])->name('kriteria2.delete');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
+
+});
+
+Route::middleware(['auth','authorize:A3'])->prefix('kriteria3')->group(function () {
+    Route::get('/preview/{id}', [KriteriaTigaController::class, 'preview'])->name('preview.ppepp');
+    Route::get('/kriteria/{id}/preview', [KriteriaTigaController::class, 'preview']);
+
+
+    Route::get('/index/anggota', [WelcomeController::class, 'index']);
+    Route::get('/index', [KriteriaTigaController::class, 'index'])->name('kriteria3.index'); 
+    Route::post('/list', [KriteriaTigaController::class, 'list'])->name('kriteria3.list');
+
+    Route::get('/input', [KriteriaTigaController::class, 'create']);    
+    Route::post('/store', [KriteriaTigaController::class, 'store']);
+    Route::post('/upload', [KriteriaTigaController::class, 'uploadImage'])->name('image.upload');
+
+    // ⬇️ PUT harus di atas ini!
+    Route::put('/{id}/update', [KriteriaTigaController::class, 'update'])->name('kriteria3.update');
+
+    // route wildcard diletakkan terakhir
+    Route::get('/{id}/show', [KriteriaTigaController::class, 'show']);
+    Route::get('/{id}/edit', [KriteriaTigaController::class, 'edit'])->name('kriteria3.edit');
+    Route::get('/{id}/delete', [KriteriaTigaController::class, 'confirm']);
+    Route::delete('/{id}/delete', [KriteriaTigaController::class, 'delete'])->name('kriteria3.delete');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
+
+});
 
     Route::middleware(['auth', 'authorize:KJR'])->group(function () {
     Route::get('/dashboard/kajur', [KajurController::class, 'dashboard'])->name('kajur.dashboard');
@@ -80,6 +137,8 @@ Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function 
         Route::get('/validasi1/list', [KajurController::class, 'listValidasiTahap1'])->name('validasi1.list');
         Route::post('/validasi1/simpan', [KajurController::class, 'simpanValidasiTahap1'])->name('validasi1.simpan');
         Route::get('/validasi1/data', [KajurController::class, 'getDataValidasiTahap1'])->name('validasi1.data');
+        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+        Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
     });
 });
 
@@ -93,6 +152,8 @@ Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function 
         Route::view('/validasi2', 'validasi.validasi2')->name('validasi2'); 
         Route::post('/validasi2/simpan', [DirekturController::class, 'simpanValidasiTahap2'])->name('validasi2.simpan');
         Route::get('/validasi2/data', [DirekturController::class, 'getDataValidasiTahap2'])->name('validasi2.data');
+        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+        Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
     });
 });
 
