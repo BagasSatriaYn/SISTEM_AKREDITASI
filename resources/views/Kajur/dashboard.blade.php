@@ -27,9 +27,9 @@
                 <i class="fas fa-list-check"></i>
             </div>
             <div class="menu-card-title">
-                <h5>Kriteria</h5>
+                <h5>Validasi Kriteria</h5>
                 <p class="text-muted mt-2 mb-0" style="font-size: 0.85rem;">Kelola kriteria penilaian dan parameter
-                    sistem</p>
+                    sistem untuk validasi tahap 1</p>   
             </div>
         </a>
 

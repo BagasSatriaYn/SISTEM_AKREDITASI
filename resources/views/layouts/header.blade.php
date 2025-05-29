@@ -9,14 +9,6 @@
             <h5 class="mb-0" style="font-size: 1.1rem; color: white;">@yield('title', 'Dashboard')</h5>
         </nav>
 
-        <div class="user-profile">
-            <div class="notification-bell">
-                <i class="fas fa-bell"></i>
-                <span class="notification-badge">3</span>
-            </div>
-            <a href="#" class="text-white dropdown-toggle" data-bs-toggle="dropdown">
-                <img src="{{ asset('images/profile.jpg') }}" alt="User Profile">
-            </a>
             <div class="dropdown-menu dropdown-menu-end">
                 <a class="dropdown-item" href="#">Profile</a>
                 <a class="dropdown-item" href="#">Settings</a>
