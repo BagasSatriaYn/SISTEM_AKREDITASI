@@ -216,7 +216,7 @@
     });
 
     function showPreviewModal(id) {
-        const url = "{{ route('preview.ppepp', ':id') }}".replace(':id', id);
+        const url = "{{ route('kriteria2.preview', ':id') }}".replace(':id', id);
         $('#modal-pdf-frame').attr('src', url);
         $('#previewModal').modal('show');
     }

@@ -22,7 +22,7 @@ class KriteriaSatuController extends Controller
 {
     $kriterias = Kriteria::all(); // ambil semua kriteria
 
-    $page = (object)[
+    $page = (object)[   
         'title' => 'Daftar Kriteria 1'
     ];    
 

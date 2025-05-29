@@ -71,7 +71,7 @@
 public function checkData()
 {
     $data = DetailKriteria::with('kriteria')
-        ->where('id_kriteria', 1)
+        ->where('id_kriteria', 3)
         ->get();
     
     dd($data->toArray()); // Dump and die untuk melihat data

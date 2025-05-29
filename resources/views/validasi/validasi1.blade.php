@@ -279,39 +279,42 @@
   }
 
   function loadData() {
-    $.ajax({
-      url: "{{ route('validasi1.data') }}",
-      method: "GET",
-      success: function (response) {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
+  const filterStatus = $('#filterStatus').val();
 
-        response.forEach(item => {
-          const kriteria = item.kriteria ?? {};
-          tbody.innerHTML += `
-            <tr>
-              <td>${item.id_detail_kriteria}</td>
-              <td>Kriteria ${kriteria.id_kriteria ?? '-'} - ${kriteria.nama ?? '-'}</td>
-              <td>${kriteria.penanggung_jawab ?? '-'}</td>
-              <td>${statusBadge(item.status)}</td>
-              <td>${new Date(item.updated_at).toLocaleDateString()}</td>
-              <td>
-                <button class="btn btn-warning btn-sm btn-validasi"
-                        data-id="${item.id_detail_kriteria}"
-                        data-pj="${kriteria.penanggung_jawab ?? '-'}"
-                        data-nama="${kriteria.nama ?? '-'}"
-                        data-tanggal="${item.updated_at}">
-                  Validasi
-                </button>
-              </td>
-            </tr>`;
-        });
-      },
-      error: function () {
-        alert('Gagal memuat data dari server.');
-      }
-    });
-  }
+  $.ajax({
+    url: "{{ route('validasi1.data') }}",
+    method: "GET",
+    data: { status: filterStatus }, // kirim filter
+    success: function (response) {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      response.forEach(item => {
+        const kriteria = item.kriteria ?? {};
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.id_detail_kriteria}</td>
+            <td>Kriteria ${kriteria.id_kriteria ?? '-'} - ${kriteria.nama ?? '-'}</td>
+            <td>${kriteria.penanggung_jawab ?? '-'}</td>
+            <td>${statusBadge(item.status)}</td>
+            <td>${new Date(item.updated_at).toLocaleDateString()}</td>
+            <td>
+              <button class="btn btn-warning btn-sm btn-validasi"
+                      data-id="${item.id_detail_kriteria}"
+                      data-pj="${kriteria.penanggung_jawab ?? '-'}"
+                      data-nama="${kriteria.nama ?? '-'}"
+                      data-tanggal="${item.updated_at}">
+                Validasi
+              </button>
+            </td>
+          </tr>`;
+      });
+    },
+    error: function () {
+      alert('Gagal memuat data dari server.');
+    }
+  });
+}
 
   $(document).ready(function () {
     loadData();
