@@ -11,6 +11,7 @@ use App\Http\Controllers\KriteriaEmpatController;
 use App\Http\Controllers\KriteriaLimaController;
 use App\Http\Controllers\KriteriaEnamController;
 use App\Http\Controllers\KriteriaTujuhController;
+use App\Http\Controllers\KriteriaDelapanController;
 use App\Http\Controllers\Anggota\AnggotaController;
 use App\Http\Controllers\KajurController;
 use App\Http\Controllers\DirekturController;
@@ -204,6 +205,31 @@ Route::get('/{id}/show', [KriteriaTujuhController::class, 'show']);
 Route::get('/{id}/edit', [KriteriaTujuhController::class, 'edit'])->name('kriteria7.edit');
 Route::get('/{id}/delete', [KriteriaTujuhController::class, 'confirm']);
 Route::delete('/{id}/delete', [KriteriaTujuhController::class, 'delete'])->name('kriteria7.delete');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
+
+});
+Route::middleware(['auth','authorize:A8'])->prefix('kriteria8')->group(function () {
+Route::get('/preview/{id}', [KriteriaDelapanController::class, 'preview'])->name('kriteria8.preview');
+Route::get('/kriteria/{id}/preview', [KriteriaDelapanController::class, 'preview']);
+
+
+Route::get('/index/anggota', [WelcomeController::class, 'index']);
+Route::get('/index', [KriteriaDelapanController::class, 'index'])->name('kriteria8.index'); 
+Route::post('/list', [KriteriaDelapanController::class, 'list'])->name('kriteria8.list');
+
+Route::get('/input', [KriteriaDelapanController::class, 'create']);    
+Route::post('/store', [KriteriaDelapanController::class, 'store']);
+Route::post('/upload', [KriteriaDelapanController::class, 'uploadImage'])->name('image.upload');
+
+// ⬇️ PUT harus di atas ini!
+Route::put('/{id}/update', [KriteriaDelapanController::class, 'update'])->name('kriteria8.update');
+
+// route wildcard diletakkan terakhir
+Route::get('/{id}/show', [KriteriaDelapanController::class, 'show']);
+Route::get('/{id}/edit', [KriteriaDelapanController::class, 'edit'])->name('kriteria8.edit');
+Route::get('/{id}/delete', [KriteriaDelapanController::class, 'confirm']);
+Route::delete('/{id}/delete', [KriteriaDelapanController::class, 'delete'])->name('kriteria8.delete');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
 
