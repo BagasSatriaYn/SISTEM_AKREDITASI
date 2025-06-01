@@ -9,7 +9,6 @@ use App\Models\Komentar;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 
-
 class KajurController extends Controller
 {
     public function dashboard()
@@ -85,8 +84,7 @@ class KajurController extends Controller
             'pdf_url' => asset("storage/final/dokumen_kriteria_{$id}.pdf")
         ]);
     }
-
-    public function previewPdf($id)
+     public function previewPdf($id)
     {
         Log::info("🔍 Masuk previewPdf() dengan ID: $id");
 

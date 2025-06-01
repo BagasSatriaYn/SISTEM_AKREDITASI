@@ -13,12 +13,8 @@
             {
                 Schema::create('t_komentar', function (Blueprint $table) {
                     $table->id('id_komentar');
-                    $table->unsignedBigInteger('id_kriteria')->index();
                     $table->string('komen');    
-                    $table->string('oleh')->nullable();
                     $table->timestamps();
-
-                    $table->foreign('id_kriteria')->references('id_kriteria')->on('t_kriteria');
                 });
             }
 

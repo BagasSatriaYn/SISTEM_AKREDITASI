@@ -20,6 +20,7 @@ class DetailKriteria extends Model
         'id_peningkatan',
         'id_kriteria',
         'id_komentar',
+        'id_finalisasi',
         'status'
     ];
 

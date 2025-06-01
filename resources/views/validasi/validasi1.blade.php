@@ -331,7 +331,7 @@ $(document).ready(function () {
     $('#formValidasiTahap1')[0].reset();
 
     // Set src iframe untuk preview PDF
-    $('#pdfViewer').attr('src', "{{ route('preview.pdf', '') }}/" + id);
+    $('#pdfViewer').attr('src', "{{ route('kajur.preview.pdf', '') }}/" + id);
 
     // Tampilkan modal
     $('#modalValidasi').modal('show');

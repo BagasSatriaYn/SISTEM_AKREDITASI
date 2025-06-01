@@ -77,7 +77,8 @@ public function getDataValidasiTahap2()
         ->get();
     return response()->json($data);
 }
-    public function previewPdf($id)
+    
+public function previewPdf($id)
     {
         Log::info("🔍 Masuk previewPdf() dengan ID: $id");
 

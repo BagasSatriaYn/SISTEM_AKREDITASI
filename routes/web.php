@@ -140,28 +140,25 @@ Route::middleware(['auth','authorize:A3'])->prefix('kriteria3')->group(function 
         Route::get('/validasi1/data', [KajurController::class, 'getDataValidasiTahap1'])->name('validasi1.data');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
-        Route::get('/validasi1/get-preview-data/{id}', [KajurController::class, 'getPreviewData']);
-        Route::get('/preview/{id_detail_kriteria}', [KajurController::class, 'previewPdf'])->name('preview.pdf');
         Route::get('/kajur/preview/{id}', [KajurController::class, 'previewPdf'])->name('kajur.preview.pdf');
     });
 });
 
-        Route::middleware(['auth', 'authorize:DKT'])->group(function () {
-        Route::get('/dashboard/direktur', [DirekturController::class, 'dashboard'])->name('direktur.dashboard');            
-        Route::get('/validasi2', function () { return view('validasi.validasi2'); })->name('validasi.2');})->name('validasi.2');
-
-        Route::prefix('kriteria')->group(function () {
-            Route::get('/', [DirekturController::class, 'index'])->name('direktur.kriteria.index');
-            Route::get('/{id}/detail', [DirekturController::class, 'show'])->name('direktur.kriteria.show');
-            Route::post('/{id}/komentar', [DirekturController::class, 'komentar'])->name('direktur.kriteria.komentar');
-            Route::post('/{id}/validasi', [DirekturController::class, 'validasi'])->name('direktur.kriteria.validasi');
-            Route::view('/validasi2', 'validasi.validasi2')->name('validasi2'); 
-            Route::post('/validasi2/simpan', [DirekturController::class, 'simpanValidasiTahap2'])->name('validasi2.simpan');
-            Route::get('/validasi2/data', [DirekturController::class, 'getDataValidasiTahap2'])->name('validasi2.data');
-            Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-            Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');  
-            Route::get('/direktur/preview/{id}', [DirekturController::class, 'previewPdf'])->name('direktur.preview.pdf');
-        });
+    Route::middleware(['auth', 'authorize:DKT'])->group(function () {
+    Route::get('/dashboard/direktur', [DirekturController::class, 'dashboard'])->name('direktur.dashboard');
+    Route::prefix('kriteria')->group(function () {
+        Route::get('/', [DirekturController::class, 'index'])->name('direktur.kriteria.index');
+        Route::get('/{id}/detail', [DirekturController::class, 'show'])->name('direktur.kriteria.show');
+        Route::post('/{id}/komentar', [DirekturController::class, 'komentar'])->name('direktur.kriteria.komentar');
+        Route::post('/{id}/validasi', [DirekturController::class, 'validasi'])->name('direktur.kriteria.validasi');
+        Route::view('/validasi2', 'validasi.validasi2')->name('validasi2'); 
+        Route::post('/validasi2/simpan', [DirekturController::class, 'simpanValidasiTahap2'])->name('validasi2.simpan');
+        Route::get('/validasi2/data', [DirekturController::class, 'getDataValidasiTahap2'])->name('validasi2.data');
+        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+        Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
+        Route::get('/direktur/preview/{id}', [DirekturController::class, 'previewPdf'])->name('direktur.preview.pdf');
+    });
+});
 
 Route::get('/dokumen-final', [DokumenFinalController::class, 'index'])->name('dokumen-final');
 Route::get('/dokumen-final/generate/{id}', [DokumenFinalController::class, 'generatePdf'])->name('dokumen.generate');
