@@ -12,6 +12,7 @@ use App\Http\Controllers\KriteriaLimaController;
 use App\Http\Controllers\KriteriaEnamController;
 use App\Http\Controllers\KriteriaTujuhController;
 use App\Http\Controllers\KriteriaDelapanController;
+use App\Http\Controllers\KriteriaSembilanController;
 use App\Http\Controllers\Anggota\AnggotaController;
 use App\Http\Controllers\KajurController;
 use App\Http\Controllers\DirekturController;
@@ -209,6 +210,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
 
 });
+
 Route::middleware(['auth','authorize:A8'])->prefix('kriteria8')->group(function () {
 Route::get('/preview/{id}', [KriteriaDelapanController::class, 'preview'])->name('kriteria8.preview');
 Route::get('/kriteria/{id}/preview', [KriteriaDelapanController::class, 'preview']);
@@ -230,6 +232,31 @@ Route::get('/{id}/show', [KriteriaDelapanController::class, 'show']);
 Route::get('/{id}/edit', [KriteriaDelapanController::class, 'edit'])->name('kriteria8.edit');
 Route::get('/{id}/delete', [KriteriaDelapanController::class, 'confirm']);
 Route::delete('/{id}/delete', [KriteriaDelapanController::class, 'delete'])->name('kriteria8.delete');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
+
+});
+Route::middleware(['auth','authorize:A9'])->prefix('kriteria9')->group(function () {
+Route::get('/preview/{id}', [KriteriaSembilanController::class, 'preview'])->name('kriteria9.preview');
+Route::get('/kriteria/{id}/preview', [KriteriaSembilanController::class, 'preview']);
+
+
+Route::get('/index/anggota', [WelcomeController::class, 'index']);
+Route::get('/index', [KriteriaSembilanController::class, 'index'])->name('kriteria9.index'); 
+Route::post('/list', [KriteriaSembilanController::class, 'list'])->name('kriteria9.list');
+
+Route::get('/input', [KriteriaSembilanController::class, 'create']);    
+Route::post('/store', [KriteriaSembilanController::class, 'store']);
+Route::post('/upload', [KriteriaSembilanController::class, 'uploadImage'])->name('image.upload');
+
+// ⬇️ PUT harus di atas ini!
+Route::put('/{id}/update', [KriteriaSembilanController::class, 'update'])->name('kriteria9.update');
+
+// route wildcard diletakkan terakhir
+Route::get('/{id}/show', [KriteriaSembilanController::class, 'show']);
+Route::get('/{id}/edit', [KriteriaSembilanController::class, 'edit'])->name('kriteria9.edit');
+Route::get('/{id}/delete', [KriteriaSembilanController::class, 'confirm']);
+Route::delete('/{id}/delete', [KriteriaSembilanController::class, 'delete'])->name('kriteria9.delete');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
 
