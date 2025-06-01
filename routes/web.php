@@ -9,6 +9,7 @@ use App\Http\Controllers\KriteriaDuaController;
 use App\Http\Controllers\KriteriaTigaController;
 use App\Http\Controllers\KriteriaEmpatController;
 use App\Http\Controllers\KriteriaLimaController;
+use App\Http\Controllers\KriteriaEnamController;
 use App\Http\Controllers\Anggota\AnggotaController;
 use App\Http\Controllers\KajurController;
 use App\Http\Controllers\DirekturController;
@@ -155,32 +156,32 @@ Route::middleware(['auth','authorize:A4'])->prefix('kriteria4')->group(function 
 
 });
 
-    Route::middleware(['auth','authorize:A5'])->prefix('kriteria5')->group(function () {
-    Route::get('/preview/{id}', [KriteriaLimaController::class, 'preview'])->name('kriteria5.preview');
-    Route::get('/kriteria/{id}/preview', [KriteriaLimaController::class, 'preview']);
+
+Route::middleware(['auth','authorize:A6'])->prefix('kriteria6')->group(function () {
+Route::get('/preview/{id}', [KriteriaEnamController::class, 'preview'])->name('kriteria6.preview');
+Route::get('/kriteria/{id}/preview', [KriteriaEnamController::class, 'preview']);
 
 
-    Route::get('/index/anggota', [WelcomeController::class, 'index']);
-    Route::get('/index', [KriteriaLimaController::class, 'index'])->name('kriteria5.index'); 
-    Route::post('/list', [KriteriaLimaController::class, 'list'])->name('kriteria5.list');
+Route::get('/index/anggota', [WelcomeController::class, 'index']);
+Route::get('/index', [KriteriaEnamController::class, 'index'])->name('kriteria6.index'); 
+Route::post('/list', [KriteriaEnamController::class, 'list'])->name('kriteria6.list');
 
-    Route::get('/input', [KriteriaLimaController::class, 'create']);    
-    Route::post('/store', [KriteriaLimaController::class, 'store']);
-    Route::post('/upload', [KriteriaLimaController::class, 'uploadImage'])->name('image.upload');
+Route::get('/input', [KriteriaEnamController::class, 'create']);    
+Route::post('/store', [KriteriaEnamController::class, 'store']);
+Route::post('/upload', [KriteriaEnamController::class, 'uploadImage'])->name('image.upload');
 
-    // ⬇️ PUT harus di atas ini!
-    Route::put('/{id}/update', [KriteriaLimaController::class, 'update'])->name('kriteria5.update');
+// ⬇️ PUT harus di atas ini!
+Route::put('/{id}/update', [KriteriaEnamController::class, 'update'])->name('kriteria6.update');
 
-    // route wildcard diletakkan terakhir
-    Route::get('/{id}/show', [KriteriaLimaController::class, 'show']);
-    Route::get('/{id}/edit', [KriteriaLimaController::class, 'edit'])->name('kriteria5.edit');
-    Route::get('/{id}/delete', [KriteriaLimaController::class, 'confirm']);
-    Route::delete('/{id}/delete', [KriteriaLimaController::class, 'delete'])->name('kriteria5.delete');
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
+// route wildcard diletakkan terakhir
+Route::get('/{id}/show', [KriteriaEnamController::class, 'show']);
+Route::get('/{id}/edit', [KriteriaEnamController::class, 'edit'])->name('kriteria6.edit');
+Route::get('/{id}/delete', [KriteriaEnamController::class, 'confirm']);
+Route::delete('/{id}/delete', [KriteriaEnamController::class, 'delete'])->name('kriteria6.delete');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
 
 });
-
     Route::middleware(['auth', 'authorize:KJR'])->group(function () {
     Route::get('/dashboard/kajur', [KajurController::class, 'dashboard'])->name('kajur.dashboard');
 
