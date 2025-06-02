@@ -10,6 +10,7 @@
     use App\Models\Peningkatan;
     use App\Models\Pengendalian;
     use App\Models\DetailKriteria;
+    use App\Models\Finalisasi;
     use Illuminate\Support\Facades\DB;  
     use Illuminate\Support\Facades\Storage;
     use Yajra\DataTables\Facades\DataTables;
@@ -81,12 +82,12 @@ public function checkData()
     $kriteria = Kriteria::select('id_kriteria', 'nama')->get();
 
     $breadcrumb = (object) [
-        'title' => __('messages.krit1_title'),
-        'list' => __('messages.krit1_list')
+        'title' => __('MAHASISWA'),
+        'list' => __('MAHASISWA')
     ];
 
     $page = (object) [
-        'title' => __('messages.krit1_page'),
+        'title' => __('MAHASISWA'),
     ];
 
     $activeMenu = 'kriteria';
@@ -168,7 +169,24 @@ $peningkatan = $kriteria->peningkatan()->create([
     'deskripsi' => $request->desk_peningkatan . $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
     'pendukung' => $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
 ]);
+    
+// Cari semua id_finalisasi yang sudah digunakan untuk kriteria ini
+$usedFinalisasiIds = DetailKriteria::where('id_kriteria', $kriteria->id_kriteria)
+    ->pluck('id_finalisasi')
+    ->toArray();
 
+// Cari finalisasi yang belum dipakai oleh kriteria ini
+$availableFinalisasi = Finalisasi::whereNotIn('id_finalisasi', $usedFinalisasiIds)->first();
+
+if ($availableFinalisasi) {
+    $idFinalisasi = $availableFinalisasi->id_finalisasi;
+} else {
+    // Jika tidak ada finalisasi yang belum dipakai kriteria ini, buat yang baru
+    $newFinalisasi = Finalisasi::create([
+        'name' => 'Dokumen Final - ' . now()->format('Ymd-His')
+    ]);
+    $idFinalisasi = $newFinalisasi->id_finalisasi;
+}
 
         $detailKriteria = DetailKriteria::create([
             'id_penetapan' => $penetapan->id_penetapan,
@@ -178,6 +196,7 @@ $peningkatan = $kriteria->peningkatan()->create([
             'id_peningkatan' => $peningkatan->id_peningkatan,
             'id_kriteria' => $kriteria->id_kriteria,
             'id_komentar' => null, // atau bisa diisi sesuai kebutuhan
+            'id_finalisasi' => $idFinalisasi,
             'status' => $request->status
         ]);
 
@@ -342,6 +361,39 @@ public function preview($id)
         ], 500);
     }
 }
+
+     public function getPreviewData($id)
+    {
+        $detail = DetailKriteria::with(['kriteria', 'komentar'])->findOrFail($id);
+
+        $validator = '-';
+        $catatan = '-';
+
+        if ($detail->status === 'acc1') {
+            $validator = 'Kajur';
+        } elseif ($detail->status === 'acc2') {
+            $validator = 'Direktur';    
+        } elseif ($detail->status === 'revisi') {
+            // Cek komentar terakhir untuk menentukan siapa yang menolak
+            if ($detail->komentar) {
+                // Misalnya kamu punya kolom `role` atau `tipe` di tabel komentar
+                // Kalau belum ada, kita asumsikan dari alur status sebelumnya
+                // Kalau sebelumnya acc1 → artinya direvisi oleh Direktur
+                $validator = 'Kajur'; // atau 'Kajur' jika dari tahap 1
+            }
+        }
+
+        if ($detail->komentar) {
+            $catatan = $detail->komentar->komen;
+        }
+
+        return response()->json([
+            'validator' => $validator,
+            'status' => strtoupper($detail->status),
+            'catatan' => $catatan,
+            'pdf_url' => route('kriteria3.preview', $id)
+        ]);
+    }   
 
    public function delete($id)
 {

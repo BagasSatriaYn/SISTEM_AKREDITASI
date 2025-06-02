@@ -110,7 +110,7 @@ Route::middleware(['auth','authorize:A2'])->prefix('kriteria2')->group(function 
 Route::middleware(['auth','authorize:A3'])->prefix('kriteria3')->group(function () {
     Route::get('/preview/{id}', [KriteriaTigaController::class, 'preview'])->name('kriteria3.preview');
     Route::get('/kriteria/{id}/preview', [KriteriaTigaController::class, 'preview']);
-
+    Route::get('/{id}/preview/json', [KriteriaTigaController::class, 'getPreviewData'])->name('kriteria3.preview.data');
 
     Route::get('/index/anggota', [WelcomeController::class, 'index']);
     Route::get('/index', [KriteriaTigaController::class, 'index'])->name('kriteria3.index'); 
