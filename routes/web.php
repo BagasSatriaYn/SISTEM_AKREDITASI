@@ -189,7 +189,7 @@ Route::middleware(['auth','authorize:A5'])->prefix('kriteria5')->group(function 
 Route::middleware(['auth','authorize:A6'])->prefix('kriteria6')->group(function () {
 Route::get('/preview/{id}', [KriteriaEnamController::class, 'preview'])->name('kriteria6.preview');
 Route::get('/kriteria/{id}/preview', [KriteriaEnamController::class, 'preview']);
-
+ Route::get('/{id}/preview/json', [KriteriaEnamController::class, 'getPreviewData'])->name('kriteria6.preview.data');
 
 Route::get('/index/anggota', [WelcomeController::class, 'index']);
 Route::get('/index', [KriteriaEnamController::class, 'index'])->name('kriteria6.index'); 
