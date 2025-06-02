@@ -241,7 +241,7 @@ Route::get('/login1', function () {return view('layouts.login1');})->name('layou
 Route::middleware(['auth','authorize:A8'])->prefix('kriteria8')->group(function () {
 Route::get('/preview/{id}', [KriteriaDelapanController::class, 'preview'])->name('kriteria8.preview');
 Route::get('/kriteria/{id}/preview', [KriteriaDelapanController::class, 'preview']);
-
+Route::get('/{id}/preview/json', [KriteriaDelapanController::class, 'getPreviewData'])->name('kriteria8.preview.data');
 
 Route::get('/index/anggota', [WelcomeController::class, 'index']);
 Route::get('/index', [KriteriaDelapanController::class, 'index'])->name('kriteria8.index'); 

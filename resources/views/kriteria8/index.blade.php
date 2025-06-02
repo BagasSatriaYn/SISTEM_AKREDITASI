@@ -102,7 +102,7 @@
 
 @push('js')
     <script>
-    ffunction showPreviewModal(id) {
+    function showPreviewModal(id) {
     const url = `/kriteria/${id}/preview`;
 
     $.get(url, function(data) {
@@ -220,6 +220,20 @@
         $('#modal-pdf-frame').attr('src', url);
         $('#previewModal').modal('show');
     }
+
+    function showPreviewModal(id) {
+    const infoUrl = `/kriteria8/${id}/preview/json`;
+    
+    $.get(infoUrl, function(data) {
+        $('#validatorName').val(data.validator ?? '-');
+        $('#validationStatus').val(data.status ?? '-');
+        $('#validatorNotes').val(data.catatan ?? '-');
+
+        // tampilkan PDF setelah info didapat
+        $('#modal-pdf-frame').attr('src', data.pdf_url);
+        $('#previewModal').modal('show');
+    });
+}
 
     function modalActionDelete(id) {
         Swal.fire({
