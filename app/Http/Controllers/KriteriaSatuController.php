@@ -374,7 +374,7 @@ public function preview($id)
         if ($detail->status === 'acc1') {
             $validator = 'Kajur';
         } elseif ($detail->status === 'acc2') {
-            $validator = 'Direktur';
+            $validator = 'Direktur';    
         } elseif ($detail->status === 'revisi') {
             // Cek komentar terakhir untuk menentukan siapa yang menolak
             if ($detail->komentar) {

@@ -259,12 +259,12 @@ if ($availableFinalisasi) {
         $kriteria = Kriteria::select('id_kriteria', 'nama')->get();
 
         $breadcrumb = (object) [
-            'title' => 'Edit Kriteria Dua',
-            'list' => ['Kriteria', 'Kriteria2', 'Edit']
+            'title' => 'Edit Kriteria Delapan',
+            'list' => ['Kriteria', 'Kriteria8', 'Edit']
         ];
 
         $page = (object) [
-            'title' => 'Edit Kriteria 8 - PENELITIAN',
+            'title' => 'Edit Kriteria 8 - PENGABDIAN KEPADA MASYARAKAT',
         ];
 
         $activeMenu = 'kriteria';
