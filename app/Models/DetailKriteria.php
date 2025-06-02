@@ -70,4 +70,6 @@ class DetailKriteria extends Model
         return $this->belongsTo(Komentar::class, 'id_komentar');
     }
 
+    
+
 }

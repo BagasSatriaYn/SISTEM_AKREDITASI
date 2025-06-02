@@ -238,10 +238,11 @@
 
     /* --- Footer Styling --- */
     .footer {
-      background-color: var(--dark);
+      background-color:#1d3557;
       color: white;
-      padding: 20px 0;
+      padding: 15px 0px;
       text-align: center;
+
     }
     
     .footer p {
@@ -262,7 +263,7 @@
     
     .heart {
       color: var(--highlight);
-      animation: pulse 1.5s infinite;
+      animation: pulse 1s infinite;
     }
 
     /* --- SECTION 1: PROFIL PROGRAM STUDI --- */
@@ -399,6 +400,8 @@
 
     /* --- SECTION 2: VISI MISI TUJUAN --- */
     /* Styling untuk wave effect */
+
+    
     .wave-container {
       position: relative;
       height: 200px;
@@ -454,7 +457,10 @@
     
     /* Styling untuk Visi, Misi, Tujuan */
     .visi-misi-section {
-      background-color: #f2f2f2; 
+      background-image: url('{{ asset('Argon/assets/img/bgprofil2.png') }}');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       padding: 100px 15px 70px;
       position: relative;
     }
@@ -489,7 +495,7 @@
       padding: 30px;
       border-radius: 15px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-      min-height: 320px;
+      min-height: 420px;
       transition: all 0.4s ease;
       position: relative;
       overflow: hidden;
@@ -505,7 +511,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 5px;
+      height: 7px;
       background: linear-gradient(90deg, #457b9d, #a8dadc, #1d3557);
       z-index: 2;
     }
@@ -542,7 +548,7 @@
       margin-bottom: 20px;
       font-size: 1.5rem;
       position: relative;
-      padding-bottom: 10px;
+      padding-bottom: 20px;
     }
     
     .vm-title::after {
@@ -568,7 +574,7 @@
     .vm-content p {
       text-align: center;
       margin-top: 15px;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       color: #444;
     }
     
@@ -634,7 +640,7 @@
     
     @media (max-width: 576px) {
       .visi-misi-section .section-title {
-        font-size: 1.7rem;
+        font-size: 2rem;
       }
       
       .vm-box {
@@ -732,7 +738,7 @@
     
     <!-- Floating elements -->
     <div class="floating circle" style="top: 10%; left: 5%; animation: float 30s ease-in-out infinite;"></div>
-    <div class="floating triangle" style="top: 20%; right: 10%; animation: float 30s ease-in-out infinite;"></div>
+    <div class="floating triangle" style="top: 20%; left: 20%; animation: float 30s ease-in-out infinite;"></div>
     <div class="floating circle" style="bottom: 20%; right: 10%; width: 70px; height: 70px; animation: float 30s ease-in-out infinite;"></div>
     
     <div class="container">
@@ -774,6 +780,7 @@
   <section class="visi-misi-section">
     <div class="container">
       <div class="row">
+
         <div class="col-md-12 text-center mb-5">
           <h2 class="montserrat section-title">
             VISI, MISI, TUJUAN PROGRAM STUDI

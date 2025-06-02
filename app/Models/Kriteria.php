@@ -12,7 +12,7 @@ class Kriteria extends Model
 
     protected $table = "t_kriteria";
     protected $primaryKey = "id_kriteria";
-    protected $fillable = ['nama'];
+    protected $fillable = ['nama', 'created_at', 'updated_at'];
 
     public function role(): HasMany 
     {
