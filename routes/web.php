@@ -189,7 +189,7 @@ Route::middleware(['auth','authorize:A5'])->prefix('kriteria5')->group(function 
 Route::middleware(['auth','authorize:A6'])->prefix('kriteria6')->group(function () {
 Route::get('/preview/{id}', [KriteriaEnamController::class, 'preview'])->name('kriteria6.preview');
 Route::get('/kriteria/{id}/preview', [KriteriaEnamController::class, 'preview']);
- Route::get('/{id}/preview/json', [KriteriaEnamController::class, 'getPreviewData'])->name('kriteria6.preview.data');
+Route::get('/{id}/preview/json', [KriteriaEnamController::class, 'getPreviewData'])->name('kriteria6.preview.data');
 
 Route::get('/index/anggota', [WelcomeController::class, 'index']);
 Route::get('/index', [KriteriaEnamController::class, 'index'])->name('kriteria6.index'); 
@@ -215,7 +215,7 @@ Route::get('/login1', function () {return view('layouts.login1');})->name('layou
 Route::middleware(['auth','authorize:A7'])->prefix('kriteria7')->group(function () {
 Route::get('/preview/{id}', [KriteriaTujuhController::class, 'preview'])->name('kriteria7.preview');
 Route::get('/kriteria/{id}/preview', [KriteriaTujuhController::class, 'preview']);
-
+Route::get('/{id}/preview/json', [KriteriaTujuhController::class, 'getPreviewData'])->name('kriteria7.preview.data');
 
 Route::get('/index/anggota', [WelcomeController::class, 'index']);
 Route::get('/index', [KriteriaTujuhController::class, 'index'])->name('kriteria7.index'); 
