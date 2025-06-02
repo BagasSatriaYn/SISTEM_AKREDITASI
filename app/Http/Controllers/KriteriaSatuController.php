@@ -82,12 +82,12 @@ public function checkData()
     $kriteria = Kriteria::select('id_kriteria', 'nama')->get();
 
     $breadcrumb = (object) [
-        'title' => __('messages.krit1_title'),
-        'list' => __('messages.krit1_list')
+        'title' => __('VISI, MISI, TUJUAN DAN STRATEGI'),
+        'list' => __('VISI, MISI, TUJUAN DAN STRATEGI')
     ];
 
     $page = (object) [
-        'title' => __('messages.krit1_page'),
+        'title' => __('VISI, MISI, TUJUAN DAN STRATEGI'),
     ];
 
     $activeMenu = 'kriteria';
@@ -381,7 +381,7 @@ public function preview($id)
                 // Misalnya kamu punya kolom `role` atau `tipe` di tabel komentar
                 // Kalau belum ada, kita asumsikan dari alur status sebelumnya
                 // Kalau sebelumnya acc1 → artinya direvisi oleh Direktur
-                $validator = 'Direktur'; // atau 'Kajur' jika dari tahap 1
+                $validator = 'Kajur'; // atau 'Kajur' jika dari tahap 1
             }
         }
 
