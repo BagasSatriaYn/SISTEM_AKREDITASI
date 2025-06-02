@@ -17,18 +17,18 @@
     use Illuminate\Support\Facades\Validator;
     use Barryvdh\DomPDF\Facade\Pdf;
 
-class KriteriaSatuController extends Controller
-{
-     public function index()
-{
-    $kriterias = Kriteria::all(); // ambil semua kriteria
+    class KriteriaLimaController extends Controller
+    {
+        public function index()
+    {
+        $kriterias = Kriteria::all(); // ambil semua kriteria
 
-    $page = (object)[   
-        'title' => 'Daftar Kriteria 1'
-    ];    
+        $page = (object)[
+            'title' => 'Daftar Kriteria 5'
+        ];    
 
-    return view('kriteria1.index', compact('page', 'kriterias'));
-}
+        return view('kriteria5.index', compact('page', 'kriterias'));
+    }
 
     public function input()
     {
@@ -37,7 +37,7 @@ class KriteriaSatuController extends Controller
         ];
         $kriteria = Kriteria::all();
 
-    return view('kriteria1.input', compact('page', 'kriteria'));
+    return view('kriteria5.input', compact('page', 'kriteria'));
     }
 
        public function list(Request $request)
@@ -48,7 +48,7 @@ class KriteriaSatuController extends Controller
     $details = DetailKriteria::with('kriteria:id_kriteria,nama')
         ->select('id_detail_kriteria', 'id_kriteria', 'status');
 
-    $details->where('id_kriteria', 1);
+    $details->where('id_kriteria', 5);
 
     // Filter data berdasarkan id_detail_kriteria
     if ($request->has('id_detail_kriteria') && $request->id_detail_kriteria) {
@@ -72,7 +72,7 @@ class KriteriaSatuController extends Controller
 public function checkData()
 {
     $data = DetailKriteria::with('kriteria')
-        ->where('id_kriteria', 1)
+        ->where('id_kriteria', 5)
         ->get();
     
     dd($data->toArray()); // Dump and die untuk melihat data
@@ -82,18 +82,18 @@ public function checkData()
     $kriteria = Kriteria::select('id_kriteria', 'nama')->get();
 
     $breadcrumb = (object) [
-        'title' => __('VISI, MISI, TUJUAN DAN STRATEGI'),
-        'list' => __('VISI, MISI, TUJUAN DAN STRATEGI')
+        'title' => __('KEUANGAN, SARANA, DAN PRASARANA'),
+        'list' => __('KEUANGAN, SARANA, DAN PRASARANA')
     ];
 
     $page = (object) [
-        'title' => __('VISI, MISI, TUJUAN DAN STRATEGI'),
+        'title' => __('KEUANGAN, SARANA, DAN PRASARANA'),
     ];
 
     $activeMenu = 'kriteria';
-    $activeSubmenu = 'kriteria1';
+    $activeSubmenu = 'kriteria5';
 
-    return view('kriteria1.input', [
+    return view('kriteria5.input', [
         'breadcrumb' => $breadcrumb,
         'page' => $page,
         'activeMenu' => $activeMenu,
@@ -126,50 +126,50 @@ public function store(Request $request)
 
     DB::beginTransaction();
     try {
-        // Fungsi upload file
-        $uploadImageAsHTML = function ($file, $prefix = 'file') {
-            if ($file) {
-                $filename = $prefix.'_'.time().'.'.$file->getClientOriginalExtension();
-                $path = $file->storeAs('public/kriteria', $filename);
-                $url = Storage::url($path);
-                return '<p><img src="' . $url . '" style="max-width: 100%;"></p>';
-            }
-            return '';
-        };
+        // Fungsi untuk upload file dan return path
+     // Fungsi upload file ke storage/public/kriteria dan return URL-nya
+$uploadImageAsHTML = function ($file, $prefix = 'file') {
+    if ($file) {
+        $filename = $prefix.'_'.time().'.'.$file->getClientOriginalExtension();
+        $path = $file->storeAs('public/kriteria', $filename);
+        $url = Storage::url($path); // hasil: /storage/kriteria/nama_file.jpg
+        return '<p><img src="' . $url . '" style="max-width: 100%;"></p>';
+    }
+    return '';
+};
+$kriteria = Kriteria::findOrFail($request->id_kriteria);
 
-        $kriteria = Kriteria::findOrFail($request->id_kriteria);
+// Simpan data Penetapan
+$penetapan = $kriteria->penetapan()->create([
+    'id_kriteria' => $kriteria->id_kriteria,
+    'deskripsi' => $request->desk_penetapan . $uploadImageAsHTML($request->file('penetapan_file'), 'penetapan'),
+    'pendukung' => $uploadImageAsHTML($request->file('penetapan_file'), 'penetapan'),
+]);
 
-        // Simpan data PPEPP
-        $penetapan = $kriteria->penetapan()->create([
-            'id_kriteria' => $kriteria->id_kriteria,
-            'deskripsi' => $request->desk_penetapan . $uploadImageAsHTML($request->file('penetapan_file'), 'penetapan'),
-            'pendukung' => $uploadImageAsHTML($request->file('penetapan_file'), 'penetapan'),
-        ]);
+$pelaksanaan = $kriteria->pelaksanaan()->create([
+    'id_kriteria' => $kriteria->id_kriteria,
+    'deskripsi' => $request->desk_pelaksanaan . $uploadImageAsHTML($request->file('pelaksanaan_file'), 'pelaksanaan'),
+    'pendukung' => $uploadImageAsHTML($request->file('pelaksanaan_file'), 'pelaksanaan'),
+]);
 
-        $pelaksanaan = $kriteria->pelaksanaan()->create([
-            'id_kriteria' => $kriteria->id_kriteria,
-            'deskripsi' => $request->desk_pelaksanaan . $uploadImageAsHTML($request->file('pelaksanaan_file'), 'pelaksanaan'),
-            'pendukung' => $uploadImageAsHTML($request->file('pelaksanaan_file'), 'pelaksanaan'),
-        ]);
+$evaluasi = $kriteria->evaluasi()->create([
+    'id_kriteria' => $kriteria->id_kriteria,
+    'deskripsi' => $request->desk_evaluasi . $uploadImageAsHTML($request->file('evaluasi_file'), 'evaluasi'),
+    'pendukung' => $uploadImageAsHTML($request->file('evaluasi_file'), 'evaluasi'),
+]);
 
-        $evaluasi = $kriteria->evaluasi()->create([
-            'id_kriteria' => $kriteria->id_kriteria,
-            'deskripsi' => $request->desk_evaluasi . $uploadImageAsHTML($request->file('evaluasi_file'), 'evaluasi'),
-            'pendukung' => $uploadImageAsHTML($request->file('evaluasi_file'), 'evaluasi'),
-        ]);
+$pengendalian = $kriteria->pengendalian()->create([
+    'id_kriteria' => $kriteria->id_kriteria,
+    'deskripsi' => $request->desk_pengendalian . $uploadImageAsHTML($request->file('pengendalian_file'), 'pengendalian'),
+    'pendukung' => $uploadImageAsHTML($request->file('pengendalian_file'), 'pengendalian'),
+]);
 
-        $pengendalian = $kriteria->pengendalian()->create([
-            'id_kriteria' => $kriteria->id_kriteria,
-            'deskripsi' => $request->desk_pengendalian . $uploadImageAsHTML($request->file('pengendalian_file'), 'pengendalian'),
-            'pendukung' => $uploadImageAsHTML($request->file('pengendalian_file'), 'pengendalian'),
-        ]);
-
-        $peningkatan = $kriteria->peningkatan()->create([
-            'id_kriteria' => $kriteria->id_kriteria,
-            'deskripsi' => $request->desk_peningkatan . $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
-            'pendukung' => $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
-        ]);
-
+$peningkatan = $kriteria->peningkatan()->create([
+    'id_kriteria' => $kriteria->id_kriteria,
+    'deskripsi' => $request->desk_peningkatan . $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
+    'pendukung' => $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
+]);
+    
 // Cari semua id_finalisasi yang sudah digunakan untuk kriteria ini
 $usedFinalisasiIds = DetailKriteria::where('id_kriteria', $kriteria->id_kriteria)
     ->pluck('id_finalisasi')
@@ -188,19 +188,17 @@ if ($availableFinalisasi) {
     $idFinalisasi = $newFinalisasi->id_finalisasi;
 }
 
-
-       $detailKriteria = DetailKriteria::create([
-    'id_penetapan' => $penetapan->id_penetapan,
-    'id_pelaksanaan' => $pelaksanaan->id_pelaksanaan,
-    'id_evaluasi' => $evaluasi->id_evaluasi,
-    'id_pengendalian' => $pengendalian->id_pengendalian,
-    'id_peningkatan' => $peningkatan->id_peningkatan,
-    'id_kriteria' => $kriteria->id_kriteria,
-    'id_komentar' => null,
-    'id_finalisasi' => $idFinalisasi,
-    'status' => $request->status
-]);
-
+        $detailKriteria = DetailKriteria::create([
+            'id_penetapan' => $penetapan->id_penetapan,
+            'id_pelaksanaan' => $pelaksanaan->id_pelaksanaan,
+            'id_evaluasi' => $evaluasi->id_evaluasi,
+            'id_pengendalian' => $pengendalian->id_pengendalian,
+            'id_peningkatan' => $peningkatan->id_peningkatan,
+            'id_kriteria' => $kriteria->id_kriteria,
+            'id_komentar' => null, // atau bisa diisi sesuai kebutuhan
+            'id_finalisasi' => $idFinalisasi,
+            'status' => $request->status
+        ]);
 
         DB::commit();
 
@@ -211,11 +209,11 @@ if ($availableFinalisasi) {
         ]);
 
     } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
+        DB::rollBack(); 
+        return response()->json([   
             'success' => false,
             'message' => 'Gagal menyimpan data: ' . $e->getMessage(),
-            'error' => $e->getTraceAsString()
+            'error' => $e->getTraceAsString() // Hanya untuk development
         ], 500);
     }
 }
@@ -261,18 +259,18 @@ if ($availableFinalisasi) {
         $kriteria = Kriteria::select('id_kriteria', 'nama')->get();
 
         $breadcrumb = (object) [
-            'title' => 'Edit Kriteria Satu',
-            'list' => ['Kriteria', 'Kriteria1', 'Edit']
+            'title' => 'Edit Kriteria Lima',
+            'list' => ['Kriteria', 'Kriteria5', 'Edit']
         ];
 
         $page = (object) [
-            'title' => 'Edit Kriteria 1 - Statuta Polinema',
+            'title' => 'Edit Kriteria 5 - KEUANGAN, SARANA, DAN PRASARANA',
         ];
 
         $activeMenu = 'kriteria';
-        $activeSubmenu = 'kriteria1';
+        $activeSubmenu = 'kriteria5';
 
-        return view('kriteria1.edit', [
+        return view('kriteria5.edit', [
             'breadcrumb' => $breadcrumb,
             'page' => $page,
             'activeMenu' => $activeMenu,
@@ -297,7 +295,7 @@ public function preview($id)
     ])->findOrFail($id);
 
     try {
-        return PDF::loadView('kriteria1.export', ['details' => $detail])
+        return \PDF::loadView('kriteria5.export', ['details' => $detail])
                    ->stream('dokumen_ppepp.pdf');
     } catch (\Exception $e) {
         Log::error("❌ Gagal generate PDF: " . $e->getMessage());
@@ -364,7 +362,7 @@ public function preview($id)
     }
 }
 
-    public function getPreviewData($id)
+  public function getPreviewData($id)
     {
         $detail = DetailKriteria::with(['kriteria', 'komentar'])->findOrFail($id);
 
@@ -393,10 +391,9 @@ public function preview($id)
             'validator' => $validator,
             'status' => strtoupper($detail->status),
             'catatan' => $catatan,
-            'pdf_url' => route('kriteria1.preview', $id)
+            'pdf_url' => route('kriteria5.preview', $id)
         ]);
     }   
-
 
    public function delete($id)
 {

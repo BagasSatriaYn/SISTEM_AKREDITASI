@@ -8,7 +8,7 @@
                 <div class="card mb-4">
                     <div class="card-header pb-0 d-flex justify-content-between align-items-center">
                         <h6>{{ $page->title }}</h6>
-                        <a href="{{ url('kriteria2/input') }}" class="btn btn-sm btn-success">
+                        <a href="{{ url('kriteria6/input') }}" class="btn btn-sm btn-success">
                             {{ __(' input') }}
                         </a>
                     </div>
@@ -123,9 +123,9 @@
 </script>
 
 
- <script>
+<script>
     var dataDetail;
-    const base_url = "{{ url('kriteria2') }}";
+    const base_url = "{{ url('kriteria6') }}";
 
     function modalAction(url = '') {
         $('#myModal').load(url, function () {
@@ -138,7 +138,7 @@
             serverSide: true,
             processing: true,
             ajax: {
-                url: "{{ url('kriteria2/list') }}",
+                url: "{{ url('kriteria6/list') }}",
                 type: "POST",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -216,7 +216,13 @@
     });
 
     function showPreviewModal(id) {
-    const infoUrl = `/kriteria2/${id}/preview/json`; // JSON detail (komentar, status)
+        const url = "{{ route('kriteria6.preview', ':id') }}".replace(':id', id);
+        $('#modal-pdf-frame').attr('src', url);
+        $('#previewModal').modal('show');
+    }
+
+        function showPreviewModal(id) {
+    const infoUrl = `/kriteria6/${id}/preview/json`; // JSON detail (komentar, status)
     
     $.get(infoUrl, function(data) {
         $('#validatorName').val(data.validator ?? '-');
@@ -228,7 +234,7 @@
         $('#previewModal').modal('show');
     });
 }
-    
+
     function modalActionDelete(id) {
         Swal.fire({
             title: 'Hapus data ini?',
@@ -265,5 +271,6 @@
         });
     }
 </script>
+
 
 @endpush

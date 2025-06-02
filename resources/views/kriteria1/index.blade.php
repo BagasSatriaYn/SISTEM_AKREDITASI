@@ -69,7 +69,7 @@
                             <label for="validatorName" class="form-label fw-bold">Validator:</label>
                             <input type="text" class="form-control" id="validatorName" readonly>
                         </div>
-                        <div class="mb-2">
+                        <div class="mb-2">  
                             <label for="validationStatus" class="form-label fw-bold">Status Validasi:</label>
                             <input type="text" class="form-control" id="validationStatus" readonly>
                         </div>
