@@ -35,18 +35,36 @@ class KajurController extends Controller
      * - Jika ditolak → status = 'revisi'
      */
     public function simpanValidasiTahap1(Request $request)
-    {
-        $data = DetailKriteria::findOrFail($request->id_kriteria);
+{
+    $request->validate([
+        'id_kriteria' => 'required|exists:t_detail_kriteria,id_detail_kriteria',
+        'status_validasi' => 'required|in:diterima,ditolak',
+        'catatan' => 'nullable|string'
+    ]);
 
-        $data->status = $request->status_validasi === 'diterima' ? 'acc1' : 'revisi';
-        $data->save();
+    $data = DetailKriteria::findOrFail($request->id_kriteria);
 
-        return response()->json(['success' => true, 'message' => 'Validasi Tahap 1 berhasil']);
+    $data->status = $request->status_validasi === 'diterima' ? 'acc1' : 'revisi';
+    
+    // ✅ Selalu timpa validated_by agar Kajur jadi yang terakhir
+    $data->validated_by = 'kajur';
+
+    if (!empty($request->catatan)) {
+        $komentar = Komentar::create([
+            'komen' => $request->catatan
+        ]);
+        $data->id_komentar = $komentar->id_komentar;
     }
+
+    $data->save();
+
+    return response()->json(['success' => true, 'message' => 'Validasi Tahap 1 berhasil']);
+}
+
 
     /**
      * Daftar data untuk divalidasi Kajur.
-     * Hanya tampilkan data dengan status 'submitted' atau 'revisi'
+     * Menampilkan data dengan status 'submitted' atau 'revisi'
      */
     public function getDataValidasiTahap1()
     {
@@ -58,37 +76,43 @@ class KajurController extends Controller
     }
 
     /**
-     * Detail data validasi, termasuk info validator dan komentar
+     * Tampilkan detail validasi termasuk komentar dan validator
      */
-    public function getDetailValidasi($id)
-    {
-        $detail = DetailKriteria::with(['kriteria', 'komentar'])->findOrFail($id);
+   public function getDetailValidasi($id)
+{
+    $detail = DetailKriteria::with(['kriteria', 'komentar'])->findOrFail($id);
 
-        $validator = '-';
-        $catatan = '-';
+    $validator = '-';
+    $catatan = '-';
 
-        if ($detail->status === 'acc1') {
-            $validator = 'Kajur';
-        } elseif ($detail->status === 'acc2') {
-            $validator = 'Direktur';
-        }
+    // ✅ Gunakan kolom validated_by langsung, bukan tebak-tebakan dari komentar
+   $validator = '-';
+    if ($detail->validated_by === 'kajur') {
+        $validator = 'Kajur';
+    } elseif ($detail->validated_by === 'direktur') {
+        $validator = 'Direktur';
+    }   
 
-        if ($detail->komentar) {
-            $catatan = $detail->komentar->komen;
-        }
 
-        return response()->json([
-            'validator' => $validator,
-            'status' => strtoupper($detail->status),
-            'catatan' => $catatan,
-            'pdf_url' => asset("storage/final/dokumen_kriteria_{$id}.pdf")
-        ]);
+    if ($detail->komentar) {
+        $catatan = $detail->komentar->komen;
     }
-     public function previewPdf($id)
+
+    return response()->json([
+        'validator' => $validator,
+        'status' => strtoupper($detail->status),
+        'catatan' => $catatan,
+        'pdf_url' => asset("storage/final/dokumen_kriteria_{$id}.pdf")
+    ]);
+}
+
+    /**
+     * Preview PDF sesuai ID
+     */
+    public function previewPdf($id)
     {
         Log::info("🔍 Masuk previewPdf() dengan ID: $id");
 
-        // Ambil langsung detail berdasarkan ID (angka)
         $detail = DetailKriteria::with([
             'kriteria',
             'penetapan',
@@ -98,12 +122,11 @@ class KajurController extends Controller
             'peningkatan'
         ])->findOrFail($id);
 
-        // Tentukan nama view berdasarkan id_kriteria secara dinamis
         $viewName = 'kriteria' . $detail->kriteria->id_kriteria . '.export';
 
         try {
             return PDF::loadView($viewName, ['details' => $detail])
-                    ->stream('dokumen_ppepp.pdf');
+                ->stream('dokumen_ppepp.pdf');
         } catch (\Exception $e) {
             Log::error("❌ Gagal generate PDF: " . $e->getMessage());
             abort(500, 'PDF error');
