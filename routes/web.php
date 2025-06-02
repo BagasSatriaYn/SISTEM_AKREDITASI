@@ -136,7 +136,7 @@ Route::middleware(['auth','authorize:A3'])->prefix('kriteria3')->group(function 
 Route::middleware(['auth','authorize:A4'])->prefix('kriteria4')->group(function () {
     Route::get('/preview/{id}', [KriteriaEmpatController::class, 'preview'])->name('kriteria4.preview');
     Route::get('/kriteria/{id}/preview', [KriteriaEmpatController::class, 'preview']);
-
+    Route::get('/{id}/preview/json', [KriteriaEmpatController::class, 'getPreviewData'])->name('kriteria4.preview.data');
 
     Route::get('/index/anggota', [WelcomeController::class, 'index']);
     Route::get('/index', [KriteriaEmpatController::class, 'index'])->name('kriteria4.index'); 
