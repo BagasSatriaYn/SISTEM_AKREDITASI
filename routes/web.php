@@ -266,7 +266,7 @@ Route::get('/login1', function () {return view('layouts.login1');})->name('layou
 Route::middleware(['auth','authorize:A9'])->prefix('kriteria9')->group(function () {
 Route::get('/preview/{id}', [KriteriaSembilanController::class, 'preview'])->name('kriteria9.preview');
 Route::get('/kriteria/{id}/preview', [KriteriaSembilanController::class, 'preview']);
-
+Route::get('/{id}/preview/json', [KriteriaSembilanController::class, 'getPreviewData'])->name('kriteria9.preview.data');
 
 Route::get('/index/anggota', [WelcomeController::class, 'index']);
 Route::get('/index', [KriteriaSembilanController::class, 'index'])->name('kriteria9.index'); 

@@ -361,6 +361,39 @@ public function preview($id)
         ], 500);
     }
 }
+    
+     public function getPreviewData($id)
+    {
+        $detail = DetailKriteria::with(['kriteria', 'komentar'])->findOrFail($id);
+
+        $validator = '-';
+        $catatan = '-';
+
+        if ($detail->status === 'acc1') {
+            $validator = 'Kajur';
+        } elseif ($detail->status === 'acc2') {
+            $validator = 'Direktur';    
+        } elseif ($detail->status === 'revisi') {
+            // Cek komentar terakhir untuk menentukan siapa yang menolak
+            if ($detail->komentar) {
+                // Misalnya kamu punya kolom `role` atau `tipe` di tabel komentar
+                // Kalau belum ada, kita asumsikan dari alur status sebelumnya
+                // Kalau sebelumnya acc1 → artinya direvisi oleh Direktur
+                $validator = 'Kajur'; // atau 'Kajur' jika dari tahap 1
+            }
+        }
+
+        if ($detail->komentar) {
+            $catatan = $detail->komentar->komen;
+        }
+
+        return response()->json([
+            'validator' => $validator,
+            'status' => strtoupper($detail->status),
+            'catatan' => $catatan,
+            'pdf_url' => route('kriteria9.preview', $id)
+        ]);
+    }   
 
    public function delete($id)
 {

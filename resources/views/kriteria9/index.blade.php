@@ -221,6 +221,19 @@
         $('#previewModal').modal('show');
     }
 
+    function showPreviewModal(id) {
+    const infoUrl = `/kriteria9/${id}/preview/json`;
+    
+    $.get(infoUrl, function(data) {
+        $('#validatorName').val(data.validator ?? '-');
+        $('#validationStatus').val(data.status ?? '-');
+        $('#validatorNotes').val(data.catatan ?? '-');
+
+        // tampilkan PDF setelah info didapat
+        $('#modal-pdf-frame').attr('src', data.pdf_url);
+        $('#previewModal').modal('show');
+    });
+}
     function modalActionDelete(id) {
         Swal.fire({
             title: 'Hapus data ini?',
