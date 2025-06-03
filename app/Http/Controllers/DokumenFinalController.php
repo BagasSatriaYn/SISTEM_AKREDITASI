@@ -3,50 +3,72 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Barryvdh\DomPDF\Facade\Pdf;
-use App\Models\DetailKriteria;
+use Illuminate\Support\Facades\DB;
+use \Niklasravnsborg\LaravelPdf\Facades\Pdf;
 
 class DokumenFinalController extends Controller
 {
     public function index()
     {
-        $data = DetailKriteria::with('kriteria')
-            ->where('status', 'acc2')
+        // Tampilkan daftar batch finalisasi yang sudah ada
+        $finalisasiList = DB::table('t_detail_kriteria')
+            ->select('id_finalisasi')
+            ->distinct()
             ->get();
 
-             foreach ($data as $detail) {
-        $filename = 'dokumen_kriteria_' . $detail->id_detail_kriteria . '.pdf';
-        $path = 'public/final/' . $filename;
-
-        if (!Storage::exists($path)) {
-            $pdf = Pdf::loadView('dokumen.template', compact('detail'));
-            Storage::put($path, $pdf->output());
-        }
-    
-        return view('DokumenFinal.final', [
-            'title' => 'Dokumen Final',
-            'data' => $data
-        ]);
+        return view('DokumenFinal.index', compact('finalisasiList'));
     }
-}
-   public function generatePdf($id)
+
+    public function show($idFinalisasi)
+    {
+        $totalKriteria = 9;
+
+        // Cek jumlah kriteria dengan status acc2 pada id_finalisasi tertentu
+        $acc2Count = DB::table('t_detail_kriteria')
+            ->where('id_finalisasi', $idFinalisasi)
+            ->where('status', 'acc2')
+            ->count();
+
+        if ($acc2Count < $totalKriteria) {
+            return redirect()->back()->with('error', 'Belum semua kriteria disetujui direktur.');
+        }
+
+        // Ambil data dokumen kriteria untuk finalisasi
+        $dokumenList = DB::table('t_detail_kriteria')
+            ->where('id_finalisasi', $idFinalisasi)
+            ->get();
+
+        return view('DokumenFinal.show', compact('dokumenList', 'idFinalisasi'));
+    }
+
+    // Contoh fungsi untuk menggabungkan PDF (placeholder)
+   public function mergePdf($idFinalisasi)
 {
-    $detail = DetailKriteria::with([
-        'penetapan', 'pelaksanaan', 'evaluasi', 'pengendalian', 'peningkatan', 'kriteria'
-    ])
-    ->where('id_detail_kriteria', $id)
-    ->where('status', 'acc2')
-    ->firstOrFail();
+    // Ambil semua path file PDF berdasarkan id_finalisasi, contoh:
+    $dokumenList = \DB::table('t_detail_kriteria')
+        ->where('id_finalisasi', $idFinalisasi)
+        ->where('status', 'acc2')
+        ->get();
 
-    $pdf = Pdf::loadView('dokumen.template', compact('detail'));
+    $pdfFiles = [];
+    foreach ($dokumenList as $dokumen) {
+        // Asumsikan kamu punya kolom file_path untuk path PDF
+        $pdfFiles[] = storage_path('app/public/' . $dokumen->file_path);
+    }
 
-    $filename = 'dokumen_kriteria_' . $id . '.pdf';
+    $pdfMerger = new \iio\libmergepdf\Merger();
 
-    // Simpan ke storage/app/public/final
-    Storage::disk('public')->put('final/' . $filename, $pdf->output());
+    foreach ($pdfFiles as $file) {
+        $pdfMerger->addFile($file);
+    }
 
-    return response()->json(['message' => 'PDF berhasil dibuat dan disimpan.']);
+    $mergedPdf = $pdfMerger->merge();
+
+    // Simpan hasil gabungan ke file baru
+    $outputPath = storage_path('app/public/finalisasi_'.$idFinalisasi.'.pdf');
+    file_put_contents($outputPath, $mergedPdf);
+
+    // Berikan response download atau redirect
+    return response()->download($outputPath);
 }
-
 }

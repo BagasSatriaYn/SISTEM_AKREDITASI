@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\DetailKriteria;
-use App\Models\Kriteria;
 use App\Models\Komentar;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
@@ -25,14 +24,18 @@ class DirekturController extends Controller
     }
 
     public function showDokumenFinal()
-    {
-        return view('dokumen.final');
-    }
+{
+    $finalisasiIds = DetailKriteria::select('id_finalisasi')
+        ->distinct()
+        ->orderBy('id_finalisasi', 'desc')
+        ->get();
+
+    return view('DokumenFinal.index', compact('finalisasiIds'));
+}
+
 
     /**
      * Simpan validasi tahap 2 oleh Direktur.
-     * - Jika diterima → status = 'acc2'
-     * - Jika ditolak → status = 'revisi'
      */
     public function simpanValidasiTahap2(Request $request)
     {
@@ -44,16 +47,13 @@ class DirekturController extends Controller
 
         $detail = DetailKriteria::findOrFail($request->id_kriteria);
         $detail->status = $request->status_validasi === 'diterima' ? 'acc2' : 'revisi';
-       if ($detail->validated_by !== 'kajur') {
-        $detail->validated_by = 'direktur';
-    }
- // ← Tandai bahwa Direktur yang validasi
 
-        // Simpan komentar jika ada
+        if ($detail->validated_by !== 'kajur') {
+            $detail->validated_by = 'direktur';
+        }
+
         if (!empty($request->catatan)) {
-            $komentar = Komentar::create([
-                'komen' => $request->catatan
-            ]);
+            $komentar = Komentar::create(['komen' => $request->catatan]);
             $detail->id_komentar = $komentar->id_komentar;
         }
 
@@ -63,7 +63,7 @@ class DirekturController extends Controller
     }
 
     /**
-     * Ambil data yang statusnya siap divalidasi tahap 2
+     * Ambil data yang statusnya siap divalidasi tahap 2.
      */
     public function getDataValidasiTahap2()
     {
@@ -75,11 +75,11 @@ class DirekturController extends Controller
     }
 
     /**
-     * (Opsional) List semua yang sudah submit (kalau dibutuhkan)
+     * List semua yang sudah submit (optional).
      */
     public function listValidasiTahap2(Request $request)
     {
-        $data = DetailKriteria::with(['kriteria', 'user']) // Pastikan relasi 'user' didefinisikan jika digunakan
+        $data = DetailKriteria::with(['kriteria', 'user'])
             ->where('status', 'submit')
             ->get();
 
@@ -87,7 +87,7 @@ class DirekturController extends Controller
     }
 
     /**
-     * Preview PDF untuk direktur (dokumen PPEPP)
+     * Preview PDF untuk direktur (dokumen PPEPP) per kriteria.
      */
     public function previewPdf($id)
     {
@@ -106,10 +106,103 @@ class DirekturController extends Controller
 
         try {
             return PDF::loadView($viewName, ['details' => $detail])
-                    ->stream('dokumen_ppepp.pdf');
+                ->stream('dokumen_ppepp.pdf');
         } catch (\Exception $e) {
             Log::error("❌ Gagal generate PDF: " . $e->getMessage());
             abort(500, 'PDF error');
         }
+    }
+
+    /**
+     * Preview finalisasi lengkap dalam format JSON.
+     */
+    public function previewFinalisasi($idFinalisasi)
+    {
+        $details = DetailKriteria::with([
+            'kriteria',
+            'komentar',
+            'penetapan',
+            'pelaksanaan',
+            'evaluasi',
+            'pengendalian',
+            'peningkatan'
+        ])
+            ->where('id_finalisasi', $idFinalisasi)
+            ->get();
+
+        if ($details->isEmpty()) {
+            return response()->json(['message' => 'Data finalisasi tidak ditemukan.'], 404);
+        }
+
+        $result = $details->map(function ($detail) {
+            $validator = '-';
+            if ($detail->status === 'acc1') {
+                $validator = 'Kajur';
+            } elseif ($detail->status === 'acc2') {
+                $validator = 'Direktur';
+            } elseif ($detail->status === 'revisi') {
+                $validator = 'Kajur';
+            }
+
+            return [
+                'id_detail_kriteria' => $detail->id_detail_kriteria,
+                'nama_kriteria' => $detail->kriteria?->nama_kriteria ?? '-',
+                'status' => strtoupper($detail->status),
+                'validator' => $validator,
+                'catatan' => $detail->komentar?->komen ?? '-',
+                'penetapan' => $detail->penetapan ?? null,
+                'pelaksanaan' => $detail->pelaksanaan ?? null,
+                'evaluasi' => $detail->evaluasi ?? null,
+                'pengendalian' => $detail->pengendalian ?? null,
+                'peningkatan' => $detail->peningkatan ?? null,
+            ];
+        });
+
+        return response()->json(['id_finalisasi' => $idFinalisasi, 'details' => $result]);
+    }
+
+    /**
+     * Preview PDF gabungan finalisasi lengkap.
+     */
+    public function previewFinalisasiPdf($idFinalisasi)
+    {
+        $details = DetailKriteria::with([
+            'kriteria',
+            'komentar',
+            'penetapan',
+            'pelaksanaan',
+            'evaluasi',
+            'pengendalian',
+            'peningkatan'
+        ])
+            ->where('id_finalisasi', $idFinalisasi)
+            ->get();
+
+        if ($details->isEmpty()) {
+            abort(404, 'Data finalisasi tidak ditemukan.');
+        }
+
+        $pdf = Pdf::loadView('DokumenFinal.finalisasi_pdf', [
+            'details' => $details,
+            'idFinalisasi' => $idFinalisasi,
+        ]);
+
+        return $pdf->stream("finalisasi_{$idFinalisasi}.pdf");
+    }
+
+    /**
+     * Preview finalisasi PDF terbaru.
+     */
+    public function previewFinalisasiLast()
+    {
+        $lastFinalisasi = DetailKriteria::orderBy('id_finalisasi', 'desc')
+            ->pluck('id_finalisasi')
+            ->first();
+
+        if (!$lastFinalisasi) {
+            abort(404, 'Data finalisasi tidak ditemukan.');
+        }
+
+        return $this->previewFinalisasiPdf($lastFinalisasi);
     }
 }

@@ -17,7 +17,7 @@ class Finalisasi extends Model
     ];
 
     public function detailKriterias()
-    {
-        return $this->hasMany(DetailKriteria::class, 'id_finalisasi', 'id_finalisasi');
+        {
+            return $this->hasMany(DetailKriteria::class, 'id_finalisasi', 'id_finalisasi');
+        }
     }
-}

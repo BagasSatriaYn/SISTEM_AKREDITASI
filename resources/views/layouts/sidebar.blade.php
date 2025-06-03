@@ -86,12 +86,15 @@
                                 </a>
                             </li>
                     <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('dokumen-final*') ? 'active' : '' }}" 
-            href="{{ route('dokumen-final.index') }}">
-                <i class="fas fa-file-alt"></i>
-                <span class="nav-link-text">Dokumen Final</span>
-            </a>
-        </li>
+    <a class="nav-link {{ request()->routeIs('direktur.finalisasi.pdf') ? 'active' : '' }}" 
+       href="{{ route('direktur.finalisasi.pdf', ['idFinalisasi' => 1]) }}">
+        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fas fa-file-alt text-dark text-sm opacity-10"></i>
+        </div>
+        <span class="nav-link-text ms-1">Dokumen Final</span>
+    </a>
+</li>
+
         </ul>
     </div>
     <div style="height:180px !important">&nbsp;</div>   

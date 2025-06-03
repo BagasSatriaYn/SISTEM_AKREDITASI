@@ -29,13 +29,13 @@
                 <i class="fas fa-list-check"></i>
             </div>
             <div class="menu-card-title">
-                <h5>Kriteria</h5>
+                <h5>Finalisasi Kriteria</h5>
                 <p class="text-muted mt-2 mb-0" style="font-size: 0.85rem;">Kelola kriteria penilaian dan parameter
-                    sistem</p>
+                    akreditasi</p>
             </div>
         </a>
 
-        <a href="{{ route('dokumen-final.index') }}" class="menu-card dokumen-card">
+        <a href="{{ route('direktur.finalisasi.pdf', ['idFinalisasi' => 1]) }}" class="menu-card dokumen-card">
             <div class="menu-card-image">
                 <i class="fas fa-file-pdf"></i>
             </div>
