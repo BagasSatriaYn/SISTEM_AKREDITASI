@@ -59,6 +59,12 @@ class UserController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        $users = User::select('id', 'name')->get(); 
+        return view('namaview', compact('users'));
+    }
+
     public function show($id)
     {
         $user = User::with('level')->find($id);

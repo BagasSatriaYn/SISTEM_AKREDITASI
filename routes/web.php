@@ -52,6 +52,20 @@ Route::get('/welcome', function () {
     return view('welcome');
 });
         
+//SuperAdmin Routes
+Route::middleware(['auth', 'authorize:A1'])->group(function () {
+    Route::get('/superadmin/dashboard', function () {
+        return view('SuperAdmin.dashboard');
+    })->name('dashboard.superadmin');
+    Route::get('/superadmin/kelolaUser', function () {
+        return view('SuperAdmin.kelolaUser');
+    })->name('kelolaUser.superadmin');
+    Route::get('/superadmin/kelolaKriteria', function () {
+        return view('SuperAdmin.kelolaKriteria');
+    })->name('kelolaKriteria.superadmin');
+});
+
+
 Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function () {
     Route::get('/preview/{id}', [KriteriaSatuController::class, 'preview'])->name('kriteria1.preview');
     Route::get('/kriteria/{id}/preview', [KriteriaSatuController::class, 'preview']);
