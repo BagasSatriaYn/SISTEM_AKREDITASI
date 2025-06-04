@@ -47,59 +47,7 @@
             <button class="close-btn" onclick="document.getElementById('loginAlert').style.display='none'">×</button>
         </div>  
         
-        <!-- Status Pengajuan Section - Modified -->
-        <div class="status-section">
-            <div class="section-title">
-                <i class="fas fa-bars"></i>
-                <h5>Status Pengajuan</h5>
-            </div>
-            
-            <div class="table-container">
-                <table class="status-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 15%">ID</th>
-                            <th style="width: 65%">Data Kriteria</th>
-                            <th style="width: 20%">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Kriteria 1</td>
-                            <td>
-                                <span class="status-badge badge-active">
-                                    <i class="fas fa-check-circle me-1"></i> Active
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Kriteria 2</td>
-                            <td>
-                                <span class="status-badge badge-inactive">
-                                    <i class="fas fa-times-circle me-1"></i> Inactive
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <!-- Pagination -->
-                <div class="pagination-container">
-                    <p class="pagination-info">Showing 1 to 2 of 2 entries</p>
-                    <div class="pagination-nav">
-                        <button class="page-nav-btn disabled">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="page-nav-btn disabled">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+      
         <!-- Pilih Menu Section -->
         <div class="menu-section">
             <div class="section-title">

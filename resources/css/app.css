@@ -439,3 +439,37 @@
             font-weight: 600;
             color: #354868;
         }
+        /* Dokumen Final Styles */
+        
+        .card-header.bg-primary {
+            background-color: #0d6efd !important;
+        }
+        
+        .text-primary {
+            color: #0d6efd !important;
+        }
+        
+        .list-unstyled {
+            padding-left: 0;
+            list-style: none;
+        }
+        
+        .ps-3 {
+            padding-left: 1rem;
+        }
+        
+        .shadow-sm {
+            box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
+        }
+        
+        .mb-0 {
+            margin-bottom: 0;
+        }
+        
+        .fw-bold {
+            font-weight: 700;
+        }
+        
+        .text-muted {
+            color: #6c757d !important;
+        }

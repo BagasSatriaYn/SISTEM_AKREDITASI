@@ -8,6 +8,9 @@ use App\Http\Controllers\KriteriaSatuController;
 use App\Http\Controllers\Anggota\AnggotaController;
 use App\Http\Controllers\KajurController;
 use App\Http\Controllers\DirekturController;
+use App\Http\Controllers\DokumenFinalController;
+use App\Http\Controllers\DokumenController;
+use App\Http\Controllers\ProfileController;
 
 
 
@@ -23,9 +26,13 @@ use App\Http\Controllers\DirekturController;
 */
 // Route::pattern('id', '[0-9]+'); //artinya ketika parameter {id}, maka harus berupa angka
  
+// Auth Routes
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'postLogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile.show')->middleware('auth');
+Route::get('/profil', [ProfileController::class, 'show'])->name('profil')->middleware('auth');
+Route::post('/profil/upload', [ProfileController::class, 'upload'])->name('profile.upload')->middleware('auth');
 
 Route::get('/login1', function () {
     return view('layouts.login1');
@@ -84,6 +91,23 @@ Route::get('/dashboard/direktur', [DirekturController::class, 'dashboard'])->nam
         Route::post('/{id}/validasi', [DirekturController::class, 'validasi'])->name('direktur.kriteria.validasi');
     });
 });
+
+
+
+
+
+
+Route::prefix('finalisasi')->group(function () {
+    Route::get('/', [DokumenFinalController::class, 'index'])->name('DokumenFinal.index');
+    Route::get('/{idFinalisasi}', [DokumenFinalController::class, 'show'])->name('DokumenFinal.show');
+    Route::post('/{idFinalisasi}/merge', [DokumenFinalController::class, 'mergePdf'])->name('DokumenFinal.merge');
+});
+
+
+
+
+
+
 
 
 
