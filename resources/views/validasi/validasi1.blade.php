@@ -47,11 +47,11 @@
     .async-hide {
       opacity: 0 !important
     }
-    .card {
+    /* .card {
       border-radius: 10px;
       margin-bottom: 20px;
-      margin-top: -7%;
-    }
+      margin-top: -6%;
+    } */
     .box-content{
       background-color: white;
       padding: 20px;
@@ -64,6 +64,7 @@
       padding: 15px;
       border-radius: 5px;
       margin-bottom: 20px;
+      margin-top: -5%;
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     }
     .title{
@@ -79,8 +80,11 @@
       margin-bottom: 20px;
     }
     .informasi{
-      margin-top: 6%;
       color:#1F4265;
+    }
+    .h4{
+      font-weight: bold;
+      margin-bottom: 20px;
     }
   </style>
   <script>
@@ -161,7 +165,7 @@
   {{-- Content Start --}}
 
   @section('content')
-  <div class="card">
+  {{-- <div class="card"> --}}
     <div class="box-header">
       <h3 class="title">Validasi Data Kriteria Tahap 1</h3>
     </div>
@@ -169,10 +173,7 @@
     <div class="box-informasi">
           <div class="informasi">
             <center>
-            {{-- <svg class="icon-warning" width="69" height="69" viewBox="0 0 69 69" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M34.5 4.3125C42.5062 ... Z" fill="#077E24"/>
-            </svg> --}}
-            <strong>Informasi</strong><br>
+            <h4><strong>Informasi</strong><br></h4>
             Berikut daftar data kriteria yang akan divalidasi pada <strong>tahap 1</strong>.<br>
             Mohon Validator agar melakukan validasi terhadap data yang sudah disubmit oleh Admin dengan teliti.</center>
           </div>
