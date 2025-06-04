@@ -431,4 +431,10 @@ public function preview($id)
         ], 500);
     }
 }
+
+    public function dashboard()
+    {
+        $dataKriteria = DetailKriteria::with('kriteria')->get();
+        return view('anggota.dashboard', compact('dataKriteria'));
+    }
 }

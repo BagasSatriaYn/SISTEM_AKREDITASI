@@ -56,6 +56,8 @@ Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function 
     Route::get('/preview/{id}', [KriteriaSatuController::class, 'preview'])->name('kriteria1.preview');
     Route::get('/kriteria/{id}/preview', [KriteriaSatuController::class, 'preview']);
     Route::get('/{id}/preview/json', [KriteriaSatuController::class, 'getPreviewData'])->name('kriteria1.preview.data');
+    Route::get('/anggota/dashboard', [KriteriaSatuController::class,'dashboard'])->name('kriteria1.dashboard');
+
 
     Route::get('/index/anggota', [WelcomeController::class, 'index']);
     Route::get('/index', [KriteriaSatuController::class, 'index'])->name('kriteria1.index'); 
@@ -306,52 +308,60 @@ Route::get('/login1', function () {return view('layouts.login1');})->name('layou
     });
 });
 
-    Route::middleware(['auth', 'authorize:DKT'])->group(function () {
+  
+
+
+Route::middleware(['auth', 'authorize:DKT'])->group(function () {
+
+    // Dashboard Direktur
     Route::get('/dashboard/direktur', [DirekturController::class, 'dashboard'])->name('direktur.dashboard');
+
+    // Route PDF Finalisasi by Direktur (di luar prefix kriteria supaya URL clean)
+    Route::get('/direktur/finalisasi/{idFinalisasi}/pdf', [DirekturController::class, 'previewFinalisasiPdf'])
+        ->name('direktur.finalisasi.pdf');
+
+    // Preview finalisasi terakhir (optional)
+    Route::get('/finalisasi/last', [DirekturController::class, 'previewFinalisasiLast'])->name('finalisasi.latest.pdf');
+
+    // Halaman list finalisasi
+    Route::get('/finalisasi', [DirekturController::class, 'showDokumenFinal'])->name('finalisasi.preview');
+    Route::get('/direktur/preview/{id}', [DirekturController::class, 'previewPdf'])->name('direktur.preview.pdf');
+
+
+    // Group route untuk kriteria
     Route::prefix('kriteria')->group(function () {
         Route::get('/', [DirekturController::class, 'index'])->name('direktur.kriteria.index');
         Route::get('/{id}/detail', [DirekturController::class, 'show'])->name('direktur.kriteria.show');
         Route::post('/{id}/komentar', [DirekturController::class, 'komentar'])->name('direktur.kriteria.komentar');
         Route::post('/{id}/validasi', [DirekturController::class, 'validasi'])->name('direktur.kriteria.validasi');
-        Route::view('/validasi2', 'validasi.validasi2')->name('validasi2'); 
+        Route::view('/validasi2', 'validasi.validasi2')->name('validasi2');
         Route::post('/validasi2/simpan', [DirekturController::class, 'simpanValidasiTahap2'])->name('validasi2.simpan');
         Route::get('/validasi2/data', [DirekturController::class, 'getDataValidasiTahap2'])->name('validasi2.data');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-        Route::get('/login1', function () {return view('layouts.login1');})->name('layouts.login1');
-        Route::get('/direktur/preview/{id}', [DirekturController::class, 'previewPdf'])->name('direktur.preview.pdf');
+        Route::get('/login1', function () { return view('layouts.login1'); })->name('layouts.login1');
+        
+
+        // Preview finalisasi JSON (data lengkap per id_finalisasi)
+        Route::get('/finalisasi/preview/{idFinalisasi}', [DirekturController::class, 'previewFinalisasi'])
+            ->name('direktur.finalisasi.preview');
+
+        // Halaman dokumen final
+        Route::get('/dokumenfinal', [DirekturController::class, 'showDokumenFinal'])->name('direktur.dokumenfinal');
     });
 });
 
-Route::get('/dokumen-final', [DokumenFinalController::class, 'index'])->name('dokumen-final');
-Route::get('/dokumen-final/generate/{id}', [DokumenFinalController::class, 'generatePdf'])->name('dokumen.generate');
-Route::get('/generate-pdf/{id}', [\App\Http\Controllers\DokumenFinalController::class, 'generatePdf']);
 
 
 
-// Tambahkan di routes/web.php
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
-
-Route::get('/profile', function () {
-    return view('profile');
-})->name('profile');
-
-Route::get('/settings', function () {
-    return view('settings');
-})->name('settings');
-
-Route::get('/dokumen-final', [DokumenController::class, 'show'])->name('dokumen-final');
-Route::resource('dokumen-final', DokumenFinalController::class);
 
 
-Route::get('/validasi/validasi1', function () {
-    return view('validasi.validasi1');
+Route::prefix('finalisasi')->group(function () {
+    Route::get('/', [DokumenFinalController::class, 'index'])->name('DokumenFinal.index');
+    Route::get('/{idFinalisasi}', [DokumenFinalController::class, 'show'])->name('DokumenFinal.show');
+    Route::post('/{idFinalisasi}/merge', [DokumenFinalController::class, 'mergePdf'])->name('DokumenFinal.merge');
 });
 
-Route::get('/validasi/validasi2', function () {
-    return view('validasi.validasi2');
-});
+
 
 
 

@@ -69,7 +69,14 @@ class DetailKriteria extends Model
     {
         return $this->belongsTo(Komentar::class, 'id_komentar');
     }
+    // Model Finalisasi
+    public function detailKriterias() {
+        return $this->hasMany(DetailKriteria::class, 'id_finalisasi', 'id');
+    }
 
-    
+    // Model DetailKriteria
+    public function finalisasi() {
+        return $this->belongsTo(Finalisasi::class, 'id_finalisasi', 'id');
+    }
 
 }

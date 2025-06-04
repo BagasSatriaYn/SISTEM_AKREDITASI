@@ -27,21 +27,9 @@
                 <i class="fas fa-list-check"></i>
             </div>
             <div class="menu-card-title">
-                <h5>Validasi Kriteria</h5>
+                <h5>Validasi Tahap 1</h5>
                 <p class="text-muted mt-2 mb-0" style="font-size: 0.85rem;">Kelola kriteria penilaian dan parameter
-                    sistem untuk validasi tahap 1</p>   
-            </div>
-        </a>
-
-       <a href="{{ route('dokumen-final.index') }}" class="menu-card dokumen-card">
-
-            <div class="menu-card-image">
-                <i class="fas fa-file-pdf"></i>
-            </div>
-            <div class="menu-card-title">
-                <h5>Lihat Dokumen Final</h5>
-                <p class="text-muted mt-2 mb-0" style="font-size: 0.85rem;">Akses dokumen hasil akhir yang telah
-                    divalidasi</p>
+                    akreditasi</p>
             </div>
         </a>
     </div>

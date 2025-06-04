@@ -335,7 +335,7 @@ function statusBadge(status) {
     $('#formValidasiTahap2')[0].reset();
 
     // Set src iframe untuk preview PDF
-   $('#pdfViewer').attr('src', "{{ route('direktur.preview.pdf', '') }}/" + id);
+   $('#pdfViewer').attr('src', "{{ url('/direktur/preview', '') }}/" + id);
 
     // Tampilkan modal
     $('#modalValidasi').modal('show');

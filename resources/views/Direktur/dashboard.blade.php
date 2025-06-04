@@ -31,11 +31,11 @@
             <div class="menu-card-title">
                 <h5>Finalisasi Kriteria</h5>
                 <p class="text-muted mt-2 mb-0" style="font-size: 0.85rem;">Kelola kriteria penilaian dan parameter
-                    sistem untuk validasi tahap 2 </p>  
+                    akreditasi</p>
             </div>
         </a>
 
-        <a href="{{ route('dokumen-final.index') }}" class="menu-card dokumen-card">
+        <a href="{{ route('direktur.finalisasi.pdf', ['idFinalisasi' => 1]) }}" class="menu-card dokumen-card">
             <div class="menu-card-image">
                 <i class="fas fa-file-pdf"></i>
             </div>

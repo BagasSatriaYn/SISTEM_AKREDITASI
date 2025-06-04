@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Barryvdh\DomPDF\Facade\Pdf;
-use App\Models\DetailKriteria;
+use Illuminate\Support\Facades\DB;
+use \Niklasravnsborg\LaravelPdf\Facades\Pdf;
 
 class DokumenFinalController extends Controller
 {
@@ -13,6 +12,7 @@ class DokumenFinalController extends Controller
     {
         $data = DetailKriteria::with('kriteria')
             ->where('status', 'acc2')
+            
             ->get();
 
              foreach ($data as $detail) {
@@ -32,21 +32,31 @@ class DokumenFinalController extends Controller
 }
    public function generatePdf($id)
 {
-    $detail = DetailKriteria::with([
-        'penetapan', 'pelaksanaan', 'evaluasi', 'pengendalian', 'peningkatan', 'kriteria'
-    ])
-    ->where('id_detail_kriteria', $id)
-    ->where('status', 'acc2')
-    ->firstOrFail();
+    // Ambil semua path file PDF berdasarkan id_finalisasi, contoh:
+    $dokumenList = \DB::table('t_detail_kriteria')
+        ->where('id_finalisasi', $idFinalisasi)
+        ->where('status', 'acc2')
+        ->get();
 
-    $pdf = Pdf::loadView('dokumen.template', compact('detail'));
+    $pdfFiles = [];
+    foreach ($dokumenList as $dokumen) {
+        // Asumsikan kamu punya kolom file_path untuk path PDF
+        $pdfFiles[] = storage_path('app/public/' . $dokumen->file_path);
+    }
 
-    $filename = 'dokumen_kriteria_' . $id . '.pdf';
+    $pdfMerger = new \iio\libmergepdf\Merger();
 
-    // Simpan ke storage/app/public/final
-    Storage::disk('public')->put('final/' . $filename, $pdf->output());
+    foreach ($pdfFiles as $file) {
+        $pdfMerger->addFile($file);
+    }
 
-    return response()->json(['message' => 'PDF berhasil dibuat dan disimpan.']);
+    $mergedPdf = $pdfMerger->merge();
+
+    // Simpan hasil gabungan ke file baru
+    $outputPath = storage_path('app/public/finalisasi_'.$idFinalisasi.'.pdf');
+    file_put_contents($outputPath, $mergedPdf);
+
+    // Berikan response download atau redirect
+    return response()->download($outputPath);
 }
-
 }
