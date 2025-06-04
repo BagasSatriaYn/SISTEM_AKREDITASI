@@ -24,14 +24,14 @@ class DirekturController extends Controller
     }
 
     public function showDokumenFinal()
-{
-    $finalisasiIds = DetailKriteria::select('id_finalisasi')
-        ->distinct()
-        ->orderBy('id_finalisasi', 'desc')
-        ->get();
+    {
+        $finalisasiIds = DetailKriteria::select('id_finalisasi')
+            ->distinct()
+            ->orderBy('id_finalisasi', 'desc')
+            ->get();
 
-    return view('DokumenFinal.index', compact('finalisasiIds'));
-}
+        return view('DokumenFinal.index', compact('finalisasiIds'));
+    }
 
 
     /**
@@ -166,28 +166,58 @@ class DirekturController extends Controller
      */
     public function previewFinalisasiPdf($idFinalisasi)
     {
-        $details = DetailKriteria::with([
-            'kriteria',
-            'komentar',
-            'penetapan',
-            'pelaksanaan',
-            'evaluasi',
-            'pengendalian',
-            'peningkatan'
-        ])
-            ->where('id_finalisasi', $idFinalisasi)
-            ->get();
+        // $details = DetailKriteria::with([
+        //     'kriteria',
+        //     'komentar',
+        //     'penetapan',
+        //     'pelaksanaan',
+        //     'evaluasi',
+        //     'pengendalian',
+        //     'peningkatan'
+        // ])
+        //     ->where('id_finalisasi', $idFinalisasi)
+        //     ->get();
 
-        if ($details->isEmpty()) {
-            abort(404, 'Data finalisasi tidak ditemukan.');
-        }
+        // if ($details->isEmpty()) {
+        //     dd('DATA KOSONG', $idFinalisasi);
+        // // atau return response('Data tidak ditemukan', 404);
+        // }
 
-        $pdf = Pdf::loadView('DokumenFinal.finalisasi_pdf', [
-            'details' => $details,
-            'idFinalisasi' => $idFinalisasi,
+        // $pdf = Pdf::loadView('DokumenFinal.finalisasi_pdf', [
+        //     'details' => $details,
+        //     'idFinalisasi' => $idFinalisasi,
+        // ]);
+
+        // return $pdf->stream("finalisasi_{$idFinalisasi}.pdf");
+        
+        //cuma buat dummy, nanti hapusen
+        $dummyDetails = collect([
+            (object)[
+                'status' => 'acc1',
+                'kriteria' => (object)['nama_kriteria' => 'Kriteria Dummy 1'],
+                'komentar' => (object)['komen' => 'Semua sudah oke.'],
+                'penetapan' => (object)['deskripsi' => 'Deskripsi penetapan dummy'],
+                'pelaksanaan' => (object)['deskripsi' => 'Deskripsi pelaksanaan dummy'],
+                'evaluasi' => (object)['deskripsi' => 'Deskripsi evaluasi dummy'],
+                'pengendalian' => (object)['deskripsi' => 'Deskripsi pengendalian dummy'],
+                'peningkatan' => (object)['deskripsi' => 'Deskripsi peningkatan dummy'],
+            ],
+            (object)[
+                'status' => 'acc2',
+                'kriteria' => (object)['nama_kriteria' => 'Kriteria Dummy 2'],
+                'komentar' => (object)['komen' => 'Perlu revisi bagian evaluasi.'],
+                'penetapan' => (object)['deskripsi' => 'Penetapan kedua'],
+                'pelaksanaan' => (object)['deskripsi' => 'Pelaksanaan kedua'],
+                'evaluasi' => (object)['deskripsi' => 'Evaluasi kedua'],
+                'pengendalian' => (object)['deskripsi' => 'Pengendalian kedua'],
+                'peningkatan' => (object)['deskripsi' => 'Peningkatan kedua'],
+            ],
         ]);
 
-        return $pdf->stream("finalisasi_{$idFinalisasi}.pdf");
+        return view('DokumenFinal.finalisasi_pdf', [
+            'details' => $dummyDetails,
+            'idFinalisasi' => $idFinalisasi,
+        ]);
     }
 
     /**
