@@ -60,7 +60,7 @@
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     }
     .box-header{
-      background-color: #00437F;
+      background-color: #354868;
       padding: 15px;
       border-radius: 5px;
       margin-bottom: 20px;
