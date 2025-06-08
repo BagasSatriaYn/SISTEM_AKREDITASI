@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -47,6 +48,7 @@ class AuthController extends Controller
                     'A7'  => url('/kriteria7/index/anggota'),
                     'A8'  => url('/kriteria8/index/anggota'),
                     'A9'  => url('/kriteria9/index/anggota'),
+                    'SUPER'  => url('/superadmin/index'),
                     default => url('/'),
                 };
 
@@ -86,4 +88,12 @@ class AuthController extends Controller
             ->with('status', 'Anda telah berhasil logout'); 
             
     }
+    public function showProfile()
+{
+    $user = Auth::user();
+    return view('Profile.profile', [
+        'user' => $user,
+        'level' => $user->level->nama_level ?? 'Unknown Level'
+    ]);
+}
 }

@@ -16,6 +16,7 @@
     use Yajra\DataTables\Facades\DataTables;
     use Illuminate\Support\Facades\Validator;
     use Barryvdh\DomPDF\Facade\Pdf;
+    use Illuminate\Support\Str;
 
     class KriteriaDuaController extends Controller
     {
@@ -217,6 +218,25 @@ if ($availableFinalisasi) {
         ], 500);
     }
 }
+
+    public function uploadImage(Request $request)
+    {
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('public/pendukung', $filename);
+
+            return response()->json([
+                'status' => true,
+                'url' => asset(Storage::url('pendukung/' . $filename)),
+            ]);
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => 'File tidak ditemukan.',
+        ]);
+    }
     public function show($id)
     {
     // Menghapus prefix 'A' dan mendapatkan angka kriteria
@@ -282,7 +302,7 @@ if ($availableFinalisasi) {
 public function preview($id)
 {
     Log::info("🔍 Masuk preview() dengan ID: $id");
-
+    ini_set('pcre.backtrack_limit', '9000000'); 
     // Ambil langsung detail berdasarkan ID (angka)
     $detail = DetailKriteria::with([
         'kriteria',

@@ -16,6 +16,7 @@
     use Yajra\DataTables\Facades\DataTables;
     use Illuminate\Support\Facades\Validator;
     use Barryvdh\DomPDF\Facade\Pdf;
+    use Illuminate\Support\Str;
 
 class KriteriaSatuController extends Controller
 {
@@ -282,8 +283,30 @@ if ($availableFinalisasi) {
         ]);
     }
 
+    
+
+public function uploadImage(Request $request)
+    {
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('public/pendukung', $filename);
+
+            return response()->json([
+                'status' => true,
+                'url' => asset(Storage::url('pendukung/' . $filename)),
+            ]);
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => 'File tidak ditemukan.',
+        ]);
+    }
+
 public function preview($id)
 {
+      ini_set('pcre.backtrack_limit', '5000000');
     Log::info("🔍 Masuk preview() dengan ID: $id");
 
     // Ambil langsung detail berdasarkan ID (angka)
@@ -296,6 +319,7 @@ public function preview($id)
         'peningkatan'
     ])->findOrFail($id);
 
+    
     try {
         return \PDF::loadView('kriteria1.export', ['details' => $detail])
                    ->stream('dokumen_ppepp.pdf');
@@ -306,45 +330,69 @@ public function preview($id)
 }
 
 
-    public function update(Request $request, $id)
+
+  public function update(Request $request, $id)
 {
+    $validator = Validator::make($request->all(), [
+        'desk_penetapan' => 'required',
+        'desk_pelaksanaan' => 'required',
+        'desk_evaluasi' => 'required',
+        'desk_pengendalian' => 'required',
+        'desk_peningkatan' => 'required',
+        'penetapan_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'pelaksanaan_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'evaluasi_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'pengendalian_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'peningkatan_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'status' => 'required|in:save,submitted'
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
     DB::beginTransaction();
-
     try {
-        $detail = DetailKriteria::findOrFail($id);
+        $detail = DetailKriteria::with(['penetapan', 'pelaksanaan', 'evaluasi', 'pengendalian', 'peningkatan'])->findOrFail($id);
 
-        // Validasi
-        $validator = Validator::make($request->all(), [
-            'desk_penetapan' => 'required',
-            'desk_pelaksanaan' => 'required',
-            'desk_evaluasi' => 'required',
-            'desk_pengendalian' => 'required',
-            'desk_peningkatan' => 'required',
-            'status' => 'required|in:save,submitted'
-        ]);
+        // Fungsi upload gambar
+        $upload = function ($file, $lama = null) {
+            if ($file) {
+                if ($lama && Storage::exists('public/' . $lama)) {
+                    Storage::delete('public/' . $lama);
+                }
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                return $file->storeAs('pendukung', $filename, 'public');
+            }
+            return $lama; // jika tidak ada file baru, pakai yang lama
+        };
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        // Update tiap bagian PPEPP
+        // Update setiap bagian
         $detail->penetapan->update([
             'deskripsi' => $request->desk_penetapan,
-        ]);
-        $detail->pelaksanaan->update([
-            'deskripsi' => $request->desk_pelaksanaan,
-        ]);
-        $detail->evaluasi->update([
-            'deskripsi' => $request->desk_evaluasi,
-        ]);
-        $detail->pengendalian->update([
-            'deskripsi' => $request->desk_pengendalian,
-        ]);
-        $detail->peningkatan->update([
-            'deskripsi' => $request->desk_peningkatan,
+            'pendukung' => $upload($request->file('penetapan_file'), $detail->penetapan->pendukung)
         ]);
 
-        // Update status
+        $detail->pelaksanaan->update([
+            'deskripsi' => $request->desk_pelaksanaan,
+            'pendukung' => $upload($request->file('pelaksanaan_file'), $detail->pelaksanaan->pendukung)
+        ]);
+
+        $detail->evaluasi->update([
+            'deskripsi' => $request->desk_evaluasi,
+            'pendukung' => $upload($request->file('evaluasi_file'), $detail->evaluasi->pendukung)
+        ]);
+
+        $detail->pengendalian->update([
+            'deskripsi' => $request->desk_pengendalian,
+            'pendukung' => $upload($request->file('pengendalian_file'), $detail->pengendalian->pendukung)
+        ]);
+
+        $detail->peningkatan->update([
+            'deskripsi' => $request->desk_peningkatan,
+            'pendukung' => $upload($request->file('peningkatan_file'), $detail->peningkatan->pendukung)
+        ]);
+
         $detail->status = $request->status;
         $detail->save();
 
@@ -352,17 +400,18 @@ public function preview($id)
 
         return response()->json([
             'status' => true,
-            'message' => 'Data berhasil diperbarui.'
+            'message' => 'Data berhasil diperbarui.',
         ]);
-
     } catch (\Exception $e) {
         DB::rollBack();
         return response()->json([
-            'success' => false,
-            'message' => 'Gagal update data: ' . $e->getMessage()
+            'status' => false,
+            'message' => 'Gagal update: ' . $e->getMessage()
         ], 500);
     }
 }
+
+
 
     public function getPreviewData($id)
     {
@@ -376,12 +425,8 @@ public function preview($id)
         } elseif ($detail->status === 'acc2') {
             $validator = 'Direktur';    
         } elseif ($detail->status === 'revisi') {
-            // Cek komentar terakhir untuk menentukan siapa yang menolak
             if ($detail->komentar) {
-                // Misalnya kamu punya kolom `role` atau `tipe` di tabel komentar
-                // Kalau belum ada, kita asumsikan dari alur status sebelumnya
-                // Kalau sebelumnya acc1 → artinya direvisi oleh Direktur
-                $validator = 'Kajur'; // atau 'Kajur' jika dari tahap 1
+                $validator = 'Kajur';
             }
         }
 
@@ -395,42 +440,39 @@ public function preview($id)
             'catatan' => $catatan,
             'pdf_url' => route('kriteria1.preview', $id)
         ]);
-    }   
-
-
-   public function delete($id)
-{
-    try {
-        DB::beginTransaction();
-
-        $detail = DetailKriteria::with([
-            'penetapan', 'pelaksanaan', 'evaluasi', 'pengendalian', 'peningkatan'
-        ])->findOrFail($id);
-
-        // 1. Hapus detail_kriteria dulu (agar FK ke penetapan, dll bebas)
-        $detail->delete();
-
-        // 2. Baru hapus anak-anaknya (tidak ada FK lagi ke mereka)
-        if ($detail->penetapan) $detail->penetapan->delete();
-        if ($detail->pelaksanaan) $detail->pelaksanaan->delete();
-        if ($detail->evaluasi) $detail->evaluasi->delete();
-        if ($detail->pengendalian) $detail->pengendalian->delete();
-        if ($detail->peningkatan) $detail->peningkatan->delete();
-
-        DB::commit();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Data berhasil dihapus'
-        ]);
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
-            'success' => false,
-            'message' => 'Gagal menghapus data: ' . $e->getMessage()
-        ], 500);
     }
-}
+
+    public function delete($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $detail = DetailKriteria::with([
+                'penetapan', 'pelaksanaan', 'evaluasi', 'pengendalian', 'peningkatan'
+            ])->findOrFail($id);
+
+            $detail->delete();
+
+            if ($detail->penetapan) $detail->penetapan->delete();
+            if ($detail->pelaksanaan) $detail->pelaksanaan->delete();
+            if ($detail->evaluasi) $detail->evaluasi->delete();
+            if ($detail->pengendalian) $detail->pengendalian->delete();
+            if ($detail->peningkatan) $detail->peningkatan->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 
     public function dashboard()
     {

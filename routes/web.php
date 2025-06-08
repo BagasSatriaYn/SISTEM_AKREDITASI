@@ -1,23 +1,27 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\KajurController;
+use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\WelcomeController;
-use App\Http\Controllers\KriteriaSatuController;
+use App\Http\Controllers\DirekturController;
+use App\Http\Controllers\SuperuserController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\SuperlevelController;
 use App\Http\Controllers\KriteriaDuaController;
+use App\Http\Controllers\DokumenFinalController;
+use App\Http\Controllers\KriteriaEnamController;
+use App\Http\Controllers\KriteriaLimaController;
+use App\Http\Controllers\KriteriaSatuController;
 use App\Http\Controllers\KriteriaTigaController;
 use App\Http\Controllers\KriteriaEmpatController;
-use App\Http\Controllers\KriteriaLimaController;
-use App\Http\Controllers\KriteriaEnamController;
 use App\Http\Controllers\KriteriaTujuhController;
+use App\Http\Controllers\Anggota\AnggotaController;
 use App\Http\Controllers\KriteriaDelapanController;
 use App\Http\Controllers\KriteriaSembilanController;
-use App\Http\Controllers\Anggota\AnggotaController;
-use App\Http\Controllers\KajurController;
-use App\Http\Controllers\DirekturController;
-use App\Http\Controllers\DokumenFinalController;
-use App\Http\Controllers\DokumenController;
+use App\Http\Controllers\ProfileController;
 
 
 
@@ -51,20 +55,52 @@ Route::get('/', function () {
 Route::get('/welcome', function () {
     return view('welcome');
 });
-        
+Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile.show')->middleware('auth');   
+Route::get('/profil', [ProfileController::class, 'show'])->name('profil')->middleware('auth');
+Route::post('/profil/upload', [ProfileController::class, 'upload'])->name('profile.upload')->middleware('auth');
+Route::get('/anggota/dashboard', [AnggotaController::class, 'dashboard'])
+    ->middleware('auth') // atau tambah role check jika ada
+    ->name('anggota.dashboard');
 //SuperAdmin Routes
-Route::middleware(['auth', 'authorize:A1'])->group(function () {
-    Route::get('/superadmin/dashboard', function () {
-        return view('SuperAdmin.dashboard');
-    })->name('dashboard.superadmin');
-    Route::get('/superadmin/kelolaUser', function () {
-        return view('SuperAdmin.kelolaUser');
-    })->name('kelolaUser.superadmin');
-    Route::get('/superadmin/kelolaKriteria', function () {
-        return view('SuperAdmin.kelolaKriteria');
-    })->name('kelolaKriteria.superadmin');
-});
+Route::middleware(['auth','authorize:SUPER'])->prefix('superadmin')->group(function () {
+    Route::get('/superadmin/dashboard', [App\Http\Controllers\SuperadminController::class, 'dashboard'])->name('superadmin.dashboard');
 
+    //KELOLA USER
+    Route::get('/index', [UserController::class, 'index']);
+    Route::get('/user', [SuperuserController::class, 'index'])->name('superadmin.user.index');
+    Route::get('/level', [SuperlevelController::class, 'index'])->name('superadmin.level.index');
+    Route::post('/userlist', [SuperuserController::class, 'list'])->name('superadmin.user.list');
+    Route::get('/userinput', [SuperuserController::class, 'input'])->name('superadmin.user.input');
+    Route::post('/userstore', [SuperuserController::class, 'store'])->name('superadmin.user.store');
+    Route::post('/list', [SuperlevelController::class, 'list'])->name('superadmin.level.list');
+    Route::get('/user/{id}/show', [SuperuserController::class, 'show'])->name('superadmin.user.show');
+    Route::get('/user/{id}/edit', [SuperuserController::class, 'edit'])->name('superadmin.user.edit');
+    Route::post('/user/{id}/update', [SuperuserController::class, 'update'])->name('superadmin.user.update');
+    Route::delete('/user/{id}/delete', [SuperuserController::class, 'destroy'])->name('superadmin.user.destroy');
+
+    //Kelola Level
+    Route::get('/level', [SuperlevelController::class, 'index'])->name('superadmin.level.index');
+    Route::get('/levelinput', [SuperlevelController::class, 'input'])->name('superadmin.level.input');
+    Route::post('/levellist', [SuperlevelController::class, 'list'])->name('superadmin.level.list');
+    Route::get('/level/{id}', [SuperlevelController::class, 'show'])->name('superadmin.level.show');
+    Route::post('/levelstore', [SuperlevelController::class, 'store'])->name('superadmin.level.store');
+    Route::get('/level/{id}/edit', [SuperlevelController::class, 'edit'])->name('superadmin.level.edit');
+    Route::post('/level/{id}/update', [SuperlevelController::class, 'update'])->name('superadmin.level.update');
+    Route::delete('/level/{id}/delete', [SuperlevelController::class, 'destroy'])->name('superadmin.level.destroy');
+
+    //Kelola Kriteria 
+    Route::get('/kriteria', [App\Http\Controllers\SuperkriteriaController::class, 'index'])->name('superadmin.kriteria.index');
+    Route::post('/kriterialist', [App\Http\Controllers\SuperkriteriaController::class, 'list'])->name('superadmin.kriteria.list');
+    Route::get('/kriteriainput', [App\Http\Controllers\SuperkriteriaController::class, 'input'])->name('superadmin.kriteria.input');
+    Route::get('/kriteria/{id}/show', [App\Http\Controllers\SuperkriteriaController::class, 'show'])->name('superadmin.kriteria.show');
+
+    Route::post('/kriteriastore', [App\Http\Controllers\SuperkriteriaController::class, 'store'])->name('superadmin.kriteria.store');
+    Route::get('/kriteria/{id}/edit', [App\Http\Controllers\SuperkriteriaController::class, 'edit'])->name('superadmin.kriteria.edit');
+    Route::post('/kriteria/{id}/update', [App\Http\Controllers\SuperkriteriaController::class, 'update'])->name('superadmin.kriteria.update');
+    Route::delete('/kriteria/{id}/delete', [App\Http\Controllers\SuperkriteriaController::class, 'destroy'])->name('superadmin.kriteria.destroy');
+
+    
+});
 
 Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function () {
     Route::get('/preview/{id}', [KriteriaSatuController::class, 'preview'])->name('kriteria1.preview');
@@ -80,6 +116,8 @@ Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function 
     Route::get('/input', [KriteriaSatuController::class, 'create']);    
     Route::post('/store', [KriteriaSatuController::class, 'store']);
     Route::post('/upload', [KriteriaSatuController::class, 'uploadImage'])->name('image.upload');
+    Route::post('/upload', [KriteriaSatuController::class, 'uploadImage'])->name('kriteria1.upload');
+
 
     // ⬇️ PUT harus di atas ini!
     Route::put('/{id}/update', [KriteriaSatuController::class, 'update'])->name('kriteria1.update');
