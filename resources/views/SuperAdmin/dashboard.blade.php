@@ -34,14 +34,28 @@
             </div>
         </a>
 
-        <a href="{{ route('direktur.finalisasi.pdf', ['idFinalisasi' => 1]) }}" class="menu-card dokumen-card">
+        <a href="{{ route('validasi2') }}" class="menu-card kriteria-card">
+            <span class="menu-card-badge">New</span>
             <div class="menu-card-image">
-                <i class="fas fa-file-pdf"></i>
+                <i class="fas fa-list-check"></i>
+            </div>
+            <div class="menu-card-title">
+                <h5>Manajemen Level</h5>
+                <p class="text-muted mt-2 mb-0" style="font-size: 0.85rem;">Kelola Sidebar dan Halaman Web AKSIB</p>
+            </div>
+        </a>
+
+        <a href="{{ route('validasi2') }}" class="menu-card kriteria-card">
+            <span class="menu-card-badge">New</span>
+            <div class="menu-card-image">
+                <i class="fas fa-list-check"></i>
             </div>
             <div class="menu-card-title">
                 <h5>Manajemen Kriteria</h5>
-                <p class="text-muted mt-2 mb-0" style="font-size: 0.85rem;">Kelola Kriteria</p>
+                <p class="text-muted mt-2 mb-0" style="font-size: 0.85rem;">Kelola Sidebar dan Halaman Web AKSIB</p>
             </div>
         </a>
+
+        
     </div>
 @endsection

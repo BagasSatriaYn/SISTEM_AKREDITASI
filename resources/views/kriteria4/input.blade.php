@@ -12,13 +12,14 @@
                         @csrf
                         <input type="hidden" name="id_kriteria" id="id_kriteria_input" value="">
                         <div class="form-group">
-                            <select name="id_kriteria_select" id="id_kriteria" class="form-control" required
-                                onchange="updateKriteria()">
-                                <option value="">- Pilih Kriteria -</option>
-                                @foreach ($kriteria as $l)
-                                    <option value="{{ $l->id_kriteria }}">{{ $l->nama }}</option>
-                                @endforeach
+                            @php
+                                $k4 = $kriteria->firstWhere('id_kriteria', 4);
+                            @endphp
+
+                            <select class="form-control" disabled>
+                                <option selected>{{ $k4->nama ?? 'Kriteria 4' }}</option>
                             </select>
+                            <input type="hidden" name="id_kriteria" value="{{ $k4->id_kriteria ?? 4 }}">
                             <small id="error-id_kriteria" class="error-text form-text text-danger"></small>
                         </div>
                         <!-- 1. Penetapan -->

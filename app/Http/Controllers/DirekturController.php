@@ -141,7 +141,7 @@ class DirekturController extends Controller
             } elseif ($detail->status === 'acc2') {
                 $validator = 'Direktur';
             } elseif ($detail->status === 'revisi') {
-                $validator = 'Kajur';
+                $validator = 'Revisi';
             }
 
             return [
@@ -205,4 +205,33 @@ class DirekturController extends Controller
 
         return $this->previewFinalisasiPdf($lastFinalisasi);
     }
+
+     public function getDetailValidasi($id)
+{
+    $detail = DetailKriteria::with(['kriteria', 'komentar'])->findOrFail($id);
+
+    $validator = '-';
+    $catatan = '-';
+
+    // ✅ Gunakan kolom validated_by langsung, bukan tebak-tebakan dari komentar
+   $validator = '-';
+    if ($detail->validated_by === 'direktur') {
+        $validator = 'Direktur';
+    } elseif ($detail->validated_by === 'direktur') {
+        $validator = 'Direktur';
+    }   
+
+
+    if ($detail->komentar) {
+        $catatan = $detail->komentar->komen;
+    }
+
+    return response()->json([
+        'validator' => $validator,
+        'status' => strtoupper($detail->status),
+        'catatan' => $catatan,
+        'pdf_url' => asset("storage/final/dokumen_kriteria_{$id}.pdf")
+    ]);
+}
+
 }

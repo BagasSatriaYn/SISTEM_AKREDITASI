@@ -1,6 +1,6 @@
 @extends('layouts.template')
     
-@section('title', 'Dashboard-KJM, Direktur')
+@section('title', 'Dashboard - Direktur')
 
 @section('content')
 

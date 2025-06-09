@@ -6,6 +6,237 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Additional CSS for notification and profile -->
+    <style>
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-left: auto;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        /* Notification styles */
+        .notification-dropdown {
+            position: relative;
+        }
+        
+        .notification-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            animation: bellRing 0.8s ease-in-out infinite;
+        }
+        
+        /* Bell ringing animation */
+        @keyframes bellRing {
+            0%, 50%, 100% {
+                transform: rotate(0deg);
+            }
+            10%, 30% {
+                transform: rotate(-10deg);
+            }
+            20%, 40% {
+                transform: rotate(10deg);
+            }
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+        
+        .notification-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            margin-top: 8px;
+        }
+        
+        .notification-dropdown-menu.show {
+            display: block;
+        }
+        
+        .notification-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .notification-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-item.unread {
+            background-color: #f8f9ff;
+            border-left: 3px solid #007bff;
+        }
+        
+        .notification-content {
+            color: #333;
+            font-size: 0.9rem;
+        }
+        
+        .notification-time {
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+        
+        /* Profile dropdown styles */
+        .profile-dropdown {
+            position: relative;
+        }
+        
+        .profile-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+        }
+        
+        .profile-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .profile-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin: 0;
+        }
+        
+        .profile-role {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin: 0;
+        }
+        
+        .profile-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            width: 200px;
+            z-index: 1000;
+            display: none;
+            margin-top: 8px;
+        }
+        
+        .profile-dropdown-menu.show {
+            display: block;
+        }
+        
+        .profile-dropdown-item {
+            display: block;
+            padding: 12px 16px;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .profile-dropdown-item:hover {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .profile-dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .profile-dropdown-item i {
+            margin-right: 8px;
+            width: 16px;
+        }
+        
+        .profile-dropdown-item.logout {
+            color: #dc3545;
+        }
+        
+        .profile-dropdown-item.logout:hover {
+            background-color: #fff5f5;
+        }
+    </style>
 </head>
 <body>
     <!-- Full Width Header -->
@@ -19,6 +250,76 @@
                 <h5 class="mb-0" style="font-size: 1.1rem; color: white;">Dashboard Admin</h5>
             </nav>
 
+            <!-- Header Navigation -->
+            <div class="header-nav">
+                <!-- Notification Dropdown -->
+                <div class="notification-dropdown">
+                    <button class="notification-btn" onclick="toggleNotificationDropdown()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="notification-dropdown-menu" id="notificationDropdown">
+                        <div class="notification-header">
+                            <span>Notifikasi</span>
+                            <small class="text-muted">3 baru</small>
+                        </div>
+                        <div class="notification-item unread">
+                            <div class="notification-content">
+                                <strong>Data kriteria baru ditambahkan</strong>
+                                <p class="mb-0 text-muted">Kriteria "Kemampuan Teknis" telah berhasil ditambahkan ke sistem</p>
+                            </div>
+                            <div class="notification-time">2 menit yang lalu</div>
+                        </div>
+                        <div class="notification-item unread">
+                            <div class="notification-content">
+                                <strong>Update sistem berhasil</strong>
+                                <p class="mb-0 text-muted">Sistem telah diperbarui ke versi terbaru</p>
+                            </div>
+                            <div class="notification-time">1 jam yang lalu</div>
+                        </div>
+                        <div class="notification-item unread">
+                            <div class="notification-content">
+                                <strong>Backup data selesai</strong>
+                                <p class="mb-0 text-muted">Backup harian telah berhasil diselesaikan</p>
+                            </div>
+                            <div class="notification-time">3 jam yang lalu</div>
+                        </div>
+                        <div class="notification-item">
+                            <div class="notification-content">
+                                <strong>Login berhasil</strong>
+                                <p class="mb-0 text-muted">Anda berhasil masuk ke sistem</p>
+                            </div>
+                            <div class="notification-time">5 jam yang lalu</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Dropdown -->
+                <div class="profile-dropdown">
+                    <button class="profile-btn" onclick="toggleProfileDropdown()">
+                        <div class="profile-avatar">
+                @if(Auth::user()->gambar)
+                    <img src="{{ asset('storage/gambar/' . Auth::user()->gambar) }}" alt="Gambar Profil" width="100" height="100">
+                @endif                      
+                        </div>
+                        <div class="profile-info">
+                            <span class="profile-name">{{ Auth::user()->name }}</span>
+                            <span class="profile-role">{{ Auth::user()->level->level_nama }}</span>
+                        </div>
+                        <i class="fas fa-chevron-down" style="font-size: 0.8rem; margin-left: 4px;"></i>
+                    </button>
+                    <div class="profile-dropdown-menu" id="profileDropdown">
+                        <a href="/profil" class="profile-dropdown-item">
+                            <i class="fas fa-user"></i>
+                            Lihat Profil
+                        </a>
+                        <a href="/logout" class="profile-dropdown-item logout" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -27,203 +328,12 @@
         <!-- Welcome Alert -->
         <div class="login-alert" id="loginAlert">
             <div>
-                <strong>Selamat datang Admin Kriteria 1! Anda bisa mengoperasikan sistem dengan wewenang tertentu melalui pilihan menu di bawah.
+                <h3>Selamat datang, {{ Auth::user()->name }}!</h3>
+                <h6>Anda adalah {{ Auth::user()->level->level_nama }}. Anda bisa mengoperasikan sistem dengan wewenang tertentu melalui pilihan menu di bawah.</h6>
             </div>
             <button class="close-btn" onclick="document.getElementById('loginAlert').style.display='none'">×</button>
         </div>  
-        
- @extends('layouts.app')
-
-@section('content')
-<div class="status-section">
-    <div class="section-title">
-        <i class="fas fa-bars"></i>
-        <h5>Status Pengajuan</h5>
-    </div>
-    
-    <div class="table-container">
-        <table class="status-table">
-            <thead>
-                <tr>
-                    <th style="width: 15%">ID</th>
-                    <th style="width: 65%">Data Kriteria</th>
-                    <th style="width: 20%">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($detailKriteria as $detail)
-                @php
-                    // Ambil nama kriteria dari tabel kriteria
-                    $kriteria = App\Models\Kriteria::find($detail->id_kriteria);
-                    
-                    // Tentukan class badge berdasarkan status
-                    $badgeClass = '';
-                    $iconClass = '';
-                    
-                    if(in_array($detail->status, ['acc1', 'acc2'])) {
-                        $badgeClass = 'badge-active';
-                        $iconClass = 'fa-check-circle';
-                    } else {
-                        $badgeClass = 'badge-inactive';
-                        $iconClass = 'fa-paper-plane';
-                    }
-                @endphp
-                <tr>
-                    <td>{{ $detail->id_detail_kriteria }}</td>
-                    <td>{{ $kriteria->nama ?? 'Kriteria tidak ditemukan' }}</td>
-                    <td>
-                        <span class="status-badge {{ $badgeClass }}">
-                            <i class="fas {{ $iconClass }} me-1"></i>
-                            {{ ucfirst($detail->status) }}
-                        </span>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-        
-        <!-- Pagination -->
-        <div class="pagination-container">
-            <p class="pagination-info">
-                Showing {{ $detailKriteria->firstItem() }} to {{ $detailKriteria->lastItem() }} 
-                of {{ $detailKriteria->total() }} entries
-            </p>
-            <div class="pagination-nav">
-                <a href="{{ $detailKriteria->previousPageUrl() }}" 
-                   class="page-nav-btn {{ $detailKriteria->onFirstPage() ? 'disabled' : '' }}">
-                    <i class="fas fa-chevron-left"></i>
-                </a>
-                <a href="{{ $detailKriteria->nextPageUrl() }}" 
-                   class="page-nav-btn {{ !$detailKriteria->hasMorePages() ? 'disabled' : '' }}">
-                    <i class="fas fa-chevron-right"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
-
-@push('styles')
-<style>
-    .status-section {
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        margin-bottom: 30px;
-    }
-    
-    .section-title {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    
-    .section-title i {
-        font-size: 24px;
-        color: #3498db;
-        margin-right: 10px;
-    }
-    
-    .section-title h5 {
-        font-size: 18px;
-        font-weight: 600;
-        margin: 0;
-        color: #2c3e50;
-    }
-    
-    .status-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 15px;
-    }
-    
-    .status-table th {
-        background-color: #f8f9fa;
-        padding: 12px 15px;
-        text-align: left;
-        font-weight: 600;
-        color: #495057;
-        border-bottom: 2px solid #dee2e6;
-    }
-    
-    .status-table td {
-        padding: 12px 15px;
-        border-bottom: 1px solid #dee2e6;
-        color: #495057;
-    }
-    
-    .status-table tr:last-child td {
-        border-bottom: none;
-    }
-    
-    .status-table tr:hover td {
-        background-color: #f8f9fa;
-    }
-    
-    .status-badge {
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 14px;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    .badge-active {
-        background-color: #d4edda;
-        color: #155724;
-    }
-    
-    .badge-inactive {
-        background-color: #fff3cd;
-        color: #856404;
-    }
-    
-    .pagination-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 0;
-    }
-    
-    .pagination-info {
-        margin: 0;
-        font-size: 14px;
-        color: #6c757d;
-    }
-    
-    .pagination-nav {
-        display: flex;
-        gap: 5px;
-    }
-    
-    .page-nav-btn {
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        background-color: #fff;
-        color: #007bff;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    
-    .page-nav-btn:hover:not(.disabled) {
-        background-color: #e9ecef;
-    }
-    
-    .page-nav-btn.disabled {
-        color: #6c757d;
-        cursor: not-allowed;
-        opacity: 0.65;
-    }
-</style>
-@endpush
-
+ 
         <!-- Pilih Menu Section -->
         <div class="menu-section">
             <div class="section-title">
@@ -251,7 +361,68 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Toggle notification dropdown
+        function toggleNotificationDropdown() {
+            const dropdown = document.getElementById('notificationDropdown');
+            const profileDropdown = document.getElementById('profileDropdown');
+            
+            // Close profile dropdown if open
+            profileDropdown.classList.remove('show');
+            
+            // Toggle notification dropdown
+            dropdown.classList.toggle('show');
+        }
 
+        // Toggle profile dropdown
+        function toggleProfileDropdown() {
+            const dropdown = document.getElementById('profileDropdown');
+            const notificationDropdown = document.getElementById('notificationDropdown');
+            
+            // Close notification dropdown if open
+            notificationDropdown.classList.remove('show');
+            
+            // Toggle profile dropdown
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            const notificationDropdown = document.getElementById('notificationDropdown');
+            const profileDropdown = document.getElementById('profileDropdown');
+            const notificationBtn = document.querySelector('.notification-btn');
+            const profileBtn = document.querySelector('.profile-btn');
+            
+            // Check if click is outside notification dropdown
+            if (!notificationBtn.contains(event.target) && !notificationDropdown.contains(event.target)) {
+                notificationDropdown.classList.remove('show');
+            }
+            
+            // Check if click is outside profile dropdown
+            if (!profileBtn.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+
+        // Mark notification as read when clicked
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.remove('unread');
+                updateNotificationBadge();
+            });
+        });
+
+        // Update notification badge count
+        function updateNotificationBadge() {
+            const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+            const badge = document.querySelector('.notification-badge');
+            
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

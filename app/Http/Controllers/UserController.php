@@ -22,6 +22,8 @@ class UserController extends Controller
     }
 
     switch ($levelKode) {
+        case 'SUPER':
+            return view('superadmin.dashboard');
         case 'KJR':
             return view('kajur.dashboard');
         case 'SPI':

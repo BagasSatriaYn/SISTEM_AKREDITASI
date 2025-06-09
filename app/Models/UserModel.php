@@ -36,4 +36,31 @@ namespace App\Models;
      {
          return $this->level->level_kode;
      }
- }
+
+       // Accessor untuk mendapatkan inisial nama
+    public function getInitialsAttribute()
+    {
+        $names = explode(' ', $this->name);
+        $initials = '';
+        
+        foreach ($names as $name) {
+            $initials .= strtoupper(substr($name, 0, 1));
+        }
+        
+        return $initials;
+    }
+
+    // Accessor untuk mendapatkan role name
+    public function getRoleNameAttribute()
+    {
+        // Mapping level ID ke nama role
+        $roles = [
+            1 => 'Super Admin',
+            2 => 'Administrator',
+            3 => 'Manager',
+            4 => 'User'
+        ];
+        
+        return $roles[$this->id_level] ?? 'User';
+    }
+}

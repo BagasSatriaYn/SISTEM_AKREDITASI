@@ -23,23 +23,15 @@
                         </div>
                         <div class="table-responsive p-0">
                             <table class="table align-items-center mb-0" id="table_detail_kriteria">
-                                <thead>
-                                    <tr>
-                                        <th
-                                            class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 text-center">
-                                            ID
-                                        </th>
-                                        <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">
-                                            Nama
-                                        </th>
-                                        <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">
-                                            Status
-                                        </th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 text-center">
-                                        </th>
-                                    </tr>
-                                </thead>
+                                  <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 text-center">ID</th>
+                                            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Nama</th>
+                                            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Status</th>
+                                            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Validated By</th>
+                                            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
                             </table>
                         </div>
                     </div>
@@ -147,7 +139,7 @@
                     d.id_detail_kriteria = $('#id_detail_kriteria').val();
                 }
             },
-            columns: [
+           columns: [
                 {
                     data: "DT_RowIndex",
                     className: "text-center text-sm",
@@ -156,35 +148,31 @@
                 },
                 {
                     data: "kriteria.nama",
-                    className: "text-sm",
-                    orderable: true,
-                    searchable: true
+                    className: "text-sm"
                 },
                 {
                     data: "status",
                     className: "text-sm",
-                    orderable: true,
-                    searchable: true,
                     render: function (data) {
                         let badgeClass = 'bg-secondary';
                         switch (data) {
-                            case 'save':
-                                badgeClass = 'bg-secondary';
-                                break;
-                            case 'submit':
-                                badgeClass = 'bg-primary';
-                                break;
-                            case 'revisi':
-                                badgeClass = 'bg-warning text-dark';
-                                break;
-                            case 'acc1':
-                                badgeClass = 'bg-success';
-                                break;
-                            case 'acc2':
-                                badgeClass = 'bg-info';
-                                break;
+                            case 'save': badgeClass = 'bg-secondary'; break;
+                            case 'submit': badgeClass = 'bg-primary'; break;
+                            case 'revisi': badgeClass = 'bg-warning text-dark'; break;
+                            case 'acc1': badgeClass = 'bg-success'; break;
+                            case 'acc2': badgeClass = 'bg-info'; break;
                         }
-                        return `<span class="badge ${badgeClass}">${data}</span>`;
+                        return `<span class="badge ${badgeClass}">${data.toUpperCase()}</span>`;
+                    }
+                },
+                {
+                    data: "status",
+                    className: "text-sm",
+                    render: function (data) {
+                        if (data === 'acc1') return `<span class="badge bg-success">Kajur</span>`;
+                        if (data === 'acc2') return `<span class="badge bg-info">Direktur</span>`;
+                        if (data === 'revisi') return `<span class="badge bg-warning text-dark">Kajur</span>`;
+                        return `<span class="badge bg-secondary">-</span>`;
                     }
                 },
                 {
@@ -197,11 +185,9 @@
                         let status = row.status;
 
                         let previewBtn = `<button class="btn btn-info btn-xs" onclick="showPreviewModal(${id})">Preview</button>`;
-
                         let editBtn = (status === 'submit')
                             ? `<a class="btn btn-secondary btn-xs disabled" href="#">Edit</a>`
                             : `<a class="btn btn-warning btn-xs" href="${base_url}/${id}/edit">Edit</a>`;
-
                         let deleteBtn = `<button class="btn btn-danger btn-xs" onclick="modalActionDelete(${id})">Delete</button>`;
 
                         return `${previewBtn} ${editBtn} ${deleteBtn}`;

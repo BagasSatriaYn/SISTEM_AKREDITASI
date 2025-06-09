@@ -1,15 +1,28 @@
 @extends('layouts.template')
 
-@section('title', 'Dashboard-KPS, Kajur')
+@section('title', 'Dashboard - Kajur')
 
 @section('content')
-    <div class="alert-welcome">
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Welcome Alert -->
+    <div class="login-alert" id="loginAlert">
         <div>
-            <strong style="color: #03476A; font-size: 0.95rem;">Selamat datang KPS-KAJUR! Anda bisa mengoperasikan
-                sistem dengan wewenang tertentu melalui pilihan menu di bawah.</strong>
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <h3>Selamat Datang, {{ Auth::user()->name }}!</h3>     
     </div>
+        <button class="close-btn" onclick="document.getElementById('loginAlert').style.display='none'">×</button>
+    </div>  
+
+    <!-- Welcome Alert -->
+    
+    <div class="login-alert" id="loginAlert">
+        <div>
+        <h6> Anda adalah {{ Auth::user()->level->level_nama }}. Anda bisa mengoperasikan sistem dengan wewenang tertentu melalui pilihan menu di bawah.</h6>   
+    </div>
+        <button class="close-btn" onclick="document.getElementById('loginAlert').style.display='none'">×</button>
+    </div>  
+
 
     <!-- Judul Pilih Menu -->
     <div class="menu-sectionn">

@@ -282,6 +282,7 @@ if ($availableFinalisasi) {
 
 public function preview($id)
 {
+      ini_set('pcre.backtrack_limit', '5000000');
     Log::info("🔍 Masuk preview() dengan ID: $id");
 
     // Ambil langsung detail berdasarkan ID (angka)
