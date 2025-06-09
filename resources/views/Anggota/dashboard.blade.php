@@ -1,13 +1,21 @@
 @extends('layouts.template')
 
-@section('title', 'Dashboard-Admin')
+@section('title', 'Dashboard Anggota')
 
 @section('content')
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Additional CSS for notification and profile -->
+@php
+use App\Models\Notification;
+use Illuminate\Support\Facades\Auth;
+
+$notifications = Notification::where('user_id', Auth::user()->id_user)->latest()->take(5)->get();
+$unreadCount = Notification::where('user_id', Auth::user()->id_user)->where('is_read', false)->count();
+@endphp
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Additional CSS for notification and profile -->
     <style>
         .header-nav {
             display: flex;
@@ -237,7 +245,8 @@
             background-color: #fff5f5;
         }
     </style>
-</head>
+
+<!-- BODY -->
 <body>
     <!-- Full Width Header -->
     <div class="full-header header">
@@ -245,52 +254,43 @@
             <nav aria-label="breadcrumb" class="header-breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Dashboard Admin</li>
+                    <li class="breadcrumb-item active" aria-current="page">Dashboard Anggota</li>
                 </ol>
-                <h5 class="mb-0" style="font-size: 1.1rem; color: white;">Dashboard Admin</h5>
+                <h5 class="mb-0" style="font-size: 1.1rem; color: white;">Dashboard Anggota</h5>
             </nav>
 
             <!-- Header Navigation -->
             <div class="header-nav">
+
                 <!-- Notification Dropdown -->
                 <div class="notification-dropdown">
                     <button class="notification-btn" onclick="toggleNotificationDropdown()">
                         <i class="fas fa-bell"></i>
-                        <span class="notification-badge">3</span>
+                        @if($unreadCount > 0)
+                            <span class="notification-badge">{{ $unreadCount }}</span>
+                        @endif
                     </button>
                     <div class="notification-dropdown-menu" id="notificationDropdown">
                         <div class="notification-header">
                             <span>Notifikasi</span>
-                            <small class="text-muted">3 baru</small>
+                            <small class="text-muted">{{ $unreadCount }} baru</small>
                         </div>
-                        <div class="notification-item unread">
-                            <div class="notification-content">
-                                <strong>Data kriteria baru ditambahkan</strong>
-                                <p class="mb-0 text-muted">Kriteria "Kemampuan Teknis" telah berhasil ditambahkan ke sistem</p>
+                        @forelse($notifications as $notif)
+                            <div class="notification-item {{ !$notif->is_read ? 'unread' : '' }}">
+                                <div class="notification-content">
+                                    <strong>{{ $notif->title }}</strong>
+                                    <p class="mb-0 text-muted">{{ $notif->message }}</p>
+                                </div>
+                                <div class="notification-time">{{ $notif->created_at->diffForHumans() }}</div>
                             </div>
-                            <div class="notification-time">2 menit yang lalu</div>
-                        </div>
-                        <div class="notification-item unread">
-                            <div class="notification-content">
-                                <strong>Update sistem berhasil</strong>
-                                <p class="mb-0 text-muted">Sistem telah diperbarui ke versi terbaru</p>
+                        @empty
+                            <div class="notification-item">
+                                <div class="notification-content">
+                                    <strong>Tidak ada notifikasi</strong>
+                                    <p class="mb-0 text-muted">Belum ada notifikasi terbaru</p>
+                                </div>
                             </div>
-                            <div class="notification-time">1 jam yang lalu</div>
-                        </div>
-                        <div class="notification-item unread">
-                            <div class="notification-content">
-                                <strong>Backup data selesai</strong>
-                                <p class="mb-0 text-muted">Backup harian telah berhasil diselesaikan</p>
-                            </div>
-                            <div class="notification-time">3 jam yang lalu</div>
-                        </div>
-                        <div class="notification-item">
-                            <div class="notification-content">
-                                <strong>Login berhasil</strong>
-                                <p class="mb-0 text-muted">Anda berhasil masuk ke sistem</p>
-                            </div>
-                            <div class="notification-time">5 jam yang lalu</div>
-                        </div>
+                        @endforelse
                     </div>
                 </div>
 
@@ -298,9 +298,11 @@
                 <div class="profile-dropdown">
                     <button class="profile-btn" onclick="toggleProfileDropdown()">
                         <div class="profile-avatar">
-                @if(Auth::user()->gambar)
-                    <img src="{{ asset('storage/gambar/' . Auth::user()->gambar) }}" alt="Gambar Profil" width="100" height="100">
-                @endif                      
+                            @if(Auth::user()->gambar)
+                                <img src="{{ asset('storage/gambar/' . Auth::user()->gambar) }}" alt="Gambar Profil" width="35" height="35" style="border-radius: 50%;">
+                            @else
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            @endif
                         </div>
                         <div class="profile-info">
                             <span class="profile-name">{{ Auth::user()->name }}</span>
@@ -309,16 +311,13 @@
                         <i class="fas fa-chevron-down" style="font-size: 0.8rem; margin-left: 4px;"></i>
                     </button>
                     <div class="profile-dropdown-menu" id="profileDropdown">
-                        <a href="/profil" class="profile-dropdown-item">
-                            <i class="fas fa-user"></i>
-                            Lihat Profil
-                        </a>
+                        <a href="/profil" class="profile-dropdown-item"><i class="fas fa-user"></i> Lihat Profil</a>
                         <a href="/logout" class="profile-dropdown-item logout" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
-                            <i class="fas fa-sign-out-alt"></i>
-                            Logout
+                            <i class="fas fa-sign-out-alt"></i> Logout
                         </a>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -333,7 +332,7 @@
             </div>
             <button class="close-btn" onclick="document.getElementById('loginAlert').style.display='none'">×</button>
         </div>  
- 
+
         <!-- Pilih Menu Section -->
         <div class="menu-section">
             <div class="section-title">
@@ -342,18 +341,16 @@
             </div>
 
             <div class="menu-cards">
-                <a href="#" class="menu-card kriteria-card">
+                <a href="{{ route('kriteria.index') }}" class="menu-card kriteria-card">
                     <span class="menu-card-badge">New</span>
                     <div class="menu-card-image">
                         <i class="fas fa-list-check"></i>
                     </div>
                     <div class="menu-card-title">
-
                         <h5>Input Data Kriteria</h5>
                         <p class="text-muted mt-2 mb-0" style="font-size: 0.85rem;">Kelola kriteria penilaian dan parameter sistem</p>
                     </div>
                 </a>
-
             </div>
         </div>
     </div>
@@ -361,70 +358,35 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Toggle notification dropdown
         function toggleNotificationDropdown() {
             const dropdown = document.getElementById('notificationDropdown');
             const profileDropdown = document.getElementById('profileDropdown');
-            
-            // Close profile dropdown if open
             profileDropdown.classList.remove('show');
-            
-            // Toggle notification dropdown
             dropdown.classList.toggle('show');
+            fetch("{{ url('/notifications/mark-as-read') }}");
         }
 
-        // Toggle profile dropdown
         function toggleProfileDropdown() {
             const dropdown = document.getElementById('profileDropdown');
             const notificationDropdown = document.getElementById('notificationDropdown');
-            
-            // Close notification dropdown if open
             notificationDropdown.classList.remove('show');
-            
-            // Toggle profile dropdown
             dropdown.classList.toggle('show');
         }
 
-        // Close dropdowns when clicking outside
         document.addEventListener('click', function(event) {
             const notificationDropdown = document.getElementById('notificationDropdown');
             const profileDropdown = document.getElementById('profileDropdown');
             const notificationBtn = document.querySelector('.notification-btn');
             const profileBtn = document.querySelector('.profile-btn');
             
-            // Check if click is outside notification dropdown
             if (!notificationBtn.contains(event.target) && !notificationDropdown.contains(event.target)) {
                 notificationDropdown.classList.remove('show');
             }
-            
-            // Check if click is outside profile dropdown
             if (!profileBtn.contains(event.target) && !profileDropdown.contains(event.target)) {
                 profileDropdown.classList.remove('show');
             }
         });
-
-        // Mark notification as read when clicked
-        document.querySelectorAll('.notification-item').forEach(item => {
-            item.addEventListener('click', function() {
-                this.classList.remove('unread');
-                updateNotificationBadge();
-            });
-        });
-
-        // Update notification badge count
-        function updateNotificationBadge() {
-            const unreadCount = document.querySelectorAll('.notification-item.unread').length;
-            const badge = document.querySelector('.notification-badge');
-            
-            if (unreadCount > 0) {
-                badge.textContent = unreadCount;
-                badge.style.display = 'flex';
-            } else {
-                badge.style.display = 'none';
-            }
-        }
     </script>
 </body>
-</html>
- 
+
 @endsection
