@@ -5,13 +5,14 @@
 @section('content')
 
     
-    <div class="alert-welcome">
+    <!-- Welcome Alert -->
+    <div class="login-alert" id="loginAlert">
         <div>
-            <strong style="color: #03476A; font-size: 0.95rem;">Selamat datang DIREKTUR! Anda bisa mengoperasikan
-                sistem dengan wewenang tertentu melalui pilihan menu di bawah.</strong>
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <h3>Selamat Datang, {{ Auth::user()->name }}!</h3>  
+        <h6> Anda adalah {{ Auth::user()->level->level_nama }}. Anda bisa mengoperasikan sistem dengan wewenang tertentu melalui pilihan menu di bawah.</h6>   
     </div>
+        <button class="close-btn" onclick="document.getElementById('loginAlert').style.display='none'">×</button>
+    </div>  
 
     <!-- Judul Pilih Menu -->
     <div class="menu-sectionn">
