@@ -165,8 +165,53 @@ class DirekturController extends Controller
     /**
      * Preview PDF gabungan finalisasi lengkap.
      */
+    //yg old yh
+    // public function previewFinalisasiPdf($idFinalisasi)
+    // {
+    //     $details = DetailKriteria::with([
+    //         'kriteria',
+    //         'komentar',
+    //         'penetapan',
+    //         'pelaksanaan',
+    //         'evaluasi',
+    //         'pengendalian',
+    //         'peningkatan'
+    //     ])
+    //         ->where('id_finalisasi', $idFinalisasi)
+    //         ->get();
+
+    //     if ($details->isEmpty()) {
+    //         abort(404, 'Data finalisasi tidak ditemukan.');
+    //     }
+
+    //     // Simpan PDF ke storage
+    //     $pdf = Pdf::loadView('DokumenFinal.finalisasi_pdf', [
+    //         'details' => $details,
+    //         'idFinalisasi' => $idFinalisasi,
+    //     ]);
+
+    //     $filename = "dokumen_kriteria_{$idFinalisasi}.pdf";
+    //     Storage::put("public/final/{$filename}", $pdf->output());
+
+    //     // Tampilkan view yang berisi iframe PDF
+    //     return view('DokumenFinal.finalisasi_pdf_view', [
+    //         'idFinalisasi' => $idFinalisasi,
+    //         'pdf_url' => asset("storage/final/{$filename}")
+    //     ]);
+    // }
+
     public function previewFinalisasiPdf($idFinalisasi)
     {
+        if (!$idFinalisasi) {
+            // Tampilkan view jika tidak ada ID finalisasi yang diberikan
+            $finalisasiList = DetailKriteria::select('id_finalisasi')->distinct()->pluck('id_finalisasi');
+
+            return view('DokumenFinal.semua_finalisasi_pdf_view', [
+                'finalisasiList' => $finalisasiList
+            ]);
+        }
+
+        // Ambil semua detail berdasarkan id_finalisasi
         $details = DetailKriteria::with([
             'kriteria',
             'komentar',
@@ -177,25 +222,30 @@ class DirekturController extends Controller
             'peningkatan'
         ])
             ->where('id_finalisasi', $idFinalisasi)
+            ->orderBy('id_kriteria', 'asc')
             ->get();
 
         if ($details->isEmpty()) {
             abort(404, 'Data finalisasi tidak ditemukan.');
         }
 
-        // Simpan PDF ke storage
-        $pdf = Pdf::loadView('DokumenFinal.finalisasi_pdf', [
-            'details' => $details,
-            'idFinalisasi' => $idFinalisasi,
-        ]);
+        $pdfUrls = [];
 
-        $filename = "dokumen_kriteria_{$idFinalisasi}.pdf";
-        Storage::put("public/final/{$filename}", $pdf->output());
+        foreach ($details as $detail) {
+            $pdf = Pdf::loadView('DokumenFinal.finalisasi_pdf_per_kriteria', [
+                'detail' => $detail, // per kriteria
+            ]);
 
-        // Tampilkan view yang berisi iframe PDF
+            $filename = "dokumen_kriteria_{$detail->id_detail_kriteria}.pdf";
+
+            Storage::put("public/final/{$filename}", $pdf->output());
+
+            $pdfUrls[] = asset("storage/final/{$filename}");
+        }
+
         return view('DokumenFinal.finalisasi_pdf_view', [
+            'pdfUrls' => $pdfUrls,
             'idFinalisasi' => $idFinalisasi,
-            'pdf_url' => asset("storage/final/{$filename}")
         ]);
     }
 

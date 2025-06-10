@@ -36,7 +36,7 @@ use App\Http\Controllers\ProfileController;
 |
 */
 // Route::pattern('id', '[0-9]+'); //artinya ketika parameter {id}, maka harus berupa angka
- 
+
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'postLogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
@@ -55,7 +55,7 @@ Route::get('/', function () {
 Route::get('/welcome', function () {
     return view('welcome');
 });
-Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile.show')->middleware('auth');   
+Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile.show')->middleware('auth');
 Route::get('/profil', [ProfileController::class, 'show'])->name('profil')->middleware('auth');
 Route::post('/profil/upload', [ProfileController::class, 'upload'])->name('profile.upload')->middleware('auth');
 Route::get('/anggota/dashboard', [AnggotaController::class, 'dashboard'])
@@ -88,7 +88,7 @@ Route::middleware(['auth','authorize:SUPER'])->prefix('superadmin')->group(funct
     Route::post('/level/{id}/update', [SuperlevelController::class, 'update'])->name('superadmin.level.update');
     Route::delete('/level/{id}/delete', [SuperlevelController::class, 'destroy'])->name('superadmin.level.destroy');
 
-    //Kelola Kriteria 
+    //Kelola Kriteria
     Route::get('/kriteria', [App\Http\Controllers\SuperkriteriaController::class, 'index'])->name('superadmin.kriteria.index');
     Route::post('/kriterialist', [App\Http\Controllers\SuperkriteriaController::class, 'list'])->name('superadmin.kriteria.list');
     Route::get('/kriteriainput', [App\Http\Controllers\SuperkriteriaController::class, 'input'])->name('superadmin.kriteria.input');
@@ -99,7 +99,7 @@ Route::middleware(['auth','authorize:SUPER'])->prefix('superadmin')->group(funct
     Route::post('/kriteria/{id}/update', [App\Http\Controllers\SuperkriteriaController::class, 'update'])->name('superadmin.kriteria.update');
     Route::delete('/kriteria/{id}/delete', [App\Http\Controllers\SuperkriteriaController::class, 'destroy'])->name('superadmin.kriteria.destroy');
 
-    
+
 });
 
 Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function () {
@@ -110,10 +110,10 @@ Route::middleware(['auth','authorize:A1'])->prefix('kriteria1')->group(function 
 
 
     Route::get('/index/anggota', [WelcomeController::class, 'index']);
-    Route::get('/index', [KriteriaSatuController::class, 'index'])->name('kriteria1.index'); 
+    Route::get('/index', [KriteriaSatuController::class, 'index'])->name('kriteria1.index');
     Route::post('/list', [KriteriaSatuController::class, 'list'])->name('kriteria1.list');
 
-    Route::get('/input', [KriteriaSatuController::class, 'create']);    
+    Route::get('/input', [KriteriaSatuController::class, 'create']);
     Route::post('/store', [KriteriaSatuController::class, 'store']);
     Route::post('/upload', [KriteriaSatuController::class, 'uploadImage'])->name('image.upload');
     Route::post('/upload', [KriteriaSatuController::class, 'uploadImage'])->name('kriteria1.upload');
@@ -139,10 +139,10 @@ Route::middleware(['auth','authorize:A2'])->prefix('kriteria2')->group(function 
 
 
     Route::get('/index/anggota', [WelcomeController::class, 'index']);
-    Route::get('/index', [KriteriaDuaController::class, 'index'])->name('kriteria2.index'); 
+    Route::get('/index', [KriteriaDuaController::class, 'index'])->name('kriteria2.index');
     Route::post('/list', [KriteriaDuaController::class, 'list'])->name('kriteria2.list');
 
-    Route::get('/input', [KriteriaDuaController::class, 'create']);    
+    Route::get('/input', [KriteriaDuaController::class, 'create']);
     Route::post('/store', [KriteriaDuaController::class, 'store']);
     Route::post('/upload', [KriteriaDuaController::class, 'uploadImage'])->name('image.upload');
 
@@ -165,10 +165,10 @@ Route::middleware(['auth','authorize:A3'])->prefix('kriteria3')->group(function 
     Route::get('/{id}/preview/json', [KriteriaTigaController::class, 'getPreviewData'])->name('kriteria3.preview.data');
 
     Route::get('/index/anggota', [WelcomeController::class, 'index']);
-    Route::get('/index', [KriteriaTigaController::class, 'index'])->name('kriteria3.index'); 
+    Route::get('/index', [KriteriaTigaController::class, 'index'])->name('kriteria3.index');
     Route::post('/list', [KriteriaTigaController::class, 'list'])->name('kriteria3.list');
 
-    Route::get('/input', [KriteriaTigaController::class, 'create']);    
+    Route::get('/input', [KriteriaTigaController::class, 'create']);
     Route::post('/store', [KriteriaTigaController::class, 'store']);
     Route::post('/upload', [KriteriaTigaController::class, 'uploadImage'])->name('image.upload');
 
@@ -191,10 +191,10 @@ Route::middleware(['auth','authorize:A4'])->prefix('kriteria4')->group(function 
     Route::get('/{id}/preview/json', [KriteriaEmpatController::class, 'getPreviewData'])->name('kriteria4.preview.data');
 
     Route::get('/index/anggota', [WelcomeController::class, 'index']);
-    Route::get('/index', [KriteriaEmpatController::class, 'index'])->name('kriteria4.index'); 
+    Route::get('/index', [KriteriaEmpatController::class, 'index'])->name('kriteria4.index');
     Route::post('/list', [KriteriaEmpatController::class, 'list'])->name('kriteria4.list');
 
-    Route::get('/input', [KriteriaEmpatController::class, 'create']);    
+    Route::get('/input', [KriteriaEmpatController::class, 'create']);
     Route::post('/store', [KriteriaEmpatController::class, 'store']);
     Route::post('/upload', [KriteriaEmpatController::class, 'uploadImage'])->name('image.upload');
 
@@ -217,10 +217,10 @@ Route::middleware(['auth','authorize:A5'])->prefix('kriteria5')->group(function 
     Route::get('/{id}/preview/json', [KriteriaLimaController::class, 'getPreviewData'])->name('kriteria5.preview.data');
 
     Route::get('/index/anggota', [WelcomeController::class, 'index']);
-    Route::get('/index', [KriteriaLimaController::class, 'index'])->name('kriteria5.index'); 
+    Route::get('/index', [KriteriaLimaController::class, 'index'])->name('kriteria5.index');
     Route::post('/list', [KriteriaLimaController::class, 'list'])->name('kriteria5.list');
 
-    Route::get('/input', [KriteriaLimaController::class, 'create']);    
+    Route::get('/input', [KriteriaLimaController::class, 'create']);
     Route::post('/store', [KriteriaLimaController::class, 'store']);
     Route::post('/upload', [KriteriaLimaController::class, 'uploadImage'])->name('image.upload');
 
@@ -244,10 +244,10 @@ Route::get('/kriteria/{id}/preview', [KriteriaEnamController::class, 'preview'])
 Route::get('/{id}/preview/json', [KriteriaEnamController::class, 'getPreviewData'])->name('kriteria6.preview.data');
 
 Route::get('/index/anggota', [WelcomeController::class, 'index']);
-Route::get('/index', [KriteriaEnamController::class, 'index'])->name('kriteria6.index'); 
+Route::get('/index', [KriteriaEnamController::class, 'index'])->name('kriteria6.index');
 Route::post('/list', [KriteriaEnamController::class, 'list'])->name('kriteria6.list');
 
-Route::get('/input', [KriteriaEnamController::class, 'create']);    
+Route::get('/input', [KriteriaEnamController::class, 'create']);
 Route::post('/store', [KriteriaEnamController::class, 'store']);
 Route::post('/upload', [KriteriaEnamController::class, 'uploadImage'])->name('image.upload');
 
@@ -270,10 +270,10 @@ Route::get('/kriteria/{id}/preview', [KriteriaTujuhController::class, 'preview']
 Route::get('/{id}/preview/json', [KriteriaTujuhController::class, 'getPreviewData'])->name('kriteria7.preview.data');
 
 Route::get('/index/anggota', [WelcomeController::class, 'index']);
-Route::get('/index', [KriteriaTujuhController::class, 'index'])->name('kriteria7.index'); 
+Route::get('/index', [KriteriaTujuhController::class, 'index'])->name('kriteria7.index');
 Route::post('/list', [KriteriaTujuhController::class, 'list'])->name('kriteria7.list');
 
-Route::get('/input', [KriteriaTujuhController::class, 'create']);    
+Route::get('/input', [KriteriaTujuhController::class, 'create']);
 Route::post('/store', [KriteriaTujuhController::class, 'store']);
 Route::post('/upload', [KriteriaTujuhController::class, 'uploadImage'])->name('image.upload');
 
@@ -296,10 +296,10 @@ Route::get('/kriteria/{id}/preview', [KriteriaDelapanController::class, 'preview
 Route::get('/{id}/preview/json', [KriteriaDelapanController::class, 'getPreviewData'])->name('kriteria8.preview.data');
 
 Route::get('/index/anggota', [WelcomeController::class, 'index']);
-Route::get('/index', [KriteriaDelapanController::class, 'index'])->name('kriteria8.index'); 
+Route::get('/index', [KriteriaDelapanController::class, 'index'])->name('kriteria8.index');
 Route::post('/list', [KriteriaDelapanController::class, 'list'])->name('kriteria8.list');
 
-Route::get('/input', [KriteriaDelapanController::class, 'create']);    
+Route::get('/input', [KriteriaDelapanController::class, 'create']);
 Route::post('/store', [KriteriaDelapanController::class, 'store']);
 Route::post('/upload', [KriteriaDelapanController::class, 'uploadImage'])->name('image.upload');
 
@@ -321,10 +321,10 @@ Route::get('/kriteria/{id}/preview', [KriteriaSembilanController::class, 'previe
 Route::get('/{id}/preview/json', [KriteriaSembilanController::class, 'getPreviewData'])->name('kriteria9.preview.data');
 
 Route::get('/index/anggota', [WelcomeController::class, 'index']);
-Route::get('/index', [KriteriaSembilanController::class, 'index'])->name('kriteria9.index'); 
+Route::get('/index', [KriteriaSembilanController::class, 'index'])->name('kriteria9.index');
 Route::post('/list', [KriteriaSembilanController::class, 'list'])->name('kriteria9.list');
 
-Route::get('/input', [KriteriaSembilanController::class, 'create']);    
+Route::get('/input', [KriteriaSembilanController::class, 'create']);
 Route::post('/store', [KriteriaSembilanController::class, 'store']);
 Route::post('/upload', [KriteriaSembilanController::class, 'uploadImage'])->name('image.upload');
 
@@ -359,7 +359,7 @@ Route::get('/login1', function () {return view('layouts.login1');})->name('layou
     });
 });
 
-  
+
 
 
 Route::middleware(['auth', 'authorize:DKT'])->group(function () {
@@ -368,7 +368,7 @@ Route::middleware(['auth', 'authorize:DKT'])->group(function () {
     Route::get('/dashboard/direktur', [DirekturController::class, 'dashboard'])->name('direktur.dashboard');
 
     // Route PDF Finalisasi by Direktur (di luar prefix kriteria supaya URL clean)
-    Route::get('/direktur/finalisasi/{idFinalisasi}/pdf', [DirekturController::class, 'previewFinalisasiPdf'])
+    Route::get('/direktur/finalisasi/{idFinalisasi?}/pdf', [DirekturController::class, 'previewFinalisasiPdf'])
         ->name('direktur.finalisasi.pdf');
 
     // Preview finalisasi terakhir (optional)
@@ -390,7 +390,7 @@ Route::middleware(['auth', 'authorize:DKT'])->group(function () {
         Route::get('/validasi2/data', [DirekturController::class, 'getDataValidasiTahap2'])->name('validasi2.data');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('/login1', function () { return view('layouts.login1'); })->name('layouts.login1');
-        
+
 
         // Preview finalisasi JSON (data lengkap per id_finalisasi)
         Route::get('/finalisasi/preview/{idFinalisasi}', [DirekturController::class, 'previewFinalisasi'])

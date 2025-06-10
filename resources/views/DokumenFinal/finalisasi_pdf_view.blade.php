@@ -5,9 +5,11 @@
         Dokumen Final Akreditasi D4 Sistem Informasi Bisnis
     </div>
 
-    <div style="display: flex; justify-content: center;">
-        <iframe src="{{ $pdf_url }}" style="width: 100%; height: 1075px;" frameborder="0"></iframe>
-    </div>
+    @foreach ($pdfUrls as $url)
+        <div class="mb-5">
+            <iframe src="{{ $url }}" style="width: 100%; height: 1100px;" frameborder="0"></iframe>
+        </div>
+    @endforeach
 
     <style>
         .judul-finalisasi {
