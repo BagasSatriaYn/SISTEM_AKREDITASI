@@ -14,8 +14,12 @@ class SuperadminSeeder extends Seeder
      */
     public function run(): void
     {
-        $data = [   
-           [
+        DB::table('m_level')->updateOrInsert(
+            ['id_level' => 13],
+            ['level_kode' => 'SUPER', 'level_nama' => 'Super Admin', 'created_at' => now(), 'updated_at' => now()]
+        );
+        $data = [
+            [
                 'id_user' => 13,
                 'id_level' => 13,
                 'username' => 'superadmin',

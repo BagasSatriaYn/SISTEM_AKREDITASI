@@ -16,7 +16,7 @@
         <div class="kriteria">
             <h2>{{ $detail->kriteria->nama_kriteria ?? '-' }}</h2>
             <p><strong>Status:</strong> {{ strtoupper($detail->status) }}</p>
-            <p><strong>Validator:</strong> 
+            <p><strong>Validator:</strong>
                 @if($detail->status === 'acc1') Kajur
                 @elseif($detail->status === 'acc2') Direktur
                 @elseif($detail->status === 'revisi') Kajur

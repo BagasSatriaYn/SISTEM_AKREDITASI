@@ -7,12 +7,13 @@ use App\Models\DetailKriteria;
 use App\Models\Komentar;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class DirekturController extends Controller
 {
     public function dashboard()
     {
-        $page = (object)[
+        $page = (object) [
             'title' => 'Dashboard Direktur/KJM',
         ];
         return view('Direktur.dashboard', compact('page'));
@@ -24,14 +25,14 @@ class DirekturController extends Controller
     }
 
     public function showDokumenFinal()
-{
-    $finalisasiIds = DetailKriteria::select('id_finalisasi')
-        ->distinct()
-        ->orderBy('id_finalisasi', 'desc')
-        ->get();
+    {
+        $finalisasiIds = DetailKriteria::select('id_finalisasi')
+            ->distinct()
+            ->orderBy('id_finalisasi', 'desc')
+            ->get();
 
-    return view('DokumenFinal.index', compact('finalisasiIds'));
-}
+        return view('DokumenFinal.index', compact('finalisasiIds'));
+    }
 
 
     /**
@@ -182,12 +183,20 @@ class DirekturController extends Controller
             abort(404, 'Data finalisasi tidak ditemukan.');
         }
 
+        // Simpan PDF ke storage
         $pdf = Pdf::loadView('DokumenFinal.finalisasi_pdf', [
             'details' => $details,
             'idFinalisasi' => $idFinalisasi,
         ]);
 
-        return $pdf->stream("finalisasi_{$idFinalisasi}.pdf");
+        $filename = "dokumen_kriteria_{$idFinalisasi}.pdf";
+        Storage::put("public/final/{$filename}", $pdf->output());
+
+        // Tampilkan view yang berisi iframe PDF
+        return view('DokumenFinal.finalisasi_pdf_view', [
+            'idFinalisasi' => $idFinalisasi,
+            'pdf_url' => asset("storage/final/{$filename}")
+        ]);
     }
 
     /**
@@ -206,32 +215,32 @@ class DirekturController extends Controller
         return $this->previewFinalisasiPdf($lastFinalisasi);
     }
 
-     public function getDetailValidasi($id)
-{
-    $detail = DetailKriteria::with(['kriteria', 'komentar'])->findOrFail($id);
+    public function getDetailValidasi($id)
+    {
+        $detail = DetailKriteria::with(['kriteria', 'komentar'])->findOrFail($id);
 
-    $validator = '-';
-    $catatan = '-';
+        $validator = '-';
+        $catatan = '-';
 
-    // ✅ Gunakan kolom validated_by langsung, bukan tebak-tebakan dari komentar
-   $validator = '-';
-    if ($detail->validated_by === 'direktur') {
-        $validator = 'Direktur';
-    } elseif ($detail->validated_by === 'direktur') {
-        $validator = 'Direktur';
-    }   
+        // ✅ Gunakan kolom validated_by langsung, bukan tebak-tebakan dari komentar
+        $validator = '-';
+        if ($detail->validated_by === 'direktur') {
+            $validator = 'Direktur';
+        } elseif ($detail->validated_by === 'direktur') {
+            $validator = 'Direktur';
+        }
 
 
-    if ($detail->komentar) {
-        $catatan = $detail->komentar->komen;
+        if ($detail->komentar) {
+            $catatan = $detail->komentar->komen;
+        }
+
+        return response()->json([
+            'validator' => $validator,
+            'status' => strtoupper($detail->status),
+            'catatan' => $catatan,
+            'pdf_url' => asset("storage/final/dokumen_kriteria_{$id}.pdf")
+        ]);
     }
-
-    return response()->json([
-        'validator' => $validator,
-        'status' => strtoupper($detail->status),
-        'catatan' => $catatan,
-        'pdf_url' => asset("storage/final/dokumen_kriteria_{$id}.pdf")
-    ]);
-}
 
 }
