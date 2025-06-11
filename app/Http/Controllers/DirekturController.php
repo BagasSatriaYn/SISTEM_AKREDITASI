@@ -7,6 +7,8 @@ use App\Models\DetailKriteria;
 use App\Models\Komentar;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\NotificationController;
+
 
 class DirekturController extends Controller
 {
@@ -23,44 +25,57 @@ class DirekturController extends Controller
         return view('kriteria.show', compact('id'));
     }
 
-    public function showDokumenFinal()
+public function showDokumenFinal()
 {
     $finalisasiIds = DetailKriteria::select('id_finalisasi')
         ->distinct()
         ->orderBy('id_finalisasi', 'desc')
         ->get();
 
-    return view('DokumenFinal.index', compact('finalisasiIds'));
+    return view('DokumenFinal.index', [
+        'finalisasiIds' => $finalisasiIds,
+        'activeId' => null,
+        'pdfUrl' => null,
+    ]);
 }
+
 
 
     /**
      * Simpan validasi tahap 2 oleh Direktur.
      */
     public function simpanValidasiTahap2(Request $request)
-    {
-        $request->validate([
-            'id_kriteria' => 'required|exists:t_detail_kriteria,id_detail_kriteria',
-            'status_validasi' => 'required|in:diterima,ditolak',
-            'catatan' => 'nullable|string'
-        ]);
+{
+    $request->validate([
+        'id_kriteria' => 'required|exists:t_detail_kriteria,id_detail_kriteria',
+        'status_validasi' => 'required|in:diterima,ditolak',
+        'catatan' => 'nullable|string'
+    ]);
 
-        $detail = DetailKriteria::findOrFail($request->id_kriteria);
-        $detail->status = $request->status_validasi === 'diterima' ? 'acc2' : 'revisi';
+    $detail = DetailKriteria::findOrFail($request->id_kriteria);
+    $detail->status = $request->status_validasi === 'diterima' ? 'acc2' : 'revisi';
 
-        if ($detail->validated_by !== 'kajur') {
-            $detail->validated_by = 'direktur';
-        }
+    $detail->validated_by = 'direktur';
 
-        if (!empty($request->catatan)) {
-            $komentar = Komentar::create(['komen' => $request->catatan]);
-            $detail->id_komentar = $komentar->id_komentar;
-        }
 
-        $detail->save();
-
-        return response()->json(['success' => true, 'message' => 'Validasi tahap 2 berhasil disimpan']);
+    if (!empty($request->catatan)) {
+        $komentar = Komentar::create(['komen' => $request->catatan]);
+        $detail->id_komentar = $komentar->id_komentar;
     }
+
+    $detail->save();
+
+    // ✅ Tambahkan ini untuk kirim notifikasi sesuai status
+   NotificationController::storeNotification(
+    $detail->status,              // acc2 atau revisi
+    $detail->id_detail_kriteria,  // sekarang kirim detail, bukan kriteria_id
+    auth()->user()->id_user
+);
+
+
+    return response()->json(['success' => true, 'message' => 'Validasi tahap 2 berhasil disimpan']);
+}
+
 
     /**
      * Ambil data yang statusnya siap divalidasi tahap 2.
@@ -164,31 +179,82 @@ class DirekturController extends Controller
     /**
      * Preview PDF gabungan finalisasi lengkap.
      */
-    public function previewFinalisasiPdf($idFinalisasi)
-    {
-        $details = DetailKriteria::with([
-            'kriteria',
-            'komentar',
-            'penetapan',
-            'pelaksanaan',
-            'evaluasi',
-            'pengendalian',
-            'peningkatan'
-        ])
-            ->where('id_finalisasi', $idFinalisasi)
-            ->get();
+   public function previewFinalisasiPdf($idFinalisasi)
+{
+    $details = DetailKriteria::with([
+        'kriteria',
+        'komentar',
+        'penetapan',
+        'pelaksanaan',
+        'evaluasi',
+        'pengendalian',
+        'peningkatan'
+    ])
+    ->where('id_finalisasi', $idFinalisasi)
+    ->get();
 
-        if ($details->isEmpty()) {
-            abort(404, 'Data finalisasi tidak ditemukan.');
-        }
-
-        $pdf = Pdf::loadView('DokumenFinal.finalisasi_pdf', [
-            'details' => $details,
-            'idFinalisasi' => $idFinalisasi,
-        ]);
-
-        return $pdf->stream("finalisasi_{$idFinalisasi}.pdf");
+    if ($details->isEmpty()) {
+        abort(404, 'Data finalisasi tidak ditemukan.');
     }
+
+    // Deteksi apakah semua sudah ACC2 (final)
+    $semuaAcc2 = $details->every(function ($detail) {
+        return $detail->status === 'acc2';
+    });
+
+    // Proses konversi gambar <img src="..."> menjadi base64
+    foreach ($details as $detail) {
+        foreach (['penetapan', 'pelaksanaan', 'evaluasi', 'pengendalian', 'peningkatan'] as $aspek) {
+            if ($detail->$aspek && $detail->$aspek->deskripsi) {
+                $detail->$aspek->deskripsi = preg_replace_callback(
+                    '/<img[^>]+src="([^">]+)"/i',
+                    function ($matches) {
+                        $src = $matches[1];
+                        $relativePath = ltrim(parse_url($src, PHP_URL_PATH), '/');
+                        $possiblePaths = [
+                            public_path($relativePath),
+                            public_path('storage/' . $relativePath),
+                            public_path('storage/pendukung/' . basename($relativePath))
+                        ];
+
+                        foreach ($possiblePaths as $path) {
+                            if (file_exists($path)) {
+                                $type = pathinfo($path, PATHINFO_EXTENSION);
+                                $data = file_get_contents($path);
+                                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                                return str_replace($src, $base64, $matches[0]);
+                            }
+                        }
+
+                        return $matches[0];
+                    },
+                    $detail->$aspek->deskripsi
+                );
+            }
+        }
+    }
+
+    $pdf = Pdf::loadView('DokumenFinal.finalisasi_pdf', [
+        'details' => $details,
+        'idFinalisasi' => $idFinalisasi,
+        'isFinal' => $semuaAcc2,
+    ]);
+
+    return $pdf->stream("finalisasi_{$idFinalisasi}.pdf");
+}
+    public function previewFinalisasiEmbed($idFinalisasi)
+{
+    $finalisasiIds = DetailKriteria::select('id_finalisasi')
+        ->distinct()
+        ->orderBy('id_finalisasi', 'desc')
+        ->get();
+
+    return view('DokumenFinal.index', [
+        'finalisasiIds' => $finalisasiIds,
+        'activeId' => $idFinalisasi,
+        'pdfUrl' => route('direktur.finalisasi.pdf', ['idFinalisasi' => $idFinalisasi]),
+    ]);
+}
 
     /**
      * Preview finalisasi PDF terbaru.

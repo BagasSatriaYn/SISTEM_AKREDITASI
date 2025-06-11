@@ -12,7 +12,9 @@ class DetailKriteria extends Model
 
     protected $table = "t_detail_kriteria";
     protected $primaryKey = "id_detail_kriteria";
+
     protected $fillable = [
+        'id_user', // ✅ WAJIB untuk notifikasi
         'id_penetapan',
         'id_pelaksanaan',
         'id_evaluasi',
@@ -35,6 +37,12 @@ class DetailKriteria extends Model
             default   => 'bg-secondary'
         };
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(UserModel::class, 'id_user', 'id_user');
+    }
+
     public function penetapan(): BelongsTo
     {
         return $this->belongsTo(Penetapan::class, 'id_penetapan', 'id_penetapan');
@@ -69,14 +77,9 @@ class DetailKriteria extends Model
     {
         return $this->belongsTo(Komentar::class, 'id_komentar', 'id_komentar');
     }
-    // Model Finalisasi
-    public function detailKriterias() {
-        return $this->hasMany(DetailKriteria::class, 'id_finalisasi', 'id');
-    }
 
-    // Model DetailKriteria
-    public function finalisasi() {
+    public function finalisasi(): BelongsTo
+    {
         return $this->belongsTo(Finalisasi::class, 'id_finalisasi', 'id');
     }
-
 }

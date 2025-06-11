@@ -1,5 +1,5 @@
 @extends('layouts.template')
-
+@section('title', 'Kriteria 7 - PPEPP')
 @section('content') 
 
     <div class="container-fluid py-4">
@@ -165,13 +165,12 @@
                         return `<span class="badge ${badgeClass}">${data.toUpperCase()}</span>`;
                     }
                 },
-                {
-                    data: "status",
+                         {
+                    data: "validated_by",
                     className: "text-sm",
                     render: function (data) {
-                        if (data === 'acc1') return `<span class="badge bg-success">Kajur</span>`;
-                        if (data === 'acc2') return `<span class="badge bg-info">Direktur</span>`;
-                        if (data === 'revisi') return `<span class="badge bg-warning text-dark">Kajur</span>`;
+                        if (data === 'kajur') return `<span class="badge bg-success">Kajur</span>`;
+                        if (data === 'direktur') return `<span class="badge bg-info">Direktur</span>`;
                         return `<span class="badge bg-secondary">-</span>`;
                     }
                 },

@@ -85,6 +85,12 @@ class LevelSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'level_kode' => 'SUPER',
+                'level_nama' => 'Superadmin',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }

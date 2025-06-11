@@ -43,33 +43,44 @@
 
        public function list(Request $request)
 {
-    // Debug untuk melihat request yang masuk
     Log::info('Request data:', $request->all());
     
     $details = DetailKriteria::with('kriteria:id_kriteria,nama')
-        ->select('id_detail_kriteria', 'id_kriteria', 'status');
+        ->select('id_detail_kriteria', 'id_kriteria', 'status', 'validated_by'); // ✅ TAMBAHKAN validated_by
 
     $details->where('id_kriteria', 2);
 
-    // Filter data berdasarkan id_detail_kriteria
     if ($request->has('id_detail_kriteria') && $request->id_detail_kriteria) {
         $details->where('id_detail_kriteria', $request->id_detail_kriteria);
     }
-    
-    // Debug untuk melihat query yang dijalankan
+
     Log::info('Query SQL: ' . $details->toSql());
     Log::info('Query Bindings: ', $details->getBindings());
-    
-    // Debug jumlah data yang ditemukan
-    $count = $details->count();
-    Log::info('Data count: ' . $count);
-    
+    Log::info('Data count: ' . $details->count());
+
     return DataTables::of($details)
         ->addIndexColumn()
+        ->addColumn('kriteria.nama', function ($row) {
+            return $row->kriteria->nama ?? '-';
+        })
+        ->addColumn('validated_by', function ($row) {
+            return $row->validated_by ?? '-';
+        })
+        ->addColumn('aksi', function ($row) {
+            $id = $row->id_detail_kriteria;
+            $status = $row->status;
+
+            $previewBtn = "<button class='btn btn-info btn-xs' onclick='showPreviewModal($id)'>Preview</button>";
+            $editBtn = ($status === 'submit')
+                ? "<a class='btn btn-secondary btn-xs disabled' href='#'>Edit</a>"
+                : "<a class='btn btn-warning btn-xs' href='kriteria1/{$id}/edit'>Edit</a>";
+            $deleteBtn = "<button class='btn btn-danger btn-xs' onclick='modalActionDelete($id)'>Delete</button>";
+
+            return "$previewBtn $editBtn $deleteBtn";
+        })
         ->rawColumns(['aksi'])
         ->make(true);
 }
-        
 public function checkData()
 {
     $data = DetailKriteria::with('kriteria')
@@ -129,47 +140,55 @@ public function store(Request $request)
     try {
         // Fungsi upload file
         $uploadImageAsHTML = function ($file, $prefix = 'file') {
-            if ($file) {
-                $filename = $prefix.'_'.time().'.'.$file->getClientOriginalExtension();
-                $path = $file->storeAs('public/kriteria', $filename);
-                $url = Storage::url($path);
-                return '<p><img src="' . $url . '" style="max-width: 100%;"></p>';
-            }
-            return '';
-        };
+    if ($file) {
+        $filename = $prefix.'_'.time().'.'.$file->getClientOriginalExtension();
+        $path = $file->storeAs('public/kriteria', $filename);
+        
+        $fullPath = storage_path('app/' . $path);
+        if (file_exists($fullPath)) {
+            $content = file_get_contents($fullPath);
+            $type = pathinfo($fullPath, PATHINFO_EXTENSION);
+            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($content);
+            return '<p><img src="' . $base64 . '" style="max-width:100%;"></p>';
+        }
+    }
+    return '';
+};
+
 
         $kriteria = Kriteria::findOrFail($request->id_kriteria);
 
         // Simpan data PPEPP
-        $penetapan = $kriteria->penetapan()->create([
+         $penetapan = $kriteria->penetapan()->create([
             'id_kriteria' => $kriteria->id_kriteria,
-            'deskripsi' => $request->desk_penetapan . $uploadImageAsHTML($request->file('penetapan_file'), 'penetapan'),
+            'deskripsi' => $request->desk_penetapan,
             'pendukung' => $uploadImageAsHTML($request->file('penetapan_file'), 'penetapan'),
         ]);
 
         $pelaksanaan = $kriteria->pelaksanaan()->create([
             'id_kriteria' => $kriteria->id_kriteria,
-            'deskripsi' => $request->desk_pelaksanaan . $uploadImageAsHTML($request->file('pelaksanaan_file'), 'pelaksanaan'),
+            'deskripsi' => $request->desk_pelaksanaan,
             'pendukung' => $uploadImageAsHTML($request->file('pelaksanaan_file'), 'pelaksanaan'),
         ]);
 
         $evaluasi = $kriteria->evaluasi()->create([
             'id_kriteria' => $kriteria->id_kriteria,
-            'deskripsi' => $request->desk_evaluasi . $uploadImageAsHTML($request->file('evaluasi_file'), 'evaluasi'),
-            'pendukung' => $uploadImageAsHTML($request->file('evaluasi_file'), 'evaluasi'),
+            'deskripsi' => $request->desk_evaluasi,
+            'pendukung' => $uploadImageAsHTML($request->file('pelaksanaan_file'), 'evaluasi'),
         ]);
 
         $pengendalian = $kriteria->pengendalian()->create([
             'id_kriteria' => $kriteria->id_kriteria,
-            'deskripsi' => $request->desk_pengendalian . $uploadImageAsHTML($request->file('pengendalian_file'), 'pengendalian'),
+            'deskripsi' => $request->desk_pengendalian,
             'pendukung' => $uploadImageAsHTML($request->file('pengendalian_file'), 'pengendalian'),
         ]);
 
         $peningkatan = $kriteria->peningkatan()->create([
             'id_kriteria' => $kriteria->id_kriteria,
-            'deskripsi' => $request->desk_peningkatan . $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
+            'deskripsi' => $request->desk_peningkatan,
             'pendukung' => $uploadImageAsHTML($request->file('peningkatan_file'), 'peningkatan'),
         ]);
+
 
 // Cari semua id_finalisasi yang sudah digunakan untuk kriteria ini
 $usedFinalisasiIds = DetailKriteria::where('id_kriteria', $kriteria->id_kriteria)
@@ -189,17 +208,26 @@ if ($availableFinalisasi) {
     $idFinalisasi = $newFinalisasi->id_finalisasi;
 }
 
-        $detailKriteria = \App\Models\DetailKriteria::create([
-            'id_penetapan' => $penetapan->id_penetapan,
-            'id_pelaksanaan' => $pelaksanaan->id_pelaksanaan,
-            'id_evaluasi' => $evaluasi->id_evaluasi,
-            'id_pengendalian' => $pengendalian->id_pengendalian,
-            'id_peningkatan' => $peningkatan->id_peningkatan,
-            'id_kriteria' => $kriteria->id_kriteria,
-            'id_komentar' => null,
-            'id_finalisasi' => $idFinalisasi,
-            'status' => $request->status
-        ]);
+
+       $detailKriteria = DetailKriteria::create([
+    'id_user' => auth()->user()->id_user, // ✅ ini penting!
+    'id_penetapan' => $penetapan->id_penetapan,
+    'id_pelaksanaan' => $pelaksanaan->id_pelaksanaan,
+    'id_evaluasi' => $evaluasi->id_evaluasi,
+    'id_pengendalian' => $pengendalian->id_pengendalian,
+    'id_peningkatan' => $peningkatan->id_peningkatan,
+    'id_kriteria' => $kriteria->id_kriteria,
+    'id_komentar' => null,
+    'id_finalisasi' => $idFinalisasi,
+    'status' => $request->status
+]);
+
+    NotificationController::storeNotification(
+    $request->status,
+    $detailKriteria->id_detail_kriteria, // ✅ sekarang pakai id_detail_kriteria yang benar
+    auth()->user()->id_user
+);
+
 
         DB::commit();
 
@@ -219,6 +247,7 @@ if ($availableFinalisasi) {
     }
 }
 
+
     public function uploadImage(Request $request)
     {
         if ($request->hasFile('image')) {
@@ -237,6 +266,7 @@ if ($availableFinalisasi) {
             'message' => 'File tidak ditemukan.',
         ]);
     }
+
     public function show($id)
     {
     // Menghapus prefix 'A' dan mendapatkan angka kriteria
@@ -323,20 +353,19 @@ public function preview($id)
 }
 
 
-    public function update(Request $request, $id)
-{
-    DB::beginTransaction();
-
-    try {
-        $detail = DetailKriteria::findOrFail($id);
-
-        // Validasi
+  public function update(Request $request, $id)
+    {
         $validator = Validator::make($request->all(), [
             'desk_penetapan' => 'required',
             'desk_pelaksanaan' => 'required',
             'desk_evaluasi' => 'required',
             'desk_pengendalian' => 'required',
             'desk_peningkatan' => 'required',
+            'penetapan_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'pelaksanaan_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'evaluasi_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'pengendalian_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'peningkatan_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:save,submitted'
         ]);
 
@@ -344,42 +373,79 @@ public function preview($id)
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Update tiap bagian PPEPP
-        $detail->penetapan->update([
-            'deskripsi' => $request->desk_penetapan,
-        ]);
-        $detail->pelaksanaan->update([
-            'deskripsi' => $request->desk_pelaksanaan,
-        ]);
-        $detail->evaluasi->update([
-            'deskripsi' => $request->desk_evaluasi,
-        ]);
-        $detail->pengendalian->update([
-            'deskripsi' => $request->desk_pengendalian,
-        ]);
-        $detail->peningkatan->update([
-            'deskripsi' => $request->desk_peningkatan,
-        ]);
+        DB::beginTransaction();
+        try {
+            $detail = DetailKriteria::with(['penetapan', 'pelaksanaan', 'evaluasi', 'pengendalian', 'peningkatan'])->findOrFail($id);
 
-        // Update status
-        $detail->status = $request->status;
-        $detail->save();
+$upload = function ($file, $lama = null, $prefix = 'file') {
+    if ($file) {
+        // Hapus file lama jika ada
+        if ($lama && !Str::startsWith($lama, 'data:image') && Storage::exists('public/' . $lama)) {
+            Storage::delete('public/' . $lama);
+        }
 
-        DB::commit();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Data berhasil diperbarui.'
-        ]);
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
-            'success' => false,
-            'message' => 'Gagal update data: ' . $e->getMessage()
-        ], 500);
+        $filename = $prefix . '_' . time() . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs('public/kriteria', $filename);
+        return 'kriteria/' . $filename;
     }
-}
+
+    // Fallback: jika $lama kosong/null, return string kosong agar tidak error DB
+    return $lama ?? '';
+};
+
+
+$detail->penetapan->update([
+    'deskripsi' => $request->desk_penetapan,
+    'pendukung' => $upload($request->file('penetapan_file'), $request->input('penetapan_file_lama'), 'penetapan'),
+]);
+
+$detail->pelaksanaan->update([
+    'deskripsi' => $request->desk_pelaksanaan,
+    'pendukung' => $upload($request->file('pelaksanaan_file'), $request->input('pelaksanaan_file_lama'), 'pelaksanaan'),
+]);
+
+$detail->evaluasi->update([
+    'deskripsi' => $request->desk_evaluasi,
+    'pendukung' => $upload($request->file('evaluasi_file'), $request->input('evaluasi_file_lama'), 'evaluasi'),
+]);
+
+$detail->pengendalian->update([
+    'deskripsi' => $request->desk_pengendalian,
+    'pendukung' => $upload($request->file('pengendalian_file'), $request->input('pengendalian_file_lama'), 'pengendalian'),
+]);
+
+$detail->peningkatan->update([
+    'deskripsi' => $request->desk_peningkatan,
+    'pendukung' => $upload($request->file('peningkatan_file'), $request->input('peningkatan_file_lama'), 'peningkatan'),
+]);
+
+
+            $detail->status = $request->status;
+            $detail->save();
+
+            NotificationController::storeNotification(
+            $request->status,
+            $id, // ini adalah id_detail_kriteria
+            auth()->user()->id_user
+        );  
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil diperbarui.',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal update: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
     public function getPreviewData($id)
     {
         $detail = DetailKriteria::with(['kriteria', 'komentar'])->findOrFail($id);

@@ -91,16 +91,25 @@
             @if($level === 'SUPER')
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('superadmin.user.index') }}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-user-gear text-dark text-sm opacity-10"></i>
+                        </div>
                         <span class="nav-link-text ms-1">Kelola User</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('superadmin.level.index') }}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-list-check text-dark text-sm opacity-10"></i>
+                        </div>
                         <span class="nav-link-text ms-1">Kelola Level</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('superadmin.kriteria.index') }}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-server text-dark text-sm opacity-10"></i>
+                        </div>
                         <span class="nav-link-text ms-1">Kelola Kriteria</span>
                     </a>
                 </li>

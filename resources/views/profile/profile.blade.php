@@ -3,6 +3,58 @@
 @section('title', 'Profil Pengguna')
 
 @section('content')
+
+<div class="profile-container">
+    <div class="profile-card">
+        <div class="profile-image">
+            <img src="{{ $user->profile ? asset('storage/' . ltrim($user->profile, '/')) : 'https://via.placeholder.com/160' }}" alt="Profile Picture">
+
+        </div>
+
+        <form action="{{ route('profile.upload') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+            @csrf
+            <input type="file" name="profile" id="profile" accept="image/*" onchange="this.form.submit()" style="display: none;">
+            <label for="profile" class="upload-btn">Upload Foto</label>
+            @error('profile')
+                <span class="error-message">{{ $message }}</span>
+            @enderror
+        </form>
+
+        <div class="profile-info">
+            <div class="info-item">
+                <span class="label">Username</span>
+                <span class="value">{{ $user->username }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Nama</span>
+                <span class="value">{{ $user->name }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Role</span>
+                <span class="value">{{ $user->getRoleName() ?? 'Unknown Role' }}</span>
+            </div>
+
+        </div>
+
+        <a href="{{ route('logout') }}"
+           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+           class="logout-btn">
+           Keluar <i class="fas fa-sign-out-alt"></i>
+        </a>
+
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
+    </div>
+</div>
+
+@if(session('success'))
+    <div class="alert-welcome">
+        <strong>{{ session('success') }}</strong>
+        <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+    </div>
+@endif
+@endsection
 <style>
     .profile-container {
         display: flex;
@@ -24,8 +76,8 @@
     }
 
     .profile-image img {
-        width: 160px;
-        height: 160px;
+        width: 300px;
+        height: 300px;
         object-fit: cover;
         border-radius: 50%;
         border: 5px solid #ffffff;
@@ -101,55 +153,3 @@
         cursor: pointer;
     }
 </style>
-
-<div class="profile-container">
-    <div class="profile-card">
-        <div class="profile-image">
-            <img src="{{ $user->profile ? asset('storage/' . ltrim($user->profile, '/')) : 'https://via.placeholder.com/160' }}" alt="Profile Picture">
-
-        </div>
-
-        <form action="{{ route('profile.upload') }}" method="POST" enctype="multipart/form-data" class="upload-form">
-            @csrf
-            <input type="file" name="profile" id="profile" accept="image/*" onchange="this.form.submit()" style="display: none;">
-            <label for="profile" class="upload-btn">Upload Foto</label>
-            @error('profile')
-                <span class="error-message">{{ $message }}</span>
-            @enderror
-        </form>
-
-        <div class="profile-info">
-            <div class="info-item">
-                <span class="label">Username</span>
-                <span class="value">{{ $user->username }}</span>
-            </div>
-            <div class="info-item">
-                <span class="label">Nama</span>
-                <span class="value">{{ $user->name }}</span>
-            </div>
-            <div class="info-item">
-                <span class="label">Role</span>
-                <span class="value">{{ $user->getRoleName() ?? 'Unknown Role' }}</span>
-            </div>
-
-        </div>
-
-        <a href="{{ route('logout') }}"
-           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-           class="logout-btn">
-           Keluar <i class="fas fa-sign-out-alt"></i>
-        </a>
-
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
-    </div>
-</div>
-
-@if(session('success'))
-    <div class="alert-welcome">
-        <strong>{{ session('success') }}</strong>
-        <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
-    </div>
-@endif
-@endsection

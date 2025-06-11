@@ -1,5 +1,5 @@
 @extends('layouts.template')
-
+@section('title', 'Edit Kriteria 3 - PPEPP')
 @section('content')
 <div class="container-fluid py-4">
     <div class="row">
@@ -37,11 +37,30 @@
                             <div class="col-md-9">
                                 <h6 class="font-weight-bold">{{ $loop->iteration }}. {{ $label }}</h6>
                                 <textarea id="editor-{{ $key }}" name="desk_{{ $key }}" class="form-control">{{ $detail[$key]->deskripsi ?? '' }}</textarea>
-                                <img id="preview-editor-{{ $key }}"
-                                     src="{{ $detail[$key]->pendukung ? asset('storage/' . $detail[$key]->pendukung) : '' }}"
-                                     alt="Preview"
-                                     class="img-fluid mt-2"
-                                     style="max-height: 200px; {{ $detail[$key]->pendukung ? '' : 'display: none;' }}">
+                                                        @php
+                        $isBase64 = Str::startsWith($detail[$key]->pendukung ?? '', 'data:image/');
+                    @endphp
+
+                    @if ($detail[$key]->pendukung && $isBase64)
+                        <img id="preview-editor-{{ $key }}"
+                            src="{{ $detail[$key]->pendukung }}"
+                            alt="Preview"
+                            class="img-fluid mt-2"
+                            style="max-height: 200px;">
+                    @elseif ($detail[$key]->pendukung && file_exists(public_path('storage/' . $detail[$key]->pendukung)))
+                        <img id="preview-editor-{{ $key }}"
+                            src="{{ asset('storage/' . $detail[$key]->pendukung) }}"
+                            alt="Preview"
+                            class="img-fluid mt-2"
+                            style="max-height: 200px;">
+                    @else
+                        <img id="preview-editor-{{ $key }}"
+                            src="https://via.placeholder.com/150"
+                            alt="No Image"
+                            class="img-fluid mt-2"
+                            style="max-height: 200px;">
+                                @endif
+
                             </div>
                             <div class="col-md-3 d-flex align-items-start justify-content-end pt-4">
                                 <div class="card">

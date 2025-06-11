@@ -145,7 +145,7 @@
 
 @extends('layouts.template')
 
-@section('title', 'Dashboard-KJM, Direktur')
+@section('title', 'Dashboard-Direktur')
 <body class="g-sidenav-show   bg-gray-100">
   <!-- Extra details for Live View on GitHub Pages -->
   <!-- Google Tag Manager (noscript) -->
@@ -277,31 +277,30 @@
       const tbody = document.getElementById('tableBody');
       tbody.innerHTML = '';
 
-      response.forEach(item => {
-        const kriteria = item.kriteria ?? {};
-        const namaKriteria = kriteria.nama ?? '-';
-        const penanggungJawab = kriteria.penanggung_jawab ?? '-';
-        const status = item.status ?? '-';
-        const updatedAt = new Date(item.updated_at).toLocaleDateString();
+     response.forEach(item => {
+  const kriteria = item.kriteria ?? {};
+  const user = item.user ?? {};
+  const level = user.level ?? {};
 
-        tbody.innerHTML += `
-          <tr>
-            <td>${item.id_detail_kriteria}</td>
-            <td>Kriteria ${kriteria.id_kriteria ?? '-'} - ${namaKriteria}</td>
-            <td>${penanggungJawab}</td>
-            <td>${statusBadge(status)}</td>
-            <td>${updatedAt}</td>
-            <td>
-              <button class="btn btn-warning btn-sm btn-validasi"
-                      data-id="${item.id_detail_kriteria}"
-                      data-nama="${namaKriteria}"
-                      data-pj="${penanggungJawab}"
-                      data-tanggal="${item.updated_at}">
-                Validasi
-              </button>
-            </td>
-          </tr>`;
-      });
+  tbody.innerHTML += `
+    <tr>
+      <td>${item.id_detail_kriteria}</td>
+      <td>Kriteria ${kriteria.id_kriteria ?? '-'} - ${kriteria.nama ?? '-'}</td>
+      <td>${level.level_nama ?? '-'}</td>
+      <td>${statusBadge(item.status)}</td>
+      <td>${new Date(item.updated_at).toLocaleDateString()}</td>
+      <td>
+        <button class="btn btn-warning btn-sm btn-validasi"
+                data-id="${item.id_detail_kriteria}"
+                data-pj="${level.level_nama ?? '-'}"
+                data-nama="${kriteria.nama ?? '-'}"
+                data-tanggal="${item.updated_at}">
+          Validasi
+        </button>
+      </td>
+    </tr>`;
+});
+
     },
     error: function () {
       alert('Gagal memuat data validasi tahap 2 dari server.');

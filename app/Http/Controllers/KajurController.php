@@ -8,6 +8,7 @@ use App\Models\Kriteria;
 use App\Models\Komentar;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\NotificationController;
 
 class KajurController extends Controller
 {
@@ -34,7 +35,7 @@ class KajurController extends Controller
      * - Jika diterima → status = 'acc1'
      * - Jika ditolak → status = 'revisi'
      */
-    public function simpanValidasiTahap1(Request $request)
+   public function simpanValidasiTahap1(Request $request)
 {
     $request->validate([
         'id_kriteria' => 'required|exists:t_detail_kriteria,id_detail_kriteria',
@@ -45,23 +46,25 @@ class KajurController extends Controller
     $data = DetailKriteria::findOrFail($request->id_kriteria);
 
     $data->status = $request->status_validasi === 'diterima' ? 'acc1' : 'revisi';
-    
-    // ✅ Selalu timpa validated_by agar Kajur jadi yang terakhir
     $data->validated_by = 'kajur';
 
     if (!empty($request->catatan)) {
-        $komentar = Komentar::create([
-            'komen' => $request->catatan
-        ]);
+        $komentar = Komentar::create(['komen' => $request->catatan]);
         $data->id_komentar = $komentar->id_komentar;
     }
 
     $data->save();
 
+    // ✅ PEMANGGILAN DIBETULKAN
+    NotificationController::storeNotification(
+        $data->status,
+        $data->id_detail_kriteria,
+        auth()->user()->id_user
+    );
+
     return response()->json(['success' => true, 'message' => 'Validasi Tahap 1 berhasil']);
 }
-
-
+    
     /**
      * Daftar data untuk divalidasi Kajur.
      * Menampilkan data dengan status 'submitted' atau 'revisi'

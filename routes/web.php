@@ -22,6 +22,7 @@ use App\Http\Controllers\Anggota\AnggotaController;
 use App\Http\Controllers\KriteriaDelapanController;
 use App\Http\Controllers\KriteriaSembilanController;
 use App\Http\Controllers\ProfileController;
+use App\Services\NotificationService;
 
 
 
@@ -61,6 +62,20 @@ Route::post('/profil/upload', [ProfileController::class, 'upload'])->name('profi
 Route::get('/anggota/dashboard', [AnggotaController::class, 'dashboard'])
     ->middleware('auth') // atau tambah role check jika ada
     ->name('anggota.dashboard');
+
+    // Notifikasi: tandai semua sebagai telah dibaca
+Route::middleware(['auth'])->group(function () {
+    Route::get('/notifications/mark-as-read', function () {
+        app(\App\Services\NotificationService::class)->markAllAsRead(auth()->user()->id_user);
+        return response()->json(['success' => true]);
+    })->name('notifications.readall');
+    Route::get('/test-notif', function () {
+    \App\Http\Controllers\NotificationController::storeNotification('submitted', 1, 1);
+    return 'Notifikasi tes dikirim!';
+});
+
+});
+
 //SuperAdmin Routes
 Route::middleware(['auth','authorize:SUPER'])->prefix('superadmin')->group(function () {
     Route::get('/superadmin/dashboard', [App\Http\Controllers\SuperadminController::class, 'dashboard'])->name('superadmin.dashboard');
@@ -367,18 +382,15 @@ Route::middleware(['auth', 'authorize:DKT'])->group(function () {
     // Dashboard Direktur
     Route::get('/dashboard/direktur', [DirekturController::class, 'dashboard'])->name('direktur.dashboard');
 
-    // Route PDF Finalisasi by Direktur (di luar prefix kriteria supaya URL clean)
-    Route::get('/direktur/finalisasi/{idFinalisasi}/pdf', [DirekturController::class, 'previewFinalisasiPdf'])
-        ->name('direktur.finalisasi.pdf');
+    // Halaman utama Dokumen Final + daftar finalisasi
+    Route::get('/direktur/finalisasi', [DirekturController::class, 'showDokumenFinal'])->name('direktur.finalisasi.index');
 
-    // Preview finalisasi terakhir (optional)
-    Route::get('/finalisasi/last', [DirekturController::class, 'previewFinalisasiLast'])->name('finalisasi.latest.pdf');
+    // Saat klik ID finalisasi, tampilkan preview PDF
+    Route::get('/direktur/finalisasi/{idFinalisasi}/preview', [DirekturController::class, 'previewFinalisasiEmbed'])->name('direktur.finalisasi.preview');
+    Route::get('/direktur/preview/{id}', [DirekturController::class, 'previewPdf'])->name('direktur.preview');
 
-    // Halaman list finalisasi
-    Route::get('/finalisasi', [DirekturController::class, 'showDokumenFinal'])->name('finalisasi.preview');
-    Route::get('/direktur/preview/{id}', [DirekturController::class, 'previewPdf'])->name('direktur.preview.pdf');
-
-
+    // Generate PDF Finalisasi (digunakan di <iframe>)
+    Route::get('/direktur/finalisasi/{idFinalisasi}/pdf', [DirekturController::class, 'previewFinalisasiPdf'])->name('direktur.finalisasi.pdf');
     // Group route untuk kriteria
     Route::prefix('kriteria')->group(function () {
         Route::get('/', [DirekturController::class, 'index'])->name('direktur.kriteria.index');
@@ -399,7 +411,7 @@ Route::middleware(['auth', 'authorize:DKT'])->group(function () {
         // Halaman dokumen final
         Route::get('/dokumenfinal', [DirekturController::class, 'showDokumenFinal'])->name('direktur.dokumenfinal');
     });
-});
+
 
 
 
@@ -424,3 +436,4 @@ Route::prefix('finalisasi')->group(function () {
 Route::post('/logout', function () {
     return redirect('/login'); // Arahkan ke halaman login setelah logout
 })->name('logout');
+}); 

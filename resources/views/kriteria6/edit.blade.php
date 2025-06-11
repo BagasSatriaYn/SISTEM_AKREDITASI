@@ -1,5 +1,5 @@
 @extends('layouts.template')
-
+@section('title', 'Edit Kriteria 6 - PPEPP')
 @section('content')
 <div class="container-fluid py-4">
     <div class="row">

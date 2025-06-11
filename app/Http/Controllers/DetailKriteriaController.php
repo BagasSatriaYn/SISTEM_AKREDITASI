@@ -12,6 +12,8 @@ use App\Models\Komentar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\NotificationController;
 
 class DetailKriteriaController extends Controller
 {
@@ -123,5 +125,28 @@ class DetailKriteriaController extends Controller
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ], 500);
         }
+
     }
+
+    // Di fungsi update status
+public function updateStatus(Request $request, $id)
+{
+    $detail = DetailKriteria::findOrFail($id);
+    $oldStatus = $detail->status;
+
+    $detail->status = $request->status;
+    $detail->validated_by = Auth::user()->name;
+    $detail->save();
+
+    // Panggil notifikasi hanya jika status berubah
+    if ($oldStatus !== $request->status) {
+        NotificationController::storeNotification(
+            $request->status,
+            $detail->id_kriteria,
+            Auth::user()->id_user
+        );
+    }
+
+    return back()->with('success', 'Status diperbarui dan notifikasi dikirim.');
+}
 }

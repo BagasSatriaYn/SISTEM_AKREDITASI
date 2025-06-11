@@ -6,6 +6,8 @@ namespace App\Models;
  use Illuminate\Database\Eloquent\Model;
  use Illuminate\Database\Eloquent\Relations\BelongsTo;
  use Illuminate\Foundation\Auth\User as Authenticatable;
+ use App\Models\Notification;
+ use Illuminate\Database\Eloquent\Relations\HasMany;
 
  class UserModel extends Authenticatable 
  {
@@ -36,4 +38,8 @@ namespace App\Models;
      {
          return $this->level->level_kode;
      }
+     public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class, 'user_id', 'id_user');
  }
+}

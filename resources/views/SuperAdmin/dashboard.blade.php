@@ -23,7 +23,7 @@
 
     <!-- Kartu-kartu menu dipisah -->
     <div class="menu-cards">
-        <a href="{{ route('validasi2') }}" class="menu-card kriteria-card">
+        <a href="{{ route('superadmin.user.index') }}" class="menu-card kriteria-card">
             <span class="menu-card-badge">New</span>
             <div class="menu-card-image">
                 <i class="fas fa-list-check"></i>
@@ -34,7 +34,7 @@
             </div>
         </a>
 
-        <a href="{{ route('validasi2') }}" class="menu-card kriteria-card">
+        <a href="{{ route('superadmin.level.index') }}" class="menu-card kriteria-card">
             <span class="menu-card-badge">New</span>
             <div class="menu-card-image">
                 <i class="fas fa-list-check"></i>
@@ -45,7 +45,7 @@
             </div>
         </a>
 
-        <a href="{{ route('validasi2') }}" class="menu-card kriteria-card">
+        <a href="{{ route('superadmin.kriteria.index') }}" class="menu-card kriteria-card">
             <span class="menu-card-badge">New</span>
             <div class="menu-card-image">
                 <i class="fas fa-list-check"></i>
