@@ -16,6 +16,7 @@
     use Yajra\DataTables\Facades\DataTables;
     use Illuminate\Support\Facades\Validator;
     use Barryvdh\DomPDF\Facade\Pdf;
+    use Illuminate\Support\Str; 
 
     class KriteriaSembilanController extends Controller
     {
@@ -237,6 +238,25 @@ if ($availableFinalisasi) {
     }
 }
 
+    public function uploadImage(Request $request)
+    {
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('public/pendukung', $filename);
+
+            return response()->json([
+                'status' => true,
+                'url' => asset(Storage::url('pendukung/' . $filename)),
+            ]);
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => 'File tidak ditemukan.',
+        ]);
+    }
+
     public function show($id)
     {
     // Menghapus prefix 'A' dan mendapatkan angka kriteria
@@ -324,19 +344,18 @@ public function preview($id)
 
 
     public function update(Request $request, $id)
-{
-    DB::beginTransaction();
-
-    try {
-        $detail = DetailKriteria::findOrFail($id);
-
-        // Validasi
+    {
         $validator = Validator::make($request->all(), [
             'desk_penetapan' => 'required',
             'desk_pelaksanaan' => 'required',
             'desk_evaluasi' => 'required',
             'desk_pengendalian' => 'required',
             'desk_peningkatan' => 'required',
+            'penetapan_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'pelaksanaan_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'evaluasi_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'pengendalian_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'peningkatan_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:save,submitted'
         ]);
 
@@ -344,48 +363,84 @@ public function preview($id)
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Update tiap bagian PPEPP
-        $detail->penetapan->update([
-            'deskripsi' => $request->desk_penetapan,
-        ]);
-        $detail->pelaksanaan->update([
-            'deskripsi' => $request->desk_pelaksanaan,
-        ]);
+        DB::beginTransaction();
+        try {
+            $detail = DetailKriteria::with(['penetapan', 'pelaksanaan', 'evaluasi', 'pengendalian', 'peningkatan'])->findOrFail($id);
+
+$upload = function ($file, $lama = null, $prefix = 'file') {
+    if ($file) {
+        if ($lama && Storage::exists('public/' . $lama)) {
+            Storage::delete('public/' . $lama);
+        }
+
+        $filename = $prefix.'_'.time().'.'.$file->getClientOriginalExtension();
+        $path = $file->storeAs('public/kriteria', $filename);
+
+        $fullPath = storage_path('app/' . $path);
+        if (file_exists($fullPath)) {
+            $content = file_get_contents($fullPath);
+            $type = pathinfo($fullPath, PATHINFO_EXTENSION);
+            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($content);
+            return '<p><img src="' . $base64 . '" style="max-width:100%;"></p>';
+        }
+    }
+
+    return $lama; // base64 lama tetap dipakai
+};
+
+
+$detail->penetapan->update([
+        'deskripsi' => $request->desk_penetapan,
+        'pendukung' => $upload($request->file('penetapan_file'), $detail->penetapan->pendukung, 'penetapan'),
+    ]);
+
+            $detail->pelaksanaan->update([
+        'deskripsi' => $request->desk_pelaksanaan,
+        'pendukung' => $upload($request->file('pelaksanaan_file'), $detail->pelaksanaan->pendukung, 'pelaksanaan'),
+    ]);
+
+
         $detail->evaluasi->update([
             'deskripsi' => $request->desk_evaluasi,
+            'pendukung' => $upload($request->file('evaluasi_file'), $detail->evaluasi->pendukung)
         ]);
+
         $detail->pengendalian->update([
             'deskripsi' => $request->desk_pengendalian,
+            'pendukung' => $upload($request->file('pengendalian_file'), $detail->pengendalian->pendukung)
         ]);
+
         $detail->peningkatan->update([
             'deskripsi' => $request->desk_peningkatan,
+            'pendukung' => $upload($request->file('peningkatan_file'), $detail->peningkatan->pendukung)
         ]);
 
-        // Update status
-        $detail->status = $request->status;
-        $detail->save();
+            // Update status dan validasi   
 
-           NotificationController::storeNotification(
+            $detail->status = $request->status;
+            $detail->save();
+
+            NotificationController::storeNotification(
             $request->status,
             $id, // ini adalah id_detail_kriteria
             auth()->user()->id_user
-        );
+        );  
 
-        DB::commit();
+            DB::commit();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Data berhasil diperbarui.'
-        ]);
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
-            'success' => false,
-            'message' => 'Gagal update data: ' . $e->getMessage()
-        ], 500);
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil diperbarui.',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal update: ' . $e->getMessage()
+            ], 500);
+        }
     }
-}
+
     
      public function getPreviewData($id)
     {
