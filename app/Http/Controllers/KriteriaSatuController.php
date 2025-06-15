@@ -22,6 +22,7 @@
 
 class KriteriaSatuController extends Controller
 {
+    
      public function index()
 {
     $kriterias = Kriteria::all(); // ambil semua kriteria
@@ -178,7 +179,7 @@ public function store(Request $request)
         $evaluasi = $kriteria->evaluasi()->create([
             'id_kriteria' => $kriteria->id_kriteria,
             'deskripsi' => $request->desk_evaluasi,
-            'pendukung' => $uploadImageAsHTML($request->file('pelaksanaan_file'), 'evaluasi'),
+            'pendukung' => $uploadImageAsHTML($request->file('evaluasi_file'), 'evaluasi'),
         ]);
 
         $pengendalian = $kriteria->pengendalian()->create([
@@ -330,7 +331,8 @@ public function uploadImage(Request $request)
 
 public function preview($id)
 {
-      ini_set('pcre.backtrack_limit', '5000000');
+    set_time_limit(300);
+    ini_set('pcre.backtrack_limit', '5000000');
     Log::info("🔍 Masuk preview() dengan ID: $id");
 
     // Ambil langsung detail berdasarkan ID (angka)
@@ -345,8 +347,9 @@ public function preview($id)
 
     
     try {
-        return \PDF::loadView('kriteria1.export', ['details' => $detail])
-                   ->stream('dokumen_ppepp.pdf');
+        return Pdf::loadView('kriteria1.export', ['details' => $detail])
+          ->stream('dokumen_ppepp.pdf');
+
     } catch (\Exception $e) {
         Log::error("❌ Gagal generate PDF: " . $e->getMessage());
         abort(500, 'PDF error');

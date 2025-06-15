@@ -64,11 +64,10 @@
 
     <div class="criteria-title">{{ $details->kriteria->nama ?? 'Tanpa Kriteria' }}</div>
 
-   <!-- Penetapan -->
+    <!-- Penetapan -->
     <div class="ppepp-section">
     <div class="ppepp-number">1. Penetapan</div>
     <div class="ppepp-content">
-        {!! $details->penetapan->deskripsi ?? '<i>Tidak ada data</i>' !!}
         {!! $details->penetapan->pendukung ?? '' !!}
     </div>
 </div>
@@ -77,7 +76,6 @@
     <div class="ppepp-section">
         <div class="ppepp-number">2. Pelaksanaan</div>
         <div class="ppepp-content">
-            {!! $details->pelaksanaan->deskripsi ?? '<i>Tidak ada data</i>' !!}
             {!! $details->pelaksanaan->pendukung ?? '' !!}
         </div>
     </div>
@@ -86,7 +84,6 @@
     <div class="ppepp-section">
         <div class="ppepp-number">3. Evaluasi</div>
         <div class="ppepp-content">
-            {!! $details->evaluasi->deskripsi ?? '<i>Tidak ada data</i>' !!}
             {!! $details->evaluasi->pendukung ?? '' !!}
         </div>
     </div>
@@ -95,7 +92,6 @@
     <div class="ppepp-section">
         <div class="ppepp-number">4. Pengendalian</div>
         <div class="ppepp-content">
-            {!! $details->pengendalian->deskripsi ?? '<i>Tidak ada data</i>' !!}
             {!! $details->pengendalian->pendukung ?? '' !!}
         </div>
     </div>
@@ -104,11 +100,9 @@
     <div class="ppepp-section">
         <div class="ppepp-number">5. Peningkatan</div>
         <div class="ppepp-content">
-            {!! $details->peningkatan->deskripsi ?? '<i>Tidak ada data</i>' !!}
             {!! $details->peningkatan->pendukung ?? '' !!}
         </div>
     </div>
-
 
 </body>
 

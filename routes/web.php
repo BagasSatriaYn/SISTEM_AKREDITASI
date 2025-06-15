@@ -23,7 +23,8 @@ use App\Http\Controllers\KriteriaDelapanController;
 use App\Http\Controllers\KriteriaSembilanController;
 use App\Http\Controllers\ProfileController;
 use App\Services\NotificationService;
-
+use App\Http\Controllers\SuperkriteriaController;
+use App\Http\Controllers\SuperadminController;
 
 
 /*

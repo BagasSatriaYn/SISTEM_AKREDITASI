@@ -29,7 +29,7 @@ public function showDokumenFinal()
 {
     $finalisasiIds = DetailKriteria::select('id_finalisasi')
         ->distinct()
-        ->orderBy('id_finalisasi', 'desc')
+        ->orderBy('id_finalisasi', 'asc')
         ->get();
 
     return view('DokumenFinal.index', [

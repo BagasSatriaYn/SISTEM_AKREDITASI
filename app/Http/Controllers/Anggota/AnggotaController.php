@@ -8,6 +8,8 @@ use App\Models\Kriteria;
 use App\Services\NotificationService;
 use App\Models\DetailKriteria;
 use App\Models\Notification;
+use App\Services\LogActivityService;
+
 
 
 class AnggotaController extends Controller
@@ -19,25 +21,42 @@ class AnggotaController extends Controller
         $this->notificationService = $notificationService;
     }
 
-  public function dashboard()
+ public function dashboard()
 {
-    $user = auth()->user();
+    $userId = auth()->user()->id_user;
 
-    // Tambahkan notifikasi tes SETIAP kali dashboard dibuka
-    // Notification::create([
-    //     'user_id' => $user->id_user,
-    //     'from_user_id' => $user->id_user,
-    //     'kriteria_id' => 1,
-    //     'type' => 'tes',
-    //     'title' => 'Notif Tes Baru',
-    //     'message' => 'Notifikasi ini dibuat manual dari dashboard',
-    //     'is_read' => false,
-    // ]);
+    $details = DetailKriteria::where('id_user', $userId)->get();
 
-    $dataKriteria = DetailKriteria::with('kriteria')->get();
-    $notifications = Notification::where('user_id', $user->id_user)->latest()->take(5)->get();
-    $unreadCount = Notification::where('user_id', $user->id_user)->where('is_read', false)->count();
+    $total = $details->count();
+    $submitted = $details->where('status', 'submitted')->count();
+    $acc1 = $details->where('status', 'acc1')->count();
+    $acc2 = $details->where('status', 'acc2')->count();
 
-    return view('anggota.dashboard', compact('dataKriteria', 'notifications', 'unreadCount'));
+    // Hitung total progress
+    $totalProgress = 0;
+
+    foreach ($details as $item) {
+        switch ($item->status) {
+            case 'acc2':
+                $totalProgress += 100;
+                break;
+            case 'acc1':
+                $totalProgress += 75;
+                break;
+            case 'submitted':
+                $totalProgress += 50;
+                break;
+            default: // draft / save
+                $totalProgress += 25;
+                break;
+        }
+    }
+
+    $averageProgress = $total > 0 ? $totalProgress / $total : 0;
+
+    // Notifikasi (anggap ada servicenya)
+    $notifications = app(\App\Services\NotificationService::class)->getUserNotifications($userId);
+
+    return view('anggota.dashboard', compact('total', 'submitted', 'acc1', 'acc2', 'averageProgress', 'notifications'));
 }
-}
+}   

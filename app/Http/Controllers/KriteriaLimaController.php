@@ -302,6 +302,7 @@ if ($availableFinalisasi) {
 
 public function preview($id)
 {
+    set_time_limit(300);
     Log::info("🔍 Masuk preview() dengan ID: $id");
       ini_set('pcre.backtrack_limit', '9000000');
     // Ambil langsung detail berdasarkan ID (angka)
@@ -315,7 +316,7 @@ public function preview($id)
     ])->findOrFail($id);
 
     try {
-        return \PDF::loadView('kriteria5.export', ['details' => $detail])
+        return PDF::loadView('kriteria5.export', ['details' => $detail])
                    ->stream('dokumen_ppepp.pdf');
     } catch (\Exception $e) {
         Log::error("❌ Gagal generate PDF: " . $e->getMessage());

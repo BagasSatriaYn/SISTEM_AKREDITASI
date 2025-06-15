@@ -71,11 +71,11 @@ class KajurController extends Controller
      */
     public function getDataValidasiTahap1()
     {
-        $data = DetailKriteria::with('kriteria')
-            ->whereIn('status', ['submitted', 'revisi'])
-            ->get();
+         $data = DetailKriteria::with(['kriteria:id_kriteria,nama'])
+        ->whereIn('status', ['submitted', 'revisi'])
+        ->get();
 
-        return response()->json($data);
+    return response()->json($data);
     }
 
     /**

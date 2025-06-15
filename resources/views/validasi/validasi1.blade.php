@@ -229,7 +229,7 @@
           <div class="row">
             <div class="col-md-6">
               <!-- FORM VALIDASI -->
-              <p><strong>Pelaksana:</strong> <span id="validasiPelaksana"></span></p>
+              {{-- <p><strong>Pelaksana:</strong> <span id="validasiPelaksana"></span></p> --}}
               <p><strong>Judul Kriteria:</strong> <span id="validasiJudul"></span></p>
               <p><strong>Di Submit Pada:</strong> <span id="validasiTanggal"></span></p>
               <p><strong>Status Validasi:</strong></p>
@@ -325,7 +325,7 @@ $(document).ready(function () {
     const id = btn.data('id');
 
     // Isi data modal
-    $('#validasiPelaksana').text(btn.data('pj'));
+    
     $('#validasiJudul').text(`Kriteria - ${btn.data('nama')}`);
     $('#validasiTanggal').text(new Date(btn.data('tanggal')).toLocaleDateString());
     $('#id_kriteria').val(id);
